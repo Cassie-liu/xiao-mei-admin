@@ -29,12 +29,13 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
+    redirect: '/user/index',
+    name: 'User',
     hidden: true,
+    meta: { title: '用户管理', icon: 'user' },
     children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      path: 'user/index',
+      component: () => import('@/views/user/index')
     }]
   },
   {
@@ -55,7 +56,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Dynamic',
         component: () => import('@/views/Dynamic/index'),
         meta: { title: '动态管理', icon: 'dynamic' }
       }
@@ -67,7 +68,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Case',
         component: () => import('@/views/case/index'),
         meta: { title: '案例管理', icon: 'case' }
       }
@@ -79,7 +80,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Solution',
         component: () => import('@/views/solution/index'),
         meta: { title: '解决方案管理', icon: 'solution' }
       }
@@ -91,7 +92,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Lesson',
         component: () => import('@/views/lesson/index'),
         meta: { title: '课程报名', icon: 'lesson' }
       }
@@ -103,7 +104,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Commodity',
         component: () => import('@/views/commodity/index'),
         meta: { title: '商品管理', icon: 'commodity' }
       }
@@ -115,7 +116,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Health',
         component: () => import('@/views/health/index'),
         meta: { title: '养生排行榜', icon: 'ranking' }
       }
@@ -130,19 +131,19 @@ export const constantRouterMap = [
     children: [
       {
         path: 'disease',
-        name: 'Index',
+        name: 'Disease',
         component: () => import('@/views/settings/disease/index'),
         meta: { title: '疾病配置', icon: 'disease' }
       },
       {
         path: 'health',
-        name: 'Index',
+        name: 'HealthConfig',
         component: () => import('@/views/settings/health/index'),
         meta: { title: '养生配置', icon: 'healthConfig' }
       },
       {
         path: 'other',
-        name: 'Index',
+        name: 'Other',
         component: () => import('@/views/settings/other/index'),
         meta: { title: '其他配置', icon: 'other' }
       },
@@ -154,7 +155,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'Operation',
         component: () => import('@/views/operation/index'),
         meta: { title: '系统运维', icon: 'operation' }
       }

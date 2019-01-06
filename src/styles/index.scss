@@ -30,7 +30,6 @@ html {
 *:after {
   box-sizing: inherit;
 }
-
 a,
 a:focus,
 a:hover {
@@ -75,4 +74,7 @@ a:hover {
 
 .app-container {
   padding: 20px;
+  label{
+    font-weight: 400 !important;
+  }
 }
