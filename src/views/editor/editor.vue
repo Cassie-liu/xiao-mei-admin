@@ -9,15 +9,6 @@
     </div>
   </div>
 </template>
-<style>
-  .info{
-    border-radius: 10px;
-    line-height: 20px;
-    padding: 10px;
-    margin: 10px;
-    background-color: #ffffff;
-  }
-</style>
 <script>
 import UE from '../../components/ue/ue.vue'
 export default {
@@ -44,7 +35,6 @@ export default {
       console.log(content)
     },
     getUEContentTxt() {
-      debugger;
       const content = this.$refs.ue.getUEContentTxt() // 调用子组件方法
       this.$notify({
         title: '获取成功，可在控制台查看！',
@@ -56,4 +46,16 @@ export default {
   }
 }
 </script>
+<style>
+  .info{
+    border-radius: 10px;
+    line-height: 20px;
+    padding: 10px;
+    margin: 10px;
+    background-color: #ffffff;
+  }
+  .editor-container{
+    margin: 10px 10px 10px 30px;
+  }
+</style>
 

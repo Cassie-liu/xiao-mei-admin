@@ -37,120 +37,126 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
+    path: '/user',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        name: 'Index',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'user' }
       }
     ]
   },
-
   {
-    path: '/nested',
+    path: '/dynamic',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/Dynamic/index'),
+        meta: { title: '动态管理', icon: 'dynamic' }
+      }
+    ]
+  },
+  {
+    path: '/case',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/case/index'),
+        meta: { title: '案例管理', icon: 'case' }
+      }
+    ]
+  },
+  {
+    path: '/solution',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/solution/index'),
+        meta: { title: '解决方案管理', icon: 'solution' }
+      }
+    ]
+  },
+  {
+    path: '/lesson',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/lesson/index'),
+        meta: { title: '课程报名', icon: 'lesson' }
+      }
+    ]
+  },
+  {
+    path: '/commodity',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/commodity/index'),
+        meta: { title: '商品管理', icon: 'commodity' }
+      }
+    ]
+  },
+  {
+    path: '/health',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/health/index'),
+        meta: { title: '养生排行榜', icon: 'ranking' }
+      }
+    ]
+  },
+  {
+    path: '/settings',
+    component: Layout,
+    redirect: '/settings/disease',
+    name: 'Settings',
+    meta: { title: '系统设置', icon: 'setting' },
+    children: [
+      {
+        path: 'disease',
+        name: 'Index',
+        component: () => import('@/views/settings/disease/index'),
+        meta: { title: '疾病配置', icon: 'disease' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
+        path: 'health',
+        name: 'Index',
+        component: () => import('@/views/settings/health/index'),
+        meta: { title: '养生配置', icon: 'healthConfig' }
+      },
+      {
+        path: 'other',
+        name: 'Index',
+        component: () => import('@/views/settings/other/index'),
+        meta: { title: '其他配置', icon: 'other' }
+      },
     ]
   },
-
   {
-    path: '/editor',
-    component: Layout,
-    // redirect: '/editor',
-    // name: 'Dashboard',
-    // hidden: true,
-    children: [{
-      path: 'editor',
-      component: () => import('@/views/editor/editor'),
-      meta: { title: 'Editor', icon: 'form' }
-    }]
-  },
-
-  {
-    path: 'external-link',
+    path: '/operation',
     component: Layout,
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'index',
+        name: 'Index',
+        component: () => import('@/views/operation/index'),
+        meta: { title: '系统运维', icon: 'operation' }
       }
     ]
   },
