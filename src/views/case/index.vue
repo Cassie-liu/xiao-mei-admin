@@ -1,6 +1,6 @@
 <template>
 <div class="app-container">
-  案例管理
+  案例审核
 </div>
 </template>
 

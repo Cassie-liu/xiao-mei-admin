@@ -70,7 +70,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'Case',
         component: () => import('@/views/case/index'),
-        meta: { title: '案例管理', icon: 'case' }
+        meta: { title: '案例审核', icon: 'case' }
       }
     ]
   },
