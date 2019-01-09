@@ -11,7 +11,8 @@
 
     <!--新增-->
 
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" :fullscreen="true">
+    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog1">
+    <!--<el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" :fullscreen="true">-->
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="标题" label-width="120px">
           <el-input v-model="form.title"></el-input>
@@ -185,6 +186,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.tableData.splice(index, 1);
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -213,12 +215,14 @@
   }
 </script>
 
-<style  rel="stylesheet/scss" lang="scss" scoped>
-  .add-dialog{
-    /*height:600px;*/
-    /*overflow-y:auto;*/
+<style  rel="stylesheet/scss" lang="scss">
+  .add-dialog1{
     .solution-ue{
       margin-left:120px;
+    }
+    .el-dialog__body{
+      max-height: 500px !important;
+      overflow: auto !important;
     }
     .item-wrap{
       display: inline-block;
