@@ -146,7 +146,7 @@
           this.tableData = [
             {
               account: 'sysadmin',
-              relateRoles: '系统管理员',
+              relateRoles: ['系统管理员'],
               createBy: 'sysadmin',
               createTime: '2018-12-11',
               modifyBy: 'sysadmin',
@@ -154,7 +154,7 @@
             },
             {
               account: 'datadmin',
-              relateRoles: '平台管理员',
+              relateRoles: ['平台管理员'],
               createBy: 'sysadmin',
               createTime: '2018-12-11',
               modifyBy: 'sysadmin',
