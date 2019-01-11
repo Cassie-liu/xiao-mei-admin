@@ -12,8 +12,14 @@
       <!--新增/编辑 弹框-->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
         <el-form :model="form" :label-position="'left'">
-          <el-form-item label="客服电话" label-width="120px">
-            <el-input v-model="form.customerPhone"></el-input>
+          <el-form-item label="角色编码" label-width="120px">
+            <el-input v-model="form.coding"></el-input>
+          </el-form-item>
+          <el-form-item label="角色名称" label-width="120px">
+            <el-input v-model="form.roleName"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" label-width="120px">
+            <el-input v-model="form.comment" type="textarea" :rows="4" placeholder="请输入内容"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -37,8 +43,28 @@
                 label: '序号'
               },
               {
-                prop: 'customerPhone',
-                label: '客服电话'
+                prop: 'coding',
+                label: '编码'
+              },
+              {
+                prop: 'roleName',
+                label: '角色名称'
+              },
+              {
+                prop: 'createBy',
+                label: '创建人'
+              },
+              {
+                prop: 'createTime',
+                label: '创建时间'
+              },
+              {
+                prop: 'modifyBy',
+                label: '修改人'
+              },
+              {
+                prop: 'modifyTime',
+                label: '修改时间'
               },
               {
                 type: 'function',
@@ -79,10 +105,20 @@
         query(){
           this.tableData = [
             {
-              customerPhone: '15845745825'
+              coding: '15845745825',
+              roleName: '系统管理员',
+              createBy: 'sysadmin',
+              createTime: '2018-12-14',
+              modifyBy: 'sysadmin',
+              modifyTime: '2018-12-24'
             },
             {
-              customerPhone: '18457512542'
+              coding: '18457512542',
+              roleName: '平台管理员',
+              createBy: 'sysadmin',
+              createTime: '2018-12-14',
+              modifyBy: 'sysadmin',
+              modifyTime: '2018-12-24'
             }
           ];
           this.pageable = {

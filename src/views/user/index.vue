@@ -57,28 +57,41 @@
                label: '是否认证'
              },
              {
+               // type: 'function',
+               link: true,
                prop: 'userLesson',
-               label: '用户课程'
+               label: '用户课程',
+               func: this.showDetails
              },
              {
+               link: true,
                prop: 'heartReport',
-               label: '爱心捐赠记录'
+               label: '爱心捐赠记录',
+               func: this.showDetails
              },
              {
+               link: true,
                prop: 'follow',
-               label: '关注人'
+               label: '关注人',
+               func: this.showDetails
              },
              {
+               link: true,
                prop: 'fans',
-               label: '粉丝数'
+               label: '粉丝数',
+               func: this.showDetails
              },
              {
+               link: true,
                prop: 'publishDynamic',
-               label: '发布动态数量'
+               label: '发布动态数量',
+               func: this.showDetails
              },
              {
+               link: true,
                prop: 'star',
-               label: '收藏'
+               label: '收藏',
+               func: this.showDetails
              }
            ],
            tableData: [],
@@ -122,6 +135,10 @@
             total: 1,
             currentPage: 1
           }
+        },
+        showDetails(index, row) {
+          console.log(index);
+          console.log(row);
         }
       }
     }

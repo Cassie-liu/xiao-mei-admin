@@ -103,8 +103,10 @@
             label: '价格'
           },
           {
+            link:true,
             prop: 'currentApplicants',
-            label: '当前报名人数'
+            label: '当前报名人数',
+            func: this.showDetails
           },
           {
             type: 'function',
@@ -210,6 +212,10 @@
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      showDetails (index, row) {
+        console.log(index);
+        console.log(row);
       }
     }
   }

@@ -47,20 +47,33 @@
                 label: '标题'
               },
               {
-                prop: 'image',
-                label: '图片'
+                type: 'function',
+                label: '图片',
+                functionOpt: [
+                  {
+                    type: 'text',
+                    label: '查看',
+                    func: this.showImages
+                  }
+                ]
               },
               {
+                link: true,
                 prop: 'likeAmount',
-                label: '点赞数'
+                label: '点赞数',
+                func: this.showDetails
               },
               {
+                link: true,
                 prop: 'commentAmount',
-                label: '评论数'
+                label: '评论数',
+                func: this.showDetails
               },
               {
+                link: true,
                 prop: 'starAmount',
-                label: '收藏数'
+                label: '收藏数',
+                func: this.showDetails
               }
             ],
             loading: false,
@@ -107,6 +120,14 @@
             currentPage: 1,
             pageSize: 10
           }
+        },
+        showImages (index, row) {
+          console.log(index);
+          console.log(row);
+        },
+        showDetails (index, row) {
+          console.log(index);
+          console.log(row);
         }
       }
     }

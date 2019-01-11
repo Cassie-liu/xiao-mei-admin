@@ -80,8 +80,10 @@
                 label: '解决方案标题'
               },
               {
+                link: true,
                 prop: 'rehabilitationAmount',
-                label: '康复人数'
+                label: '康复人数',
+                func: this.showDetails
               },
               {
                 prop: 'relateOrganization',
@@ -196,6 +198,10 @@
         handlePictureCardPreview(file) {
           this.dialogImageUrl = file.url;
           this.dialogVisible = true;
+        },
+        showDetails(index, row){
+          console.log(index);
+          console.log(row);
         }
       }
     }

@@ -47,6 +47,13 @@ export const constantRouterMap = [
         name: 'Index',
         component: () => import('@/views/user/index'),
         meta: { title: '用户管理', icon: 'user' }
+      },
+      {
+        path: 'user-lesson/:id(\\d+)',
+        component: () => import('@/views/user/details/userLesson'),
+        name: 'UserLesson',
+        meta: { title: 'UserLesson', noCache: true },
+        hidden: true
       }
     ]
   },
@@ -95,6 +102,18 @@ export const constantRouterMap = [
         name: 'Lesson',
         component: () => import('@/views/lesson/index'),
         meta: { title: '课程报名', icon: 'lesson' }
+      }
+    ]
+  },
+  {
+    path: '/report',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'MedicalReport',
+        component: () => import('@/views/medicalReport/index'),
+        meta: { title: '体检报告', icon: 'lesson' }
       }
     ]
   },
