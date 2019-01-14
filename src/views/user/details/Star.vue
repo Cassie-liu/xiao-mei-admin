@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    用户课程
+    收藏
     <el-row>
       <el-button icon="el-icon-back" type="text" @click="back()"></el-button>
     </el-row>
@@ -9,7 +9,7 @@
 
 <script>
     export default {
-        name: 'UserLesson',
+        name: 'Star',
       data() {
           return {
 

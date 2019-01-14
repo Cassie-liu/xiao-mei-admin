@@ -7,7 +7,7 @@
           <div v-if="item.type === 'index'">{{scope.$index + 1}}</div>
           <div v-if="item.type !=='function'">
             <span v-if="!item.link">{{scope.row[item.prop]}}</span>
-            <span v-if="item.link" @click="item.func && item.func(scope.$index, scope.row)" class="text-primary">
+            <span v-if="item.link" @click="item.func && item.func(scope.$index, scope.row, item.url)" class="text-primary">
               <!--<el-button type="text"></el-button>-->
               {{scope.row[item.prop]}}
             </span>

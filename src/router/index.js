@@ -49,10 +49,45 @@ export const constantRouterMap = [
         meta: { title: '用户管理', icon: 'user' }
       },
       {
-        path: 'user-lesson/:id(\\d+)',
+        path: 'user-lesson/:id',
         component: () => import('@/views/user/details/userLesson'),
         name: 'UserLesson',
-        meta: { title: 'UserLesson', noCache: true },
+        meta: { title: '用户课程', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'heart-record/:id',
+        component: () => import('@/views/user/details/Fallow'),
+        name: 'HeartRecord',
+        meta: { title: '爱心捐赠记录', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'fallow/:id',
+        component: () => import('@/views/user/details/Fallow'),
+        name: 'Fallow',
+        meta: { title: '关注人', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'fans/:id',
+        component: () => import('@/views/user/details/Fans'),
+        name: 'Fans',
+        meta: { title: '粉丝数', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'publish/:id',
+        component: () => import('@/views/user/details/Publish'),
+        name: 'Publish',
+        meta: { title: '发布动态数量', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'star/:id',
+        component: () => import('@/views/user/details/Star'),
+        name: 'Star',
+        meta: { title: '收藏', noCache: true },
         hidden: true
       }
     ]
@@ -113,7 +148,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'MedicalReport',
         component: () => import('@/views/medicalReport/index'),
-        meta: { title: '体检报告', icon: 'lesson' }
+        meta: { title: '体检报告', icon: 'report' }
       }
     ]
   },

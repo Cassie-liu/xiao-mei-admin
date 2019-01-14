@@ -13,6 +13,18 @@
                  :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
                  @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
   </el-pagination>
+  <!--查看图片-->
+  <el-dialog title="查看图片" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
+    <el-carousel :interval="4000" type="card" height="200px">
+      <el-carousel-item v-for="item in 6" :key="item">
+        <h3>{{ item }}</h3>
+      </el-carousel-item>
+    </el-carousel>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+    </div>
+  </el-dialog>
 </div>
 </template>
 
@@ -82,7 +94,8 @@
               total: 0,
               currentPage: 1,
               pageSize: 10
-            }
+            },
+            dialogFormVisible: false
           };
         },
       components: {
@@ -124,6 +137,7 @@
         showImages (index, row) {
           console.log(index);
           console.log(row);
+          this.dialogFormVisible = true;
         },
         showDetails (index, row) {
           console.log(index);
@@ -134,5 +148,22 @@
 </script>
 
 <style scoped>
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
 
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
+  }
+  .dialog-footer{
+    text-align: center;
+  }
 </style>

@@ -61,36 +61,42 @@
                link: true,
                prop: 'userLesson',
                label: '用户课程',
+               url: 'user-lesson',
                func: this.showDetails
              },
              {
                link: true,
                prop: 'heartReport',
                label: '爱心捐赠记录',
+               url: 'heart-record',
                func: this.showDetails
              },
              {
                link: true,
                prop: 'follow',
                label: '关注人',
+               url: 'fallow',
                func: this.showDetails
              },
              {
                link: true,
                prop: 'fans',
                label: '粉丝数',
+               url: 'fans',
                func: this.showDetails
              },
              {
                link: true,
                prop: 'publishDynamic',
                label: '发布动态数量',
+               url: 'publish',
                func: this.showDetails
              },
              {
                link: true,
                prop: 'star',
                label: '收藏',
+               url: 'star',
                func: this.showDetails
              }
            ],
@@ -114,10 +120,10 @@
         * 查询
         * */
         onSubmit(page){
-          console.log(page);
         //   dummy
           this.tableData = [
             {
+              id: '1',
               userName: 'user1',
               phoneNum: '13458789815',
               avatar: '111',
@@ -136,9 +142,8 @@
             currentPage: 1
           }
         },
-        showDetails(index, row) {
-          console.log(index);
-          console.log(row);
+        showDetails(index, row, url) {
+          this.$router.push(url + '/' + row.id);
         }
       }
     }
