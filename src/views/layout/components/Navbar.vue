@@ -4,7 +4,8 @@
     <breadcrumb />
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+        <img src="../../../images/avatar.gif" class="user-avatar">
+        <span>{{name}}</span>
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -34,7 +35,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
@@ -43,8 +45,14 @@ export default {
     },
     logout() {
       this.$store.dispatch('LogOut').then(() => {
-        location.reload() // 为了重新实例化vue-router对象 避免bug
+        // location.reload() // 为了重新实例化vue-router对象 避免bug
+        this.$router.push({ path: '/login' })
       })
+      // this.$store.dispatch('FedLogOut').then(() => {
+      //   // Message.error(err || 'Verification failed, please login again')
+      //   // next({ path: '/' })
+      //   this.$router.push({ path: '/login' })
+      // })
     }
   }
 }
@@ -81,6 +89,7 @@ export default {
         width: 40px;
         height: 40px;
         border-radius: 10px;
+        vertical-align: -5px;
       }
       .el-icon-caret-bottom {
         position: absolute;

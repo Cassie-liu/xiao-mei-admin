@@ -28,10 +28,6 @@
           Sign in
         </el-button>
       </el-form-item>
-      <!--<div class="tips">-->
-        <!--<span style="margin-right:20px;">username: admin</span>-->
-        <!--<span> password: admin</span>-->
-      <!--</div>-->
     </el-form>
   </div>
 </template>
@@ -58,8 +54,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -90,13 +86,14 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
-            debugger;
-            this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+          this.$store.dispatch('LoginByUsername', this.loginForm)
+            .then((res) => {
+              this.loading = false
+              this.$router.push({ path: this.redirect || '/' })
+              // location.href = '/#/user/index';
+            }).catch(() => {
+              this.loading = false
+            })
         } else {
           console.log('error submit!!')
           return false

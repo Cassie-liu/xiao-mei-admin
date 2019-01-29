@@ -1,17 +1,47 @@
 import request from '@/utils/request'
 
 export function login(username, password) {
-  debugger;
   return request({
-    url: '/user/login',
+    url: '/login',
     method: 'post',
     data: {
       username,
       password
+    },
+    transformRequest: [function (data) {
+      let ret = ''
+      for (let it in data) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      }
+      return ret
+    }],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
 
+export function loginByUsername(username, password) {
+  const data = {
+    username,
+    password
+  }
+  return request({
+    url: '/login',
+    method: 'post',
+    transformRequest: [function (data) {
+      let ret = ''
+      for (let it in data) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      }
+      return ret
+    }],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
 export function getInfo(token) {
   return request({
     url: '/user/info',
@@ -22,7 +52,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/logout',
     method: 'post'
   })
 }
