@@ -51,7 +51,8 @@
             </el-form-item>
             <el-form-item label="原因描述" label-width="120px">
               <div class="solution-ue">
-                <UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>
+                <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
+                <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
               </div>
             </el-form-item>
             <el-form-item label="相关解决方案" label-width="120px">
@@ -73,7 +74,7 @@
 
 <script>
   import commonTable from '@/views/common/commonTable';
-  import UE from '@/components/ue/ue';
+  import Tinymce from '@/components/Tinymce'
     export default {
         name: 'cause',
         data () {
@@ -136,19 +137,14 @@
               causeCode: '',
               causeTitle: '',
               defaultMsg: '',
+              content: '',
               relateSolveCase: []
-            },
-            defaultMsg: '',
-            config: {
-              initialFrameWidth: null,
-              initialFrameHeight: 200
-            },                  // 文本编辑器配置
-            ue: 'ue'
+            }
           }
         },
       components: {
         commonTable,
-        UE
+        Tinymce
       },
       created () {
         this.query();
@@ -164,14 +160,16 @@
               diseaseName: '口腔溃疡',
               causeCode: '12524512',
               causeTitle: '口腔溃疡.....',
-              relateSolveCase: ['解决方案一', '解决方案二']
+              relateSolveCase: ['解决方案一', '解决方案二'],
+              content: '<s>111111111111111111111</s>'
             },
             {
               categoryName: '类目A',
               diseaseName: '口腔溃疡',
               causeCode: '12524512',
               causeTitle: '口腔溃疡.....',
-              relateSolveCase: ['解决方案二', '解决方案三']
+              relateSolveCase: ['解决方案二', '解决方案三'],
+              content: '<i>222222222222222222222222222222</i>'
             }
           ];
           this.pageable = {
@@ -184,14 +182,21 @@
           this.title ='新增';
           this.dialogFormVisible = true;
           this.form = {
-            relateSolveCase: []
+            relateSolveCase: [],
+            content: ''
           };
+          if (this.$refs && this.$refs.editor) {
+            this.$refs.editor.setContent('');
+          }
         },
         edit (index, row) {
           this.title ='编辑';
           this.dialogFormVisible = true;
           this.form = row;
           // this.form.relateSolveCase = [];
+          if (this.$refs && this.$refs.editor) {
+            this.$refs.editor.setContent(this.form.content);
+          }
         },
         deleteRow (index, row) {
           this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

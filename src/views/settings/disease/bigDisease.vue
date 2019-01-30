@@ -214,6 +214,12 @@
 
 <style scoped rel="stylesheet/scss" lang="scss">
 .error{
-  color:red;
+  color: #f56c6c;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 4px;
+  position: absolute;
+  top: 100%;
+  left: 0;
 }
 </style>

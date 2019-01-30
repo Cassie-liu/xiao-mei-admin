@@ -10,7 +10,7 @@
     </el-pagination>
     <!--新增/编辑弹框-->
     <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog">
+    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="选择疾病类目" label-width="120px">
           <el-select v-model="form.categoryName" class="select" size="small">
@@ -32,7 +32,8 @@
         </el-form-item>
         <el-form-item label="原因描述" label-width="120px">
           <div class="solution-ue">
-            <UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>
+            <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
+            <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
           </div>
         </el-form-item>
         <el-form-item label="相关解决方案" label-width="120px">
@@ -45,7 +46,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="save">确 定</el-button>
       </div>
     </el-dialog>
     <!--</el-scrollbar>-->
@@ -55,6 +56,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import UE from '@/components/ue/ue';
+  import Tinymce from '@/components/Tinymce'
   export default {
     name: 'cause',
     data () {
@@ -109,6 +111,7 @@
           pageSize: 10
         },
         title: '新增',    // 弹框标题
+        type: 'add',
         dialogFormVisible: false,
         form: {
           categoryName: '',
@@ -128,7 +131,8 @@
     },
     components: {
       commonTable,
-      UE
+      UE,
+      Tinymce
     },
     created () {
       this.query();
@@ -144,14 +148,16 @@
             belongHealthCategory: '类目A',
             healthName: '口腔溃疡',
             introduceTitle: '15214814',
-            relateSolveCase: ['解决方案一', '解决方案二']
+            relateSolveCase: ['解决方案一', '解决方案二'],
+            content: '<u>111111111111111111111111111111111111</u>'
           },
           {
             coding: '1252452152',
             belongHealthCategory: '类目B',
             healthName: '口腔溃疡',
             introduceTitle: '15214814',
-            relateSolveCase: ['解决方案二', '解决方案三']
+            relateSolveCase: ['解决方案二', '解决方案三'],
+            content: '<u>2222222222222222222222222</u>'
           },
         ];
         this.pageable = {
@@ -162,16 +168,29 @@
       },
       add () {
         this.title ='新增';
+        this.type = 'add';
         this.dialogFormVisible = true;
         this.form = {
-          relateSolveCase: []
+          relateSolveCase: [],
+          content: ''
         };
+        if (this.$refs && this.$refs.editor) {
+          this.$refs.editor.setContent('');
+        }
       },
       edit (index, row) {
         this.title ='编辑';
+        this.type = 'edit';
         this.dialogFormVisible = true;
         this.form = row;
         // this.form.relateSolveCase = [];
+        if (this.$refs && this.$refs.editor) {
+          this.$refs.editor.setContent(this.form.content);
+        }
+      },
+      save () {
+        this.dialogFormVisible = false;
+        console.log(this.form);
       },
       deleteRow (index, row) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

@@ -5,7 +5,7 @@
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <img src="../../../images/avatar.gif" class="user-avatar">
-        <span>{{name}}</span>
+        <span>{{userName}}</span>
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -28,6 +28,11 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
+  data () {
+    return {
+      userName: ''
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger
@@ -35,9 +40,11 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
-      'name'
+      'avatar'
     ])
+  },
+  created () {
+    this.userName = sessionStorage.getItem('userName');
   },
   methods: {
     toggleSideBar() {

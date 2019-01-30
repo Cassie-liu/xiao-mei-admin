@@ -57,7 +57,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true,
       favicon: resolve('favicon.ico'),
-      title: 'xiao-mei-admin'
+      title: 'xiao-mei-admin',
+      templateParameters: {
+        BASE_URL: config.dev.assetsPublicPath + config.dev.assetsSubDirectory,
+      }
     })
   ]
 })

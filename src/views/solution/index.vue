@@ -11,7 +11,7 @@
 
   <!--新增-->
 
-  <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialogs">
+  <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%">
     <el-form :model="form" :label-position="'left'">
       <el-form-item label="编码" label-width="120px">
         <el-input v-model="form.coding"></el-input>
@@ -21,7 +21,8 @@
       </el-form-item>
       <el-form-item label="解决方案">
         <div class="solution-ue">
-          <UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue1"/>
+          <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue1"/>-->
+          <tinymce :height="300" ref="editor" v-model="form.content"/>
         </div>
       </el-form-item>
       <el-form-item label="配图" label-width="120px">
@@ -56,12 +57,13 @@
       <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
     </div>
   </el-dialog>
+
 </div>
 </template>
 
 <script>
   import commonTable from '../common/commonTable';
-  import UE from '../../components/ue/ue.vue'
+  import Tinymce from '@/components/Tinymce'
     export default {
         name: 'Index',
         data () {
@@ -119,23 +121,18 @@
             },                // 分页
             dialogFormVisible: false,      // 是否显示弹框
             form: {
-
+              content: ''
             },                    // 表单数据
-            defaultMsg: '',
-            config: {
-              initialFrameWidth: null,
-              initialFrameHeight: 200
-            },                  // 文本编辑器配置
-            ue1: 'ue1',                     // 不同编辑器必须不同的id
             dialogVisible: false,           // 上传图片弹框显示
             dialogImageUrl: '',
             fileList: [],
-            title: '新增'                 // 弹框
+            title: '新增',                 // 弹框
+            type: 'add'
           };
         },
       components: {
         commonTable,
-        UE
+        Tinymce
       },
       created () {
           this.query();
@@ -148,7 +145,8 @@
               resolveTitle: '解决方案标题1',
               rehabilitationAmount: '123',
               relateOrganization: '123',
-              relateLesson: '123'
+              relateLesson: '123',
+              content: '<p style="color:red">1111</p>'
             }
           ];
           this.pageable = {
@@ -164,6 +162,9 @@
           this.title =  '编辑';
           this.dialogFormVisible = true;
           this.form = row;
+          if (this.$refs && this.$refs.editor) {
+            this.$refs.editor.setContent(this.form.content);
+          }
         },
         /**
          * 删除
@@ -190,7 +191,13 @@
         add () {
           this.title =  '新增';
           this.dialogFormVisible = true;
-          this.form = {};
+          this.form = {
+            content: ''
+          };
+          if (this.$refs && this.$refs.editor) {
+            console.log(this.$refs.editor);
+            this.$refs.editor.setContent('');
+          }
         },
         handleRemove(file, fileList) {
           console.log(file, fileList);

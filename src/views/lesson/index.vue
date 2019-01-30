@@ -11,7 +11,7 @@
 
     <!--新增-->
 
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog1">
+    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog1" top="5%" >
     <!--<el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" :fullscreen="true">-->
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="标题" label-width="120px">
@@ -60,13 +60,14 @@
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，<span style="color: red">最多上传5张图片</span></div>
             <!--<div slot="tip" class="el-upload__tip">最多上传5张图片</div>-->
           </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
+          <el-dialog :visible.sync="dialogVisible" :modal="false">
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-form-item>
         <el-form-item label="详情描述">
           <div class="solution-ue">
-            <UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>
+            <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
+            <tinymce :height="300" ref="editor" v-model="form.content" :show-modal="false" />
           </div>
         </el-form-item>
       </el-form>
@@ -80,7 +81,7 @@
 
 <script>
   import commonTable from '../common/commonTable';
-  import UE from '../../components/ue/ue.vue'
+  import Tinymce from '@/components/Tinymce'
   export default {
     name: 'Index',
     data () {
@@ -136,12 +137,6 @@
         form: {
 
         },                    // 表单数据
-        defaultMsg: '',
-        config: {
-          initialFrameWidth: null,
-          initialFrameHeight: 200
-        },                  // 文本编辑器配置
-        ue: 'ue',                     // 不同编辑器必须不同的id
         dialogVisible: false,           // 上传图片弹框显示
         dialogImageUrl: '',
         fileList: [],
@@ -150,7 +145,7 @@
     },
     components: {
       commonTable,
-      UE
+      Tinymce
     },
     created () {
       this.query();
@@ -162,7 +157,8 @@
             title: '123',
             startTime: '2018-12-13',
             price: '50.00',
-            currentApplicants: '123'
+            currentApplicants: '123',
+            content: '<h1>111111111111111111111</h1>'
           }
         ];
         this.pageable = {
@@ -178,6 +174,9 @@
         this.title =  '编辑';
         this.dialogFormVisible = true;
         this.form = row;
+        if (this.$refs && this.$refs.editor) {
+          this.$refs.editor.setContent(this.form.content);
+        }
       },
       /**
        * 删除
@@ -204,7 +203,12 @@
       add () {
         this.title =  '新增';
         this.dialogFormVisible = true;
-        this.form = {};
+        this.form = {
+          content: ''
+        };
+        if (this.$refs && this.$refs.editor) {
+          this.$refs.editor.setContent('');
+        }
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);
