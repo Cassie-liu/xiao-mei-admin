@@ -9,7 +9,7 @@
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
-        <router-link class="inlineBlock" to="/">
+        <router-link class="inlineBlock" to="/user/index">
           <el-dropdown-item>
             Home
           </el-dropdown-item>

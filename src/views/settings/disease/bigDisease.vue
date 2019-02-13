@@ -4,27 +4,23 @@
         <el-button type="primary" size="small" @click="add()">新增</el-button>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-      <!--<el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"-->
-                     <!--:total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"-->
-                     <!--@current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">-->
-      <!--</el-pagination>-->
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
 
       <!--新增/编辑 弹框-->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%" ref="ruleForm  ">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="编码" label-width="120px" >
-            <el-input v-model="form.number" ></el-input>
+            <el-input v-model="form.number" size="small"></el-input>
             <div class="error" v-if="validated && !form.number">请输入编码</div>
           </el-form-item>
           <el-form-item label="疾病类目名称" label-width="120px">
-            <el-input v-model="form.diseaseName"></el-input>
+            <el-input v-model="form.diseaseName" size="small"></el-input>
             <div class="error" v-if="validated && !form.diseaseName">请输入疾病类目名称</div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="save">确 定</el-button>
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="save" size="small">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -161,7 +157,7 @@
                 if (res && res.code === 200) {
                   this.$message({
                     type: 'success',
-                    message: '删除成功!'
+                    message: res.message
                   });
                 }
               }).catch(err=>{

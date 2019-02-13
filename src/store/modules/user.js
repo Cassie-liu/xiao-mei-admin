@@ -35,7 +35,7 @@ const user = {
           sessionStorage.setItem('userName', data.userName);
           // commit('SET_TOKEN', data.token)
           // setToken(response.data.token)
-          resolve()
+          resolve(response)
         }).catch(error => {
           reject(error)
         })

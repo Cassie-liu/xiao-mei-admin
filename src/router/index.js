@@ -29,7 +29,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/user/index',
+    redirect: '/login',
     name: 'User',
     hidden: true,
     meta: { title: '用户管理', icon: 'user' },

@@ -34,6 +34,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
+// import { Message} from 'element-ui'
 
 export default {
   name: 'Login',
@@ -89,8 +90,12 @@ export default {
           this.$store.dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
               this.loading = false
-              this.$router.push({ path: this.redirect || '/' })
-              // location.href = '/#/user/index';
+              this.$message({
+                type: 'success',
+                message: res.message,
+                duration: 5 * 1000
+              });
+              location.href = '/#/user/index';
             }).catch(() => {
               this.loading = false
             })

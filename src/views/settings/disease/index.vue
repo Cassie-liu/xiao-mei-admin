@@ -2,13 +2,13 @@
 <div class="app-container">
   <el-tabs type="border-card" v-model="activeName">
     <el-tab-pane label="疾病大类" name="bigDisease">
-      <big-disease></big-disease>
+      <big-disease v-if="activeName === 'bigDisease'"></big-disease>
     </el-tab-pane>
     <el-tab-pane label="疾病小类" name="smallDisease">
-      <small-disease></small-disease>
+      <small-disease v-if="activeName === 'smallDisease'"></small-disease>
     </el-tab-pane>
     <el-tab-pane label="疾病原因" name="cause">
-      <cause></cause>
+      <cause v-if="activeName === 'cause'"></cause>
     </el-tab-pane>
   </el-tabs>
 </div>

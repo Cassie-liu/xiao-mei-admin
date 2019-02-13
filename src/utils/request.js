@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message,MessageBox} from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
@@ -37,11 +37,11 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
     } else {
-      Message({
-        message: res.message,
-        type: 'success',
-        duration: 5 * 1000
-      })
+      // Message({
+      //   message: res.message,
+      //   type: 'success',
+      //   duration: 5 * 1000
+      // })
       return response.data
     }
   },
@@ -98,12 +98,12 @@ service.interceptors.response.use(
         type: 'warning',
         duration: 5 * 1000
       })
-    } else {
+    } else{
       Message({
-        message: error.message,
+        message: error && error.response && error.response.data && error.response.data.message,
         type: 'error',
-        duration: 5 * 1000
-      })
+        duration: 5* 1000
+      });
       return Promise.reject(error)
     }
   }
