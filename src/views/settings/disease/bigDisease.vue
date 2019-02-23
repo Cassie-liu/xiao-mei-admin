@@ -92,7 +92,7 @@
                 { required: true, message: '请输入疾病类目名称', trigger: 'blur' },
               ]
             },
-            loading: false,
+            loading: true,
             tableData: [],
             params: {
               pageNumber: 1,
@@ -122,6 +122,7 @@
               .then(res => {
                 this.tableData = res && res.data && res.data.content;
                 this.totalCount = res && res.data && res.data.totalElements;
+                this.loading = false;
               });
           },
         /**
@@ -177,7 +178,10 @@
           if (!this.form.number || !this.form.diseaseName) {
             this.validated = true;
             return;
+          } else {
+            this.validated = false;
           }
+          this.loading = true;
           if (this.type === 'add') {
             addMajorDisease(this.form)
               .then(res => {

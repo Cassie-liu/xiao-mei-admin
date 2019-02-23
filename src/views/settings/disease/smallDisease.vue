@@ -4,7 +4,8 @@
        <el-form :inline="true" :model="params">
          <el-form-item label="选择疾病类目">
            <el-select v-model="params.diseaseId" placeholder="请选择疾病类目" size="small">
-             <el-option v-for="item in options" :key="item.diseaseId" :label="item.diseaseName" :value="item.diseaseId"></el-option>
+             <el-option v-if="categoryLoading" v-loading="categoryLoading" :value="''"></el-option>
+             <el-option v-if="!categoryLoading" v-for="item in options" :key="item.diseaseId" :label="item.diseaseName" :value="item.diseaseId"></el-option>
            </el-select>
          </el-form-item>
          <el-form-item>
@@ -62,7 +63,8 @@
             },
             totalCount: 0,
             options: [],
-            loading: false,
+            loading: false,     // table loading
+            categoryLoading: true,     // category loading
             columns: [
               {
                 type: 'index',
@@ -145,10 +147,12 @@
             });
             return;
           }
+          this.loading = true;
           getDiseaseDetail(this.params)
             .then(res => {
               this.tableData = res && res.data && res.data.content;
               this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
             })
         },
         /**
@@ -158,6 +162,7 @@
           getDiseaseMajorCategory()
             .then(res => {
               this.options = res && res.data;
+              this.categoryLoading = false;
             })
         },
         add () {
@@ -181,6 +186,7 @@
             return;
           }
           this.params.diseaseId = this.form.diseaseId;
+          this.loading = true;
           if (this.type === 'add') {
             addDiseaseDetail(this.form)
               .then(res =>{
@@ -190,6 +196,7 @@
                     type: 'success'
                   });
                 }
+                this.loading = false;
                 this.query();
               });
           } else if (this.type === 'edit') {

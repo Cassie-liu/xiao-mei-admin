@@ -3,15 +3,15 @@
       <el-row>
         <el-form :inline="true" :model="params">
           <el-form-item label="选择疾病类目">
-            <el-select v-model="params.category" placeholder="请选择疾病类目" size="small">
-              <el-option label="类目A" value="categoryA"></el-option>
-              <el-option label="类目B" value="categoryB"></el-option>
+            <el-select v-model="params.diseaseId" placeholder="请选择疾病类目" size="small">
+              <el-option v-if="categoryLoading" v-loading="categoryLoading" :value="''"></el-option>
+              <el-option v-if="!categoryLoading" v-for="item in categoryOption" :key="item.diseaseId" :label="item.diseaseName" :value="item.diseaseId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="选择疾病名称">
-            <el-select v-model="params.categoryName" placeholder="请选择疾病名称" size="small">
-              <el-option label="口腔溃疡" value="A"></el-option>
-              <el-option label="感冒" value="B"></el-option>
+            <el-select v-model="params.diseaseDetailId" placeholder="请选择疾病名称" size="small">
+              <el-option v-if="NameLoading" v-loading="NameLoading" :value="''"></el-option>
+              <el-option v-if="!NameLoading" v-for="item in NameOptions" :key="item.diseaseDetailId" :label="item.diseaseDetailName" :value="item.diseaseDetailId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -75,11 +75,17 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Tinymce from '@/components/Tinymce'
+  import {getDiseaseMajorCategory, getDiseaseDetail} from '@/api/disease';
     export default {
         name: 'cause',
         data () {
           return {
-            params: {},
+            params: {
+              pageNumber: 1,
+              pageSize: 20,
+              diseaseId: '',
+              diseaseDetailId: ''
+            },
             loading: false,
             columns: [
               {
@@ -139,7 +145,11 @@
               defaultMsg: '',
               content: '',
               relateSolveCase: []
-            }
+            },
+            categoryOption: [],      // 疾病类目下拉框
+            categoryLoading: false,      // 疾病类目 loading
+            NameOptions: [],           // 疾病名称下拉框
+            NameLoading: false
           }
         },
       components: {
@@ -147,9 +157,32 @@
         Tinymce
       },
       created () {
-        this.query();
+        // this.query();
+        this.queryCategory();
       },
       methods: {
+        /**
+         * 查询疾病类目
+         * */
+        queryCategory () {
+          this.categoryLoading = true;
+          getDiseaseMajorCategory()
+            .then(res => {
+              this.categoryOption = res && res.data;
+              this.categoryLoading = false;
+            })
+        },
+        /**
+         * 查询疾病名称
+         * */
+        queryDiseaseName (value) {
+          this.NameLoading = true;
+          getDiseaseDetail({diseaseId: value, pageSize: 1000, pageNumber: 1})
+            .then(res => {
+                this.NameOptions = res && res.data && res.data.content;
+                this.NameLoading = false;
+            });
+        },
         /**
          *  查询
          * */
@@ -216,6 +249,14 @@
             });
           });
         }
+      },
+      watch: {
+          'params.diseaseId': {
+            handler (curVal, oldVal) {
+              console.log(curVal);
+              this.queryDiseaseName(curVal);
+            }
+          }
       }
     }
 </script>
