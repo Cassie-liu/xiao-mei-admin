@@ -10,7 +10,7 @@
     </el-pagination>
     <!--新增/编辑弹框-->
     <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
+    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="选择疾病类目" label-width="120px">
           <el-select v-model="form.categoryName" class="select" size="small">
@@ -37,7 +37,7 @@
           </div>
         </el-form-item>
         <el-form-item label="相关解决方案" label-width="120px">
-          <el-select v-model="form.relateSolveCase"  multiple class="select">
+          <el-select v-model="form.relateSolveCase"  multiple class="select" size="small">
             <el-option label="解决方案一" value="case1"></el-option>
             <el-option label="解决方案二" value="case2"></el-option>
             <el-option label="解决方案三" value="case3"></el-option>
@@ -45,8 +45,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="save" size="small">确 定</el-button>
       </div>
     </el-dialog>
     <!--</el-scrollbar>-->

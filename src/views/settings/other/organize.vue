@@ -22,19 +22,19 @@
                      @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
       </el-pagination>
       <!--新增/编辑弹框-->
-      <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog">
+      <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="机构名称" label-width="120px">
-            <el-input v-model="form.organizeName"></el-input>
+            <el-input v-model="form.organizeName" size="small"></el-input>
           </el-form-item>
           <el-form-item label="机构编码" label-width="120px">
-            <el-input v-model="form.coding"></el-input>
+            <el-input v-model="form.coding" size="small"></el-input>
           </el-form-item>
           <el-form-item label="联系人姓名" label-width="120px">
-            <el-input v-model="form.contact"></el-input>
+            <el-input v-model="form.contact" size="small"></el-input>
           </el-form-item>
           <el-form-item label="联系人电话" label-width="120px">
-            <el-input v-model="form.contactPhone"></el-input>
+            <el-input v-model="form.contactPhone" size="small"></el-input>
           </el-form-item>
           <el-form-item label="配图" label-width="120px">
             <el-upload
@@ -52,8 +52,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
         </div>
       </el-dialog>
     </div>

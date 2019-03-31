@@ -17,10 +17,6 @@
         <el-button type="primary" size="small" @click="add()">新增</el-button>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-      <!--<el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"-->
-                     <!--:total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"-->
-                     <!--@current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">-->
-      <!--</el-pagination>-->
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <!--新增/编辑弹框-->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="30%">
@@ -116,11 +112,6 @@
               }
             ],
             tableData: [],
-            pageable: {
-              total: 0,
-              currentPage: 1,
-              pageSize: 10
-            },
             title: '新增',    // 弹框标题
             type: 'add',
             dialogFormVisible: false,
@@ -207,9 +198,9 @@
                     message: res && res.message,
                     type: 'success'
                   });
+                  this.query();
                 }
               });
-            this.query();
           }
           this.dialogFormVisible = false;
         },
@@ -227,6 +218,7 @@
                     type: 'success',
                     message: res.message
                   });
+                  this.query();
                 }
               }).catch(err => {
 

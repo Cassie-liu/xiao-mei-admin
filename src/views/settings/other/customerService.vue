@@ -13,12 +13,12 @@
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="客服电话" label-width="120px">
-            <el-input v-model="form.customerPhone"></el-input>
+            <el-input v-model="form.customerPhone" size="small"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
         </div>
       </el-dialog>
 

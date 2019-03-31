@@ -14,25 +14,25 @@
                  class="add-dialog" width="40%">
         <el-form :model="form" :label-position="'left'" status-icon :rules="rules" ref="form" label-width="100px">
           <el-form-item label="账号" label-width="120px">
-            <el-input v-model="form.account"></el-input>
+            <el-input v-model="form.account" size="small"></el-input>
           </el-form-item>
           <el-form-item label="关联角色" label-width="120px">
-            <el-select v-model="form.relateRoles"  multiple class="select">
+            <el-select v-model="form.relateRoles"  multiple class="select" size="small">
               <el-option label="系统管理员" value="case1"></el-option>
               <el-option label="平台管理员" value="case2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="密码" prop="password" label-width="120px">
-            <el-input type="password" v-model="form.password"></el-input>
+            <el-input type="password" v-model="form.password" size="small"></el-input>
           </el-form-item>
           <el-form-item label="确认密码" prop="confirmPassword" label-width="120px">
-            <el-input type="password" v-model="form.confirmPassword" ></el-input>
+            <el-input type="password" v-model="form.confirmPassword" size="small"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="resetForm('form')">取 消</el-button>
+          <el-button @click="resetForm('form')" size="small">取 消</el-button>
           <!--<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-          <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+          <el-button type="primary" @click="submitForm('form')" size="small">确 定</el-button>
         </div>
       </el-dialog>
 

@@ -196,11 +196,23 @@ export const constantRouterMap = [
         meta: { title: '养生配置', icon: 'healthConfig' }
       },
       {
+        path: 'heart',
+        name: 'Heart',
+        component: () => import('@/views/settings/heart/index'),
+        meta: { title: '行善类别配置', icon: 'heart' }
+      },
+      {
+        path: 'encourage',
+        name: 'Encourage',
+        component: () => import('@/views/settings/encourage/index'),
+        meta: { title: '过失鼓励配置', icon: 'encourage' }
+      },
+      {
         path: 'other',
         name: 'Other',
         component: () => import('@/views/settings/other/index'),
         meta: { title: '其他配置', icon: 'other' }
-      },
+      }
     ]
   },
   {

@@ -11,13 +11,13 @@
 
   <!--新增-->
 
-  <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%">
+  <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%" width="80%">
     <el-form :model="form" :label-position="'left'">
       <el-form-item label="编码" label-width="120px">
-        <el-input v-model="form.coding"></el-input>
+        <el-input v-model="form.coding" size="small"></el-input>
       </el-form-item>
       <el-form-item label="解决方案名称" label-width="120px">
-        <el-input v-model="form.resolveTitle"></el-input>
+        <el-input v-model="form.resolveTitle" size="small"></el-input>
       </el-form-item>
       <el-form-item label="解决方案">
         <div class="solution-ue">
@@ -40,13 +40,13 @@
         </el-dialog>
       </el-form-item>
       <el-form-item label="相关课程" label-width="120px" class="item-wrap">
-        <el-select v-model="form.relateLesson" placeholder="请选择相关课程">
+        <el-select v-model="form.relateLesson" placeholder="请选择相关课程" size="small">
           <el-option label="课程1" value="kecheng1"></el-option>
           <el-option label="课程2" value="kecheng2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="相关机构" label-width="120px" class="item-wrap">
-        <el-select v-model="form.relateOrganization" placeholder="请选择相关机构">
+        <el-select v-model="form.relateOrganization" placeholder="请选择相关机构" size="small">
           <el-option label="机构1" value="jigou1"></el-option>
           <el-option label="机构2" value="jigou2"></el-option>
         </el-select>

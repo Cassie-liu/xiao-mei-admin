@@ -13,10 +13,10 @@
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="角色编码" label-width="120px">
-            <el-input v-model="form.coding"></el-input>
+            <el-input v-model="form.coding" size="small"></el-input>
           </el-form-item>
           <el-form-item label="角色名称" label-width="120px">
-            <el-input v-model="form.roleName"></el-input>
+            <el-input v-model="form.roleName" size="small"></el-input>
           </el-form-item>
           <el-form-item label="备注" label-width="120px">
             <el-input v-model="form.comment" type="textarea" :rows="4" placeholder="请输入内容"></el-input>

@@ -4,46 +4,49 @@
       <el-button size="small" type="primary" @click="add">新增</el-button>
     </el-row>
     <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-    <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                   :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                   @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-    </el-pagination>
+    <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
 
     <!--新增-->
 
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog1" top="5%" >
+    <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog1" top="5%" bottom="5%" width="80%">
     <!--<el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" :fullscreen="true">-->
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="标题" label-width="120px">
-          <el-input v-model="form.title"></el-input>
+          <el-input v-model="form.title" size="small"></el-input>
+          <div class="error" v-if="validated && !form.title">请输入标题</div>
         </el-form-item>
         <el-form-item label="开始时间" label-width="120px">
           <!--<el-input v-model="form.startTime"></el-input>-->
           <el-date-picker
             v-model="form.startTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
+            size="small"
             placeholder="选择日期时间">
           </el-date-picker>
+          <div class="error" v-if="validated && !form.startTime">请选择开始时间</div>
         </el-form-item>
         <el-form-item label="报名人数" label-width="120px">
-          <el-input v-model="form.applicants"></el-input>
+          <el-input v-model="form.members" size="small"></el-input>
         </el-form-item>
         <el-form-item label="活动地址" label-width="120px">
-          <el-input v-model="form.address"></el-input>
+          <el-input v-model="form.address" size="small"></el-input>
         </el-form-item>
         <el-form-item label="封面图" label-width="120px">
           <el-upload
-            multiple
             action=""
+            :on-error="uploadError"
             list-type="picture-card"
             :limit="1"
+            :http-request="uploadUrl"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
-            :auto-upload="false"
-            :file-list="fileList">
+            :on-exceed="onExceed"
+            :before-upload="beforeUpload"
+            name="image"
+            :file-list="form.coverImage">
             <i class="el-icon-plus"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
-            <!--<div slot="tip" class="el-upload__tip">最多上传5张图片</div>-->
           </el-upload>
         </el-form-item>
         <el-form-item label="展示图" label-width="120px">
@@ -52,10 +55,11 @@
             action=""
             list-type="picture-card"
             :limit="5"
+            :http-request="uploadUrls"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
-            :auto-upload="false"
-            :file-list="fileList">
+            :on-exceed="onExceeds"
+            :file-list="form.courseImages">
             <i class="el-icon-plus"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，<span style="color: red">最多上传5张图片</span></div>
             <!--<div slot="tip" class="el-upload__tip">最多上传5张图片</div>-->
@@ -67,13 +71,13 @@
         <el-form-item label="详情描述">
           <div class="solution-ue">
             <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
-            <tinymce :height="300" ref="editor" v-model="form.content" :show-modal="false" />
+            <tinymce :height="300" ref="editor" v-model="form.description" :show-modal="false" />
           </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="save" size="small">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -81,7 +85,11 @@
 
 <script>
   import commonTable from '../common/commonTable';
-  import Tinymce from '@/components/Tinymce'
+  import Tinymce from '@/components/Tinymce';
+  import Pagination from '@/components/Pagination';
+  import {getCourseInfo,uploadSingleImage,addCourse} from '@/api/lesson';
+  import {checkImages} from "../../utils";
+
   export default {
     name: 'Index',
     data () {
@@ -105,7 +113,7 @@
           },
           {
             link:true,
-            prop: 'currentApplicants',
+            prop: 'members',
             label: '当前报名人数',
             func: this.showDetails
           },
@@ -133,39 +141,40 @@
           currentPage: 1,
           pageSize: 10
         },                // 分页
+        params: {
+          pageNumber: 1,
+          pageSize: 20
+        },
+        totalCount: 0,
         dialogFormVisible: false,      // 是否显示弹框
         form: {
-
+          coverImage: [],   // 封面图
+          courseImages: []        // 展示图
         },                    // 表单数据
         dialogVisible: false,           // 上传图片弹框显示
         dialogImageUrl: '',
         fileList: [],
-        title: '新增'                 // 弹框
+        title: '新增',                 // 弹框
+        validated: false
       };
     },
     components: {
       commonTable,
-      Tinymce
+      Tinymce,
+      Pagination
     },
     created () {
       this.query();
     },
     methods: {
       query(){
-        this.tableData = [
-          {
-            title: '123',
-            startTime: '2018-12-13',
-            price: '50.00',
-            currentApplicants: '123',
-            content: '<h1>111111111111111111111</h1>'
-          }
-        ];
-        this.pageable = {
-          total: 1,
-          currentPage: 1,
-          pageSize: 10
-        };
+        this.loading = true;
+        getCourseInfo(this.params)
+          .then(res => {
+            this.loading = false;
+            this.tableData = res && res.data && res.data.content;
+            this.totalCount = res && res.data && res.data.totalElements;
+          });
       },
       /**
        * 编辑
@@ -204,22 +213,107 @@
         this.title =  '新增';
         this.dialogFormVisible = true;
         this.form = {
-          content: ''
+          courseImages: [],
+          coverImage: []
         };
         if (this.$refs && this.$refs.editor) {
           this.$refs.editor.setContent('');
         }
       },
+      /**
+       * 上传封面图
+       * */
+      uploadUrl(file) {
+        if (file && file.file) {
+          this.uploadImages(file.file, 0);
+        }
+      },
+      /**
+       * 上传展示图
+       * */
+      uploadUrls(file) {
+        if (file && file.file) {
+          this.uploadImages(file.file, 1);
+        }
+      },
+      /**
+       * flag 为0 代表上传封面图， 为1 代表上传展示图
+       * */
+      uploadImages(file, flag) {
+        let formData = new FormData();
+        formData.append('image', file);
+        formData.append('model', '1');
+        uploadSingleImage(formData)
+          .then(res => {
+            // 展示图
+            if (flag) {
+              this.form.courseImages.push(res.data);
+            } else {
+              // 封面图
+              this.form.coverImage.push(res.data);
+            }
+          })
+      },
+      uploadError() {
+        this.$message.error('上传失败，请重新上传');
+      },
       handleRemove(file, fileList) {
         console.log(file, fileList);
       },
       handlePictureCardPreview(file) {
+        console.log(file);
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      onExceed() {
+        this.$message({
+          type: 'info',
+          message: '最多只能上传一个图片',
+          duration: 6000
+        });
+      },
+      onExceeds() {
+        this.$message({
+          type: 'info',
+          message: '最多只能上传五张图片',
+          duration: 6000
+        });
+      },
+      beforeUpload (file) {
+        checkImages(file, this);
       },
       showDetails (index, row) {
         console.log(index);
         console.log(row);
+      },
+      /**
+       * 保存
+       * */
+      save () {
+        console.log(this.form);
+        let params = {
+          address: this.form.address,
+          description: this.form.description,
+          members: this.form.members,
+          startTime: this.form.startTime,
+          title: this.form.title,
+          coverImage: {
+            imageId: this.form.coverImage[0].id
+          },
+          courseImages: []
+        };
+        for (let i in this.form.courseImages) {
+          params.courseImages.push({imageId: this.form.courseImages[i].id});
+        }
+        if (this.form.courseId) {
+          params.courseId = this.form.courseId;
+        }
+        addCourse(params)
+          .then(res => {
+            console.log(res);
+            this.dialogFormVisible = false;
+            this.query();
+          })
       }
     }
   }
