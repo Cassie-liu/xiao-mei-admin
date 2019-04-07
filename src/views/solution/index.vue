@@ -4,20 +4,17 @@
     <el-button size="small" type="primary" @click="add">新增</el-button>
   </el-row>
   <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-  <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                 :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                 @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-  </el-pagination>
+  <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
 
   <!--新增-->
 
-  <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%" width="80%">
+  <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%" width="80%">
     <el-form :model="form" :label-position="'left'">
       <el-form-item label="编码" label-width="120px">
-        <el-input v-model="form.coding" size="small"></el-input>
+        <el-input v-model="form.number" size="small"></el-input>
       </el-form-item>
       <el-form-item label="解决方案名称" label-width="120px">
-        <el-input v-model="form.resolveTitle" size="small"></el-input>
+        <el-input v-model="form.title" size="small"></el-input>
       </el-form-item>
       <el-form-item label="解决方案">
         <div class="solution-ue">
@@ -27,34 +24,35 @@
       </el-form-item>
       <el-form-item label="配图" label-width="120px">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          multiple
+          action=""
           list-type="picture-card"
+          :http-request="uploadUrls"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
-          :auto-upload="false"
-          :file-list="fileList">
+          :before-upload="beforeUpload"
+          :file-list="form.images">
           <i class="el-icon-plus"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
       </el-form-item>
-      <el-form-item label="相关课程" label-width="120px" class="item-wrap">
-        <el-select v-model="form.relateLesson" placeholder="请选择相关课程" size="small">
-          <el-option label="课程1" value="kecheng1"></el-option>
-          <el-option label="课程2" value="kecheng2"></el-option>
+      <el-form-item label="相关课程"  label-width="120px" >
+        <el-select v-model="form.courseIds" multiple placeholder="请选择相关课程" size="small" class="select">
+          <el-option v-for="(item, index) in courseItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="相关机构" label-width="120px" class="item-wrap">
-        <el-select v-model="form.relateOrganization" placeholder="请选择相关机构" size="small">
-          <el-option label="机构1" value="jigou1"></el-option>
-          <el-option label="机构2" value="jigou2"></el-option>
-        </el-select>
-      </el-form-item>
+      <!--<el-form-item label="相关机构" label-width="120px" class="item-wrap">-->
+        <!--<el-select v-model="form.relateOrganization" placeholder="请选择相关机构" size="small">-->
+          <!--<el-option label="机构1" value="jigou1"></el-option>-->
+          <!--<el-option label="机构2" value="jigou2"></el-option>-->
+        <!--</el-select>-->
+      <!--</el-form-item>-->
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+      <el-button type="primary" @click="save" size="small">确 定</el-button>
     </div>
   </el-dialog>
 
@@ -63,22 +61,31 @@
 
 <script>
   import commonTable from '../common/commonTable';
-  import Tinymce from '@/components/Tinymce'
+  import Tinymce from '@/components/Tinymce';
+  import Pagination from '@/components/Pagination';
+  import {getSolutionInfo, addSolution} from '@/api/solution';
+  import {uploadSingleImage} from '@/api/uploadImage';
+  import {checkImages} from "@/utils/index";
     export default {
         name: 'Index',
         data () {
           return {
+            params: {
+              pageNumber: 1,
+              pageSize: 20
+            },
+            totalCount: 0,
             columns: [
               {
                 type: 'index',
                 label: '序号'
               },
               {
-                prop: 'coding',
+                prop: 'number',
                 label: '编码'
               },
               {
-                prop: 'resolveTitle',
+                prop: 'title',
                 label: '解决方案标题'
               },
               {
@@ -87,12 +94,12 @@
                 label: '康复人数',
                 func: this.showDetails
               },
+              // {
+              //   prop: 'relateOrganization',
+              //   label: '相关机构'
+              // },
               {
-                prop: 'relateOrganization',
-                label: '相关机构'
-              },
-              {
-                prop: 'relateLesson',
+                prop: 'courseIds',
                 label: '相关课程'
               },
               {
@@ -121,39 +128,37 @@
             },                // 分页
             dialogFormVisible: false,      // 是否显示弹框
             form: {
-              content: ''
+              number: '',
+              title: '',
+              content: '',
+              images: [],
+              courseIds: []
             },                    // 表单数据
             dialogVisible: false,           // 上传图片弹框显示
             dialogImageUrl: '',
             fileList: [],
             title: '新增',                 // 弹框
-            type: 'add'
+            type: 'add',
+            courseItems: []
           };
         },
       components: {
         commonTable,
-        Tinymce
+        Tinymce,
+        Pagination
       },
       created () {
           this.query();
+          this.queryCourseItems();
       },
       methods: {
         query(){
-          this.tableData = [
-            {
-              coding: '123',
-              resolveTitle: '解决方案标题1',
-              rehabilitationAmount: '123',
-              relateOrganization: '123',
-              relateLesson: '123',
-              content: '<p style="color:red">1111</p>'
-            }
-          ];
-          this.pageable = {
-              total: 1,
-              currentPage: 1,
-              pageSize: 10
-            };
+        },
+        queryCourseItems () {
+          getSolutionInfo()
+            .then(res => {
+              this.courseItems = res.data;
+            });
         },
         /**
          * 编辑
@@ -162,9 +167,6 @@
           this.title =  '编辑';
           this.dialogFormVisible = true;
           this.form = row;
-          if (this.$refs && this.$refs.editor) {
-            this.$refs.editor.setContent(this.form.content);
-          }
         },
         /**
          * 删除
@@ -192,12 +194,10 @@
           this.title =  '新增';
           this.dialogFormVisible = true;
           this.form = {
-            content: ''
+            content: '',
+            images: [],
+            courseIds: []
           };
-          if (this.$refs && this.$refs.editor) {
-            console.log(this.$refs.editor);
-            this.$refs.editor.setContent('');
-          }
         },
         handleRemove(file, fileList) {
           console.log(file, fileList);
@@ -206,15 +206,58 @@
           this.dialogImageUrl = file.url;
           this.dialogVisible = true;
         },
+        beforeUpload (file) {
+          checkImages(file, this);
+        },
         showDetails(index, row){
           console.log(index);
           console.log(row);
+        },
+        /**
+         * 上传配图
+         * */
+        uploadUrls(file) {
+          if (file && file.file) {
+            this.uploadImages(file.file);
+          }
+        },
+        uploadImages(file) {
+          let formData = new FormData();
+          formData.append('image', file);
+          formData.append('model', '2');
+          uploadSingleImage(formData)
+            .then(res => {
+              this.form.images.push(res.data);
+            });
+        },
+        save () {
+          console.log(this.form);
+          let params = {
+            number: this.form.number,
+            title: this.form.title,
+            content: this.form.content,
+            images: [],
+            courseIds: this.form.courseIds
+          };
+          if (this.form.images && this.form.images.length>0){
+            for (let i in this.form.images){
+              params.images.push({imageId: this.form.images[i].id});
+            }
+          }
+          if (this.form.id) {
+            params.id = this.form.id;
+          }
+          addSolution(params)
+            .then(res => {
+              this.dialogFormVisible = false;
+              this.query();
+            })
         }
       }
     }
 </script>
 
-<style  rel="stylesheet/scss" lang="scss">
+<style  rel="stylesheet/scss" lang="scss" scoped>
 .add-dialogs{
   .solution-ue{
     margin-left:120px;

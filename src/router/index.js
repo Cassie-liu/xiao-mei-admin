@@ -208,6 +208,12 @@ export const constantRouterMap = [
         meta: { title: '过失鼓励配置', icon: 'encourage' }
       },
       {
+        path: 'medical-setting',
+        name: 'Medical',
+        component: () => import('@/views/settings/medicalExam/index'),
+        meta: { title: '体检指标配置', icon: 'exam' }
+      },
+      {
         path: 'other',
         name: 'Other',
         component: () => import('@/views/settings/other/index'),

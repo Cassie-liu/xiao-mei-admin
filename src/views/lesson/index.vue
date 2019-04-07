@@ -15,6 +15,9 @@
           <el-input v-model="form.title" size="small"></el-input>
           <div class="error" v-if="validated && !form.title">请输入标题</div>
         </el-form-item>
+        <el-form-item label="课程价格" label-width="120px">
+          <el-input v-model="form.price" size="small"></el-input>
+        </el-form-item>
         <el-form-item label="开始时间" label-width="120px">
           <!--<el-input v-model="form.startTime"></el-input>-->
           <el-date-picker
@@ -40,7 +43,7 @@
             :limit="1"
             :http-request="uploadUrl"
             :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
+            :on-remove="handleRemoveCoverImage"
             :on-exceed="onExceed"
             :before-upload="beforeUpload"
             name="image"
@@ -57,8 +60,10 @@
             :limit="5"
             :http-request="uploadUrls"
             :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
+            :on-remove="handleRemoveCourseImage"
             :on-exceed="onExceeds"
+            :before-upload="beforeUpload"
+            :before-remove="beforeRemoveCourseImages"
             :file-list="form.courseImages">
             <i class="el-icon-plus"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，<span style="color: red">最多上传5张图片</span></div>
@@ -183,9 +188,6 @@
         this.title =  '编辑';
         this.dialogFormVisible = true;
         this.form = row;
-        if (this.$refs && this.$refs.editor) {
-          this.$refs.editor.setContent(this.form.content);
-        }
       },
       /**
        * 删除
@@ -216,9 +218,6 @@
           courseImages: [],
           coverImage: []
         };
-        if (this.$refs && this.$refs.editor) {
-          this.$refs.editor.setContent('');
-        }
       },
       /**
        * 上传封面图
@@ -257,11 +256,13 @@
       uploadError() {
         this.$message.error('上传失败，请重新上传');
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleRemoveCoverImage (file, fileList) {
+        this.form.coverImage = fileList;
+      },
+      handleRemoveCourseImage(file, fileList) {
+        this.form.courseImages = fileList;
       },
       handlePictureCardPreview(file) {
-        console.log(file);
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
@@ -282,6 +283,9 @@
       beforeUpload (file) {
         checkImages(file, this);
       },
+      beforeRemoveCourseImages(file, fileList){
+
+      },
       showDetails (index, row) {
         console.log(index);
         console.log(row);
@@ -290,28 +294,41 @@
        * 保存
        * */
       save () {
-        console.log(this.form);
+        if (!this.form.title || !this.form.startTime) {
+          this.validated = true;
+          return ;
+        } else {
+          this.validated = false;
+        }
         let params = {
           address: this.form.address,
           description: this.form.description,
           members: this.form.members,
           startTime: this.form.startTime,
           title: this.form.title,
-          coverImage: {
-            imageId: this.form.coverImage[0].id
-          },
+          price: this.form.price,
+          coverImage: {},
           courseImages: []
         };
-        for (let i in this.form.courseImages) {
-          params.courseImages.push({imageId: this.form.courseImages[i].id});
+        if (this.form.coverImage && this.form.coverImage.length>0) {
+          params.coverImage = {
+            imageId: this.form.coverImage[0].id
+          }
         }
+       if (this.form.courseImages && this.form.courseImages.length>0) {
+         for (let i in this.form.courseImages) {
+           params.courseImages.push({imageId: this.form.courseImages[i].id});
+         }
+       }
         if (this.form.courseId) {
           params.courseId = this.form.courseId;
         }
         addCourse(params)
           .then(res => {
-            console.log(res);
             this.dialogFormVisible = false;
+            // if (res && res.code == 200) {
+            //   this.$message.success(res && res.message);
+            // }
             this.query();
           })
       }
@@ -319,7 +336,7 @@
   }
 </script>
 
-<style  rel="stylesheet/scss" lang="scss">
+<style  rel="stylesheet/scss" lang="scss" scoped>
   .add-dialog1{
     .solution-ue{
       margin-left:120px;
