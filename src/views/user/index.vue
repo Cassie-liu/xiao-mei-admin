@@ -44,61 +44,65 @@
                prop: 'phoneNum',
                label: '手机号码'
              },
-             {
-               prop: 'avatar',
-               label: '头像'
-             },
-             {
-               prop: 'commonDisease',
-               label: '常见疾病'
-             },
+             // {
+             //   prop: 'avatar',
+             //   label: '头像'
+             // },
+             // {
+             //   prop: 'commonDisease',
+             //   label: '常见疾病'
+             // },
              {
                prop: 'isAuth',
                label: '是否认证'
              },
              {
-               // type: 'function',
-               link: true,
-               prop: 'userLesson',
-               label: '用户课程',
-               url: 'user-lesson',
-               func: this.showDetails
-             },
-             {
-               link: true,
-               prop: 'heartReport',
-               label: '爱心捐赠记录',
-               url: 'heart-record',
-               func: this.showDetails
-             },
-             {
-               link: true,
-               prop: 'follow',
-               label: '关注人',
-               url: 'fallow',
-               func: this.showDetails
-             },
-             {
-               link: true,
-               prop: 'fans',
-               label: '粉丝数',
-               url: 'fans',
-               func: this.showDetails
-             },
-             {
-               link: true,
-               prop: 'publishDynamic',
-               label: '发布动态数量',
-               url: 'publish',
-               func: this.showDetails
-             },
-             {
-               link: true,
-               prop: 'star',
-               label: '收藏',
-               url: 'star',
-               func: this.showDetails
+               prop: 'registTime',
+               label: '注册时间'
              }
+             // {
+             //   // type: 'function',
+             //   link: true,
+             //   prop: 'userLesson',
+             //   label: '用户课程',
+             //   url: 'user-lesson',
+             //   func: this.showDetails
+             // },
+             // {
+             //   link: true,
+             //   prop: 'heartReport',
+             //   label: '爱心捐赠记录',
+             //   url: 'heart-record',
+             //   func: this.showDetails
+             // },
+             // {
+             //   link: true,
+             //   prop: 'follow',
+             //   label: '关注人',
+             //   url: 'fallow',
+             //   func: this.showDetails
+             // },
+             // {
+             //   link: true,
+             //   prop: 'fans',
+             //   label: '粉丝数',
+             //   url: 'fans',
+             //   func: this.showDetails
+             // },
+             // {
+             //   link: true,
+             //   prop: 'publishDynamic',
+             //   label: '发布动态数量',
+             //   url: 'publish',
+             //   func: this.showDetails
+             // },
+             // {
+             //   link: true,
+             //   prop: 'star',
+             //   label: '收藏',
+             //   url: 'star',
+             //   func: this.showDetails
+             // }
            ],
            tableData: [],
            pageable: {
@@ -129,6 +133,7 @@
               avatar: '111',
               commonDisease: '感冒',
               isAuth: '是',
+              registTime: '2018-12-19',
               userLesson: '123',
               heartReport: '12',
               follow: '23',

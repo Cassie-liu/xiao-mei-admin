@@ -10,29 +10,25 @@
     </el-pagination>
     <!--新增/编辑弹框-->
     <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
+    <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
       <el-form :model="form" :label-position="'left'">
-        <el-form-item label="选择疾病类目" label-width="120px">
-          <el-select v-model="form.categoryName" class="select" size="small">
-            <el-option label="类目A" value="categoryA"></el-option>
-            <el-option label="类目B" value="categoryB"></el-option>
+        <el-form-item label="编码" label-width="120px">
+         <el-input v-model="form.number"></el-input>
+        </el-form-item>
+        <el-form-item label="选择养生类目"  label-width="120px">
+          <el-select v-model="form.healthCategory" class="select" size="small">
+            <el-option label="养生类目一" value="A"></el-option>
+            <el-option label="养生类目二" value="B"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择疾病名称"  label-width="120px">
-          <el-select v-model="form.diseaseName" class="select" size="small">
-            <el-option label="口腔溃疡" value="A"></el-option>
-            <el-option label="感冒" value="B"></el-option>
-          </el-select>
+        <el-form-item label="养生方式名称" label-width="120px">
+          <el-input v-model="form.name" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="原因编码" label-width="120px">
-          <el-input v-model="form.causeCode" size="small"></el-input>
+        <el-form-item label="介绍标题" label-width="120px">
+          <el-input v-model="form.title" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="原因标题" label-width="120px">
-          <el-input v-model="form.causeTitle" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="原因描述" label-width="120px">
+        <el-form-item label="介绍描述" label-width="120px">
           <div class="solution-ue">
-            <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
             <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
           </div>
         </el-form-item>
@@ -55,7 +51,6 @@
 
 <script>
   import commonTable from '@/views/common/commonTable';
-  import UE from '@/components/ue/ue';
   import Tinymce from '@/components/Tinymce'
   export default {
     name: 'cause',
@@ -68,19 +63,19 @@
             label: '序号'
           },
           {
-            prop: 'coding',
+            prop: 'number',
             label: '编码'
           },
           {
-            prop: 'belongHealthCategory',
+            prop: 'healthCategory',
             label: '所属养生类目'
           },
           {
-            prop: 'healthName',
+            prop: 'name',
             label: '养生方式名称'
           },
           {
-            prop: 'introduceTitle',
+            prop: 'title',
             label: '介绍标题'
           },
           {
@@ -114,24 +109,17 @@
         type: 'add',
         dialogFormVisible: false,
         form: {
-          categoryName: '',
-          diseaseName: '',
-          causeCode: '',
-          causeTitle: '',
-          defaultMsg: '',
+          number: '',
+          healthCategory: '',
+          title: '',
+          name: '',
+          content: '',
           relateSolveCase: []
-        },
-        defaultMsg: '',
-        config: {
-          initialFrameWidth: null,
-          initialFrameHeight: 200
-        },                  // 文本编辑器配置
-        ue: 'ue'
+        }
       }
     },
     components: {
       commonTable,
-      UE,
       Tinymce
     },
     created () {
@@ -144,18 +132,18 @@
       query () {
         this.tableData = [
           {
-            coding: '1252452152',
-            belongHealthCategory: '类目A',
-            healthName: '口腔溃疡',
-            introduceTitle: '15214814',
+            number: '1252452152',
+            healthCategory: '养生类目A',
+            name: '口腔溃疡',
+            title: '15214814',
             relateSolveCase: ['解决方案一', '解决方案二'],
             content: '<u>111111111111111111111111111111111111</u>'
           },
           {
-            coding: '1252452152',
-            belongHealthCategory: '类目B',
-            healthName: '口腔溃疡',
-            introduceTitle: '15214814',
+            number: '1252452152',
+            healthCategory: '养生类目B',
+            name: '口腔溃疡',
+            title: '15214814',
             relateSolveCase: ['解决方案二', '解决方案三'],
             content: '<u>2222222222222222222222222</u>'
           },
@@ -174,19 +162,12 @@
           relateSolveCase: [],
           content: ''
         };
-        if (this.$refs && this.$refs.editor) {
-          this.$refs.editor.setContent('');
-        }
       },
       edit (index, row) {
         this.title ='编辑';
         this.type = 'edit';
         this.dialogFormVisible = true;
         this.form = row;
-        // this.form.relateSolveCase = [];
-        if (this.$refs && this.$refs.editor) {
-          this.$refs.editor.setContent(this.form.content);
-        }
       },
       save () {
         this.dialogFormVisible = false;

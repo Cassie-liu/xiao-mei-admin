@@ -92,18 +92,18 @@ export const constantRouterMap = [
       }
     ]
   },
-  {
-    path: '/dynamic',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Dynamic',
-        component: () => import('@/views/Dynamic/index'),
-        meta: { title: '动态管理', icon: 'dynamic' }
-      }
-    ]
-  },
+  // {
+  //   path: '/dynamic',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Dynamic',
+  //       component: () => import('@/views/Dynamic/index'),
+  //       meta: { title: '动态管理', icon: 'dynamic' }
+  //     }
+  //   ]
+  // },
   {
     path: '/case',
     component: Layout,
@@ -140,18 +140,18 @@ export const constantRouterMap = [
       }
     ]
   },
-  {
-    path: '/report',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'MedicalReport',
-        component: () => import('@/views/medicalReport/index'),
-        meta: { title: '体检报告', icon: 'report' }
-      }
-    ]
-  },
+  // {
+  //   path: '/report',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'MedicalReport',
+  //       component: () => import('@/views/medicalReport/index'),
+  //       meta: { title: '体检报告', icon: 'report' }
+  //     }
+  //   ]
+  // },
   {
     path: '/commodity',
     component: Layout,
@@ -164,18 +164,18 @@ export const constantRouterMap = [
       }
     ]
   },
-  {
-    path: '/health',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Health',
-        component: () => import('@/views/health/index'),
-        meta: { title: '养生排行榜', icon: 'ranking' }
-      }
-    ]
-  },
+  // {
+  //   path: '/health',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Health',
+  //       component: () => import('@/views/health/index'),
+  //       meta: { title: '养生排行榜', icon: 'ranking' }
+  //     }
+  //   ]
+  // },
   {
     path: '/settings',
     component: Layout,
@@ -183,6 +183,12 @@ export const constantRouterMap = [
     name: 'Settings',
     meta: { title: '系统设置', icon: 'setting' },
     children: [
+      {
+        path: 'banner',
+        name: 'Banner',
+        component: () => import('@/views/settings/banner/Index'),
+        meta: { title: '轮播图设置', icon: 'banner' }
+      },
       {
         path: 'disease',
         name: 'Disease',

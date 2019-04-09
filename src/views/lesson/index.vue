@@ -117,11 +117,15 @@
             label: '价格'
           },
           {
-            link:true,
             prop: 'members',
-            label: '当前报名人数',
-            func: this.showDetails
+            label: '当前报名人数'
           },
+          // {
+          //   link:true,
+          //   prop: 'members',
+          //   label: '当前报名人数',
+          //   func: this.showDetails
+          // },
           {
             type: 'function',
             label: '操作',
@@ -244,12 +248,14 @@
         formData.append('model', '1');
         uploadSingleImage(formData)
           .then(res => {
-            // 展示图
-            if (flag) {
-              this.form.courseImages.push(res.data);
-            } else {
-              // 封面图
-              this.form.coverImage.push(res.data);
+            if (res.code === 200) {
+              // 展示图
+              if (flag) {
+                this.form.courseImages.push(res.data);
+              } else {
+                // 封面图
+                this.form.coverImage.push(res.data);
+              }
             }
           })
       },

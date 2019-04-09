@@ -7,7 +7,7 @@
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
 
       <!--新增/编辑 弹框-->
-      <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%" ref="ruleForm  ">
+      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" width="40%" ref="ruleForm  ">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="编码" label-width="120px" >
             <el-input v-model="form.number" size="small"></el-input>

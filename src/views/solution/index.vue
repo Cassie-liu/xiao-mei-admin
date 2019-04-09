@@ -89,11 +89,15 @@
                 label: '解决方案标题'
               },
               {
-                link: true,
                 prop: 'rehabilitationAmount',
-                label: '康复人数',
-                func: this.showDetails
+                label: '康复人数'
               },
+              // {
+              //   link: true,
+              //   prop: 'rehabilitationAmount',
+              //   label: '康复人数',
+              //   func: this.showDetails
+              // },
               // {
               //   prop: 'relateOrganization',
               //   label: '相关机构'

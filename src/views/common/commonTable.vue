@@ -2,9 +2,12 @@
   <div class="dashboard-container">
     <el-table :data="tableData" size="small" v-loading="loading">
       <el-table-column v-for="(item, index) in columns" :key="index" :label="item.label"
-                       :width="item.width || ''">
+                       :width="item.width || ''" class="item-wrap">
         <template slot-scope="scope">
           <div v-if="item.type === 'index'">{{scope.$index + 1}}</div>
+          <!--<div v-if="item.type === 'image'">-->
+            <!--<img :src="scope.row[item.prop]">-->
+          <!--</div>-->
           <div v-if="item.type !=='function'">
             <span v-if="!item.link">{{scope.row[item.prop]}}</span>
             <span v-if="item.link" @click="item.func && item.func(scope.$index, scope.row, item.url)" class="text-primary">
@@ -44,6 +47,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.item-wrap{
+  white-space: nowrap;
+}
 .text-primary{
   color:#409EFF;
   cursor: pointer;
