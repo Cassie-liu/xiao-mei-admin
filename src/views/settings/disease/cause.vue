@@ -23,10 +23,7 @@
         <el-button type="primary" size="small" @click="add()">新增</el-button>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-      <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                     :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                     @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-      </el-pagination>
+      <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query"/>
       <!--新增/编辑弹框-->
       <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
         <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
@@ -44,10 +41,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="原因编码" label-width="120px">
-              <el-input v-model="form.causeCode" size="small"></el-input>
+              <el-input v-model="form.number" size="small"></el-input>
             </el-form-item>
             <el-form-item label="原因标题" label-width="120px">
-              <el-input v-model="form.causeTitle" size="small"></el-input>
+              <el-input v-model="form.title" size="small"></el-input>
             </el-form-item>
             <el-form-item label="原因描述" label-width="120px">
               <div class="solution-ue">
@@ -56,7 +53,7 @@
               </div>
             </el-form-item>
             <el-form-item label="相关解决方案" label-width="120px">
-              <el-select v-model="form.relateSolveCase"  multiple class="select" size="small">
+              <el-select v-model="form.solutions"  multiple class="select" size="small">
                 <el-option label="解决方案一" value="case1"></el-option>
                 <el-option label="解决方案二" value="case2"></el-option>
                 <el-option label="解决方案三" value="case3"></el-option>
@@ -74,8 +71,9 @@
 
 <script>
   import commonTable from '@/views/common/commonTable';
+  import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import Tinymce from '@/components/Tinymce'
-  import {getDiseaseMajorCategory, getDiseaseDetail} from '@/api/disease';
+  import {getDiseaseMajorCategory, getDiseaseDetail, getDiseaseCause} from '@/api/disease';
     export default {
         name: 'cause',
         data () {
@@ -86,6 +84,7 @@
               diseaseId: '',
               diseaseDetailId: ''
             },
+            totalCount: 0,
             loading: false,
             columns: [
               {
@@ -101,15 +100,15 @@
                 label: '疾病名称'
               },
               {
-                prop: 'causeCode',
+                prop: 'number',
                 label: '原因编码'
               },
               {
-                prop: 'causeTitle',
+                prop: 'title',
                 label: '原因标题'
               },
               {
-                prop: 'relateSolveCase',
+                prop: 'solutions',
                 label: '相关解决方案'
               },
               {
@@ -140,11 +139,10 @@
             form: {
               categoryName: '',
               diseaseName: '',
-              causeCode: '',
-              causeTitle: '',
-              defaultMsg: '',
+              number: '',
+              title: '',
               content: '',
-              relateSolveCase: []
+              solutions: []
             },
             categoryOption: [],      // 疾病类目下拉框
             categoryLoading: false,      // 疾病类目 loading
@@ -154,11 +152,14 @@
         },
       components: {
         commonTable,
+        Pagination,
         Tinymce
       },
       created () {
-        // this.query();
         this.queryCategory();
+      },
+      mounted () {
+        this.query();
       },
       methods: {
         /**
@@ -187,29 +188,12 @@
          *  查询
          * */
         query () {
-          this.tableData = [
-            {
-              categoryName: '类目A',
-              diseaseName: '口腔溃疡',
-              causeCode: '12524512',
-              causeTitle: '口腔溃疡.....',
-              relateSolveCase: ['解决方案一', '解决方案二'],
-              content: '<s>111111111111111111111</s>'
-            },
-            {
-              categoryName: '类目A',
-              diseaseName: '口腔溃疡',
-              causeCode: '12524512',
-              causeTitle: '口腔溃疡.....',
-              relateSolveCase: ['解决方案二', '解决方案三'],
-              content: '<i>222222222222222222222222222222</i>'
-            }
-          ];
-          this.pageable = {
-            total: 2,
-            currentPage: 1,
-            pageSize: 10
-          };
+          getDiseaseCause(this.params)
+            .then(res => {
+              this.tableData = res && res.data && res.data.content;
+              this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
+            })
         },
         add () {
           this.title ='新增';

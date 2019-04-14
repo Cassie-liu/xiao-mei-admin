@@ -95,7 +95,8 @@ export default {
                 message: res.message,
                 duration: 5 * 1000
               });
-              location.href = '/#/user/index';
+              // location.href = '/#/user/index';
+              this.$router.push({path: '/user/index'});
             }).catch(() => {
               this.loading = false
             })

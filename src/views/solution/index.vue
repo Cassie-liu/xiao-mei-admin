@@ -38,17 +38,17 @@
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
       </el-form-item>
-      <el-form-item label="相关课程"  label-width="120px" >
-        <el-select v-model="form.courseIds" multiple placeholder="请选择相关课程" size="small" class="select">
+      <el-form-item label="相关课程"  label-width="120px">
+        <el-select v-model="form.refCourses" multiple placeholder="请选择相关课程" size="small" class="select">
           <el-option v-for="(item, index) in courseItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
-      <!--<el-form-item label="相关机构" label-width="120px" class="item-wrap">-->
-        <!--<el-select v-model="form.relateOrganization" placeholder="请选择相关机构" size="small">-->
-          <!--<el-option label="机构1" value="jigou1"></el-option>-->
-          <!--<el-option label="机构2" value="jigou2"></el-option>-->
-        <!--</el-select>-->
-      <!--</el-form-item>-->
+      <el-form-item label="相关机构" label-width="120px" >
+        <el-select v-model="form.refOffices" placeholder="请选择相关机构" size="small" class="select">
+          <el-option label="机构1" value="jigou1"></el-option>
+          <el-option label="机构2" value="jigou2"></el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
@@ -63,7 +63,7 @@
   import commonTable from '../common/commonTable';
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
-  import {getSolutionInfo, addSolution} from '@/api/solution';
+  import {getSolutionInfo, addSolution,getSolutionList,getRelateOffice} from '@/api/solution';
   import {uploadSingleImage} from '@/api/uploadImage';
   import {checkImages} from "@/utils/index";
     export default {
@@ -92,18 +92,12 @@
                 prop: 'rehabilitationAmount',
                 label: '康复人数'
               },
-              // {
-              //   link: true,
-              //   prop: 'rehabilitationAmount',
-              //   label: '康复人数',
-              //   func: this.showDetails
-              // },
-              // {
-              //   prop: 'relateOrganization',
-              //   label: '相关机构'
-              // },
               {
-                prop: 'courseIds',
+                prop: 'refOffices',
+                label: '相关机构'
+              },
+              {
+                prop: 'refCourses',
                 label: '相关课程'
               },
               {
@@ -136,7 +130,8 @@
               title: '',
               content: '',
               images: [],
-              courseIds: []
+              refCourses: [],
+              refOffices: []
             },                    // 表单数据
             dialogVisible: false,           // 上传图片弹框显示
             dialogImageUrl: '',
@@ -154,14 +149,28 @@
       created () {
           this.query();
           this.queryCourseItems();
+          this.queryOfficeItems();
       },
       methods: {
         query(){
+          this.loading= true;
+          getSolutionList(this.params)
+            .then(res => {
+              this.tableData = res && res.data && res.data.content;
+              this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
+            })
         },
         queryCourseItems () {
           getSolutionInfo()
             .then(res => {
               this.courseItems = res.data;
+            });
+        },
+        queryOfficeItems () {
+          getRelateOffice()
+            .then(res => {
+
             });
         },
         /**
@@ -273,6 +282,11 @@
   .item-wrap{
     display: inline-block;
     margin-right:10%;
+    width: 100%;
+    .select{
+      min-width: 40%;
+      color:red;
+    }
   }
   .dialog-footer{
     text-align: center;

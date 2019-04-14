@@ -18,3 +18,23 @@ export function addSolution(data) {
     data
   })
 }
+/**
+ * 获取解决方案列表
+ * */
+export function getSolutionList(params) {
+  return request({
+    url: '/solution/list',
+    method: 'GET',
+    params
+  })
+}
+/**
+ * 获取相关机构
+ * */
+export function getRelateOffice(params) {
+  return request({
+    url: '/solution/officeItems',
+    method: 'GET',
+    params
+  })
+}

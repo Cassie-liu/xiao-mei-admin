@@ -87,3 +87,13 @@ export function deleteDiseaseDetail(id) {
     method: 'delete'
   })
 }
+/**
+ * 获取疾病原因
+ * */
+export function getDiseaseCause(params) {
+  return request({
+    url: '/diseaseReason/list',
+    method: 'get',
+    params
+  })
+}

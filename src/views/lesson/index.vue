@@ -92,7 +92,7 @@
   import commonTable from '../common/commonTable';
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
-  import {getCourseInfo,uploadSingleImage,addCourse} from '@/api/lesson';
+  import {getCourseInfo,uploadSingleImage,addCourse, updateCourse,deleteCourse} from '@/api/lesson';
   import {checkImages} from "../../utils";
 
   export default {
@@ -202,11 +202,14 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tableData.splice(index, 1);
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          deleteCourse(row.courseId)
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: res && res.message
+              });
+              this.query();
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -328,15 +331,33 @@
        }
         if (this.form.courseId) {
           params.courseId = this.form.courseId;
+          // 编辑
+          updateCourse(params)
+            .then(res => {
+              if (res && res.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: res && res.message,
+                  duration: 6000
+                });
+              }
+              this.query();
+            })
+        } else {
+          // 新增
+          addCourse(params)
+            .then(res => {
+              if (res && res.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: res && res.message,
+                  duration: 6000
+                });
+              }
+              this.query();
+            })
         }
-        addCourse(params)
-          .then(res => {
-            this.dialogFormVisible = false;
-            // if (res && res.code == 200) {
-            //   this.$message.success(res && res.message);
-            // }
-            this.query();
-          })
+        this.dialogFormVisible = false;
       }
     }
   }
