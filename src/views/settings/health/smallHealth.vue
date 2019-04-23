@@ -12,7 +12,7 @@
     <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
       <el-form :model="form" :label-position="'left'">
-        <el-form-item label="编码" label-width="120px">
+        <el-form-item label="编码" label-width="120px" size="small">
          <el-input v-model="form.number"></el-input>
         </el-form-item>
         <el-form-item label="选择养生类目"  label-width="120px">
@@ -26,6 +26,31 @@
         </el-form-item>
         <el-form-item label="介绍标题" label-width="120px">
           <el-input v-model="form.title" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="背景图" label-width="120px">
+          <el-upload
+            action=""
+            :on-error="uploadError"
+            list-type="picture-card"
+            :limit="1"
+            :http-request="uploadUrl"
+            :on-remove="handleRemoveImage"
+            :on-exceed="onExceed"
+            :before-upload="beforeUpload"
+            name="image"
+            :file-list="form.bg_images">
+            <i class="el-icon-plus"></i>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="音乐链接" label-width="120px">
+          <el-input size="small" v-model="form.musicLink"></el-input>
+        </el-form-item>
+        <el-form-item label="养生方式类型" label-width="120px">
+          <el-select v-model="form.type">
+            <el-option label="1" value="1"></el-option>
+            <el-option label="2" value="2"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="介绍描述" label-width="120px">
           <div class="solution-ue">
@@ -51,7 +76,10 @@
 
 <script>
   import commonTable from '@/views/common/commonTable';
-  import Tinymce from '@/components/Tinymce'
+  import Tinymce from '@/components/Tinymce';
+  import Pagination from '@/components/Pagination';
+  import {uploadSingleImage} from '@/api/uploadImage';
+  import {checkImages} from '@/utils/index';
   export default {
     name: 'cause',
     data () {
@@ -120,7 +148,8 @@
     },
     components: {
       commonTable,
-      Tinymce
+      Tinymce,
+      Pagination
     },
     created () {
       this.query();
@@ -190,7 +219,31 @@
             message: '已取消删除'
           });
         });
-      }
+      },
+      uploadError() {
+        this.$message.error('上传失败，请重新上传');
+      },
+      onExceed() {
+        this.$message({
+          type: 'info',
+          message: '最多只能上传一个图片',
+          duration: 6000
+        });
+      },
+      uploadUrl (file) {
+        if (file && file.file) {
+          this.uploadImages(file.file, 1);
+        }
+      },
+      uploadImages () {
+        let formData = new FormData();
+        formData.append('image', file);
+        formData.append('model', '1');
+      },
+      beforeUpload (file) {
+        checkImages(file, this);
+      },
+      handleRemoveImage (file, fileList) {}
     }
   }
 </script>

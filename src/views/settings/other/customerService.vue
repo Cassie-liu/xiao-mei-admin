@@ -12,6 +12,9 @@
       <!--新增/编辑 弹框-->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
         <el-form :model="form" :label-position="'left'">
+          <el-form-item label="客服姓名" label-width="120px">
+            <el-input v-model="form.name" size="small"></el-input>
+          </el-form-item>
           <el-form-item label="客服电话" label-width="120px">
             <el-input v-model="form.customerPhone" size="small"></el-input>
           </el-form-item>
@@ -35,6 +38,10 @@
               {
                 type: 'index',
                 label: '序号'
+              },
+              {
+                prop: 'name',
+                label: '客服姓名'
               },
               {
                 prop: 'customerPhone',

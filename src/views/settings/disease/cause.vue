@@ -46,9 +46,14 @@
             <el-form-item label="原因标题" label-width="120px">
               <el-input v-model="form.title" size="small"></el-input>
             </el-form-item>
+            <el-form-item label="病因类型" label-width="120px">
+              <el-select v-model="form.type" size="small" class="select">
+                <el-option label="中医" value="0"></el-option>
+                <el-option label="西医" value="1"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="原因描述" label-width="120px">
               <div class="solution-ue">
-                <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
                 <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
               </div>
             </el-form-item>
@@ -71,7 +76,7 @@
 
 <script>
   import commonTable from '@/views/common/commonTable';
-  import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
   import Tinymce from '@/components/Tinymce'
   import {getDiseaseMajorCategory, getDiseaseDetail, getDiseaseCause} from '@/api/disease';
     export default {

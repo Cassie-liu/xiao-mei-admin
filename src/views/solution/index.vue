@@ -44,7 +44,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="相关机构" label-width="120px" >
-        <el-select v-model="form.refOffices" placeholder="请选择相关机构" size="small" class="select">
+        <el-select v-model="form.refOffices" multiple placeholder="请选择相关机构" size="small" class="select">
           <el-option label="机构1" value="jigou1"></el-option>
           <el-option label="机构2" value="jigou2"></el-option>
         </el-select>
@@ -55,7 +55,6 @@
       <el-button type="primary" @click="save" size="small">确 定</el-button>
     </div>
   </el-dialog>
-
 </div>
 </template>
 
@@ -164,7 +163,7 @@
         queryCourseItems () {
           getSolutionInfo()
             .then(res => {
-              this.courseItems = res.data;
+              this.courseItems = res && res.data;
             });
         },
         queryOfficeItems () {

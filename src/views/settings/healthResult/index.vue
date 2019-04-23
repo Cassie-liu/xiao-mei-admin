@@ -3,36 +3,16 @@
     <el-row>
       <el-button size="small" type="primary" @click="add">新增</el-button>
     </el-row>
-    <common-table :columns="columns" :v-loading="loading" :table-data="tableData"></common-table>
+    <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
     <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
-
     <!--新增/编辑-->
-
-    <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
+    <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible"  top="5%" bottom="5%" width="40%">
       <el-form :model="form" :label-position="'left'">
-        <el-form-item label="编码" label-width="120px">
+        <el-form-item label-width="120px" label="编码">
           <el-input v-model="form.number" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="指标名称" label-width="120px">
+        <el-form-item label-width="120px" label="养生成果名称">
           <el-input v-model="form.name" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="单位" label-width="120px">
-          <el-input v-model="form.unit" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="最大值" label-width="120px">
-          <el-input v-model="form.max" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="最小值" label-width="120px">
-          <el-input v-model="form.min" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="步进" label-width="120px">
-          <el-input v-model="form.step" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="输入类型" label-width="120px">
-          <el-select class="select" v-model="form.input_type" size="small">
-            <el-option value="1" label="1 (普通输入类型)"></el-option>
-            <el-option value="2" label="2 (双参数输入类型)"></el-option>
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -44,18 +24,12 @@
 </template>
 
 <script>
-  import commonTable from '../../common/commonTable';
+  import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
   export default {
-    name: 'Medical',
+    name: 'index',
     data () {
       return {
-        params: {
-          pageNumber: 1,
-          pageSize: 20
-        },
-        totalCount: 0,
-        loading: false,
         columns: [
           {
             type: 'index',
@@ -67,27 +41,7 @@
           },
           {
             prop: 'name',
-            label: '指标名称'
-          },
-          {
-            prop: 'unit',
-            label: '单位'
-          },
-          {
-            prop: 'max',
-            label: '最大值'
-          },
-          {
-            prop: 'min',
-            label: '最小值'
-          },
-          {
-            prop: 'step',
-            label: '步进'
-          },
-          {
-            prop: 'type',
-            label: '输入类型'
+            label: '养生成果名称'
           },
           {
             type: 'function',
@@ -107,6 +61,12 @@
           }
         ],
         tableData: [],
+        loading: false,
+        params: {
+          pageNumber: 1,
+          pageSize: 20
+        },
+        totalCount: 0,
         dialogFormVisible: false,
         title: '新增',
         form: {}
@@ -120,19 +80,16 @@
       this.query();
     },
     methods: {
-      query() {
+      query () {
         this.tableData = [
           {
             number: '001',
-            name: '指标一',
-            model: '模型一'
+            name: '成果一'
           }
         ];
+        this.totalCount = 1;
       },
-      /**
-       * 新增
-       * */
-      add() {
+      add () {
         this.title =  '新增';
         this.dialogFormVisible = true;
         this.form = {};
@@ -154,11 +111,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tableData.splice(index, 1);
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -166,18 +119,14 @@
           });
         });
       },
-      /**
-       * 保存
-       * */
-      save() {}
-    }
-  };
-</script>
-
-<style scoped  rel="stylesheet/scss" lang="scss">
-  .add-dialog{
-    .dialog-footer{
-      text-align: center;
+      // 保存
+      save () {
+        this.dialogFormVisible = false;
+      }
     }
   }
+</script>
+
+<style scoped>
+
 </style>

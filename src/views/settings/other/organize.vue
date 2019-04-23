@@ -1,19 +1,6 @@
 <template>
     <div class="organize">
       <el-row>
-        <el-form :inline="true" :model="params">
-          <el-form-item label="选择疾病类目">
-            <el-select v-model="params.category" placeholder="请选择疾病类目" size="small">
-              <el-option label="类目A" value="categoryA"></el-option>
-              <el-option label="类目B" value="categoryB"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="small" @click="query()">查询</el-button>
-          </el-form-item>
-        </el-form>
-      </el-row>
-      <el-row>
         <el-button type="primary" size="small" @click="add()">新增</el-button>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
@@ -24,11 +11,14 @@
       <!--新增/编辑弹框-->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
         <el-form :model="form" :label-position="'left'">
+          <el-form-item label="机构编码" label-width="120px">
+            <el-input v-model="form.coding" size="small"></el-input>
+          </el-form-item>
           <el-form-item label="机构名称" label-width="120px">
             <el-input v-model="form.organizeName" size="small"></el-input>
           </el-form-item>
-          <el-form-item label="机构编码" label-width="120px">
-            <el-input v-model="form.coding" size="small"></el-input>
+          <el-form-item label="机构地址" label-width="120px">
+            <el-input v-model="form.address" size="small"></el-input>
           </el-form-item>
           <el-form-item label="联系人姓名" label-width="120px">
             <el-input v-model="form.contact" size="small"></el-input>
@@ -47,7 +37,6 @@
               :file-list="form.fileList">
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-              <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，<span style="color: red">最多上传5张图片</span></div>-->
             </el-upload>
           </el-form-item>
         </el-form>
@@ -82,6 +71,10 @@
               {
                 prop: 'organizeName',
                 label: '机构名称'
+              },
+              {
+                prop: 'address',
+                label: '机构地址'
               },
               {
                 prop: 'contact',

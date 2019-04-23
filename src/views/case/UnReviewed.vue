@@ -46,6 +46,15 @@
           <el-button type="primary" size="small">审核被评为案例</el-button>
         </div>
       </el-dialog>
+
+      <!--查看体检报告-->
+      <el-dialog title="体检报告" v-if="dialogReportVisible" :visible.sync="dialogReportVisible">
+        <el-carousel :interval="5000" arrow="always">
+          <el-carousel-item v-for="item in 4" :key="item">
+            <h3>{{ item }}</h3>
+          </el-carousel-item>
+        </el-carousel>
+      </el-dialog>
     </div>
 </template>
 
@@ -112,6 +121,7 @@
           form: {},
           dialogFormVisible: false,
           dialogFormVisibles: false,
+          dialogReportVisible: false,
           activeNames: ['1']
         };
       },
@@ -149,7 +159,7 @@
          * 查看体检报告
          * */
           watchReport (index, row) {
-
+          this.dialogReportVisible = true;
           },
           /**
            * 审核

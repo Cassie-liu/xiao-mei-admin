@@ -1,7 +1,7 @@
 <template>
 <div class="app-container">
   <el-tabs type="border-card" v-model="activeName">
-    <el-tab-pane label="养生大类" name="bigHealth">
+    <el-tab-pane label="养生配置" name="bigHealth">
       <big-health></big-health>
     </el-tab-pane>
     <el-tab-pane label="养生方式配置" name="smallHealth">

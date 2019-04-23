@@ -33,7 +33,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="行善内容" label-width="120px">
-          <el-input size="small" v-model="form.content"></el-input>
+          <el-input size="small" type="textarea" v-model="form.content"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

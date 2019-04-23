@@ -18,6 +18,12 @@
         <el-form-item label="课程价格" label-width="120px">
           <el-input v-model="form.price" size="small"></el-input>
         </el-form-item>
+        <el-form-item label="课程类型" label-width="120px">
+          <el-select v-model="form.type" size="small" class="select">
+            <el-option label="11" value="111"></el-option>
+            <el-option label="112" value="1112"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="开始时间" label-width="120px">
           <!--<el-input v-model="form.startTime"></el-input>-->
           <el-date-picker

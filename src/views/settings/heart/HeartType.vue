@@ -13,8 +13,14 @@
           <el-form-item label="编码" label-width="120px">
             <el-input v-model="form.number" size="small"></el-input>
           </el-form-item>
+          <el-form-item label="名称" label-width="120px">
+            <el-input v-model="form.name" size="small"></el-input>
+          </el-form-item>
           <el-form-item label="行善类型" label-width="120px">
             <el-input v-model="form.type" size="small"></el-input>
+          </el-form-item>
+          <el-form-item label="积分计算" label-width="120px">
+            <el-input v-model="form.score" size="small"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -42,8 +48,16 @@
               label: '编码'
             },
             {
+              prop: 'name',
+              label: '名称'
+            },
+            {
               prop: 'type',
               label: '行善类型'
+            },
+            {
+              prop: 'score',
+              label: '积分'
             },
             {
               type: 'function',

@@ -152,18 +152,18 @@ export const constantRouterMap = [
   //     }
   //   ]
   // },
-  {
-    path: '/commodity',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Commodity',
-        component: () => import('@/views/commodity/index'),
-        meta: { title: '商品管理', icon: 'commodity' }
-      }
-    ]
-  },
+  // {
+  //   path: '/commodity',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Commodity',
+  //       component: () => import('@/views/commodity/index'),
+  //       meta: { title: '商品管理', icon: 'commodity' }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/health',
   //   component: Layout,
@@ -190,6 +190,12 @@ export const constantRouterMap = [
         meta: { title: '轮播图设置', icon: 'banner' }
       },
       {
+        path: 'lessons-type',
+        name: 'LessonType',
+        component: () => import('@/views/settings/lesson/Index'),
+        meta: { title: '课程类型配置', icon: 'banner' }
+      },
+      {
         path: 'disease',
         name: 'Disease',
         component: () => import('@/views/settings/disease/index'),
@@ -202,17 +208,23 @@ export const constantRouterMap = [
         meta: { title: '养生配置', icon: 'healthConfig' }
       },
       {
+        path: 'health-result',
+        name: 'HealthResult',
+        component: () => import('@/views/settings/healthResult/index'),
+        meta: { title: '养生成果配置', icon: 'healthConfig' }
+      },
+      {
         path: 'heart',
         name: 'Heart',
         component: () => import('@/views/settings/heart/index'),
         meta: { title: '行善类别配置', icon: 'heart' }
       },
-      {
-        path: 'encourage',
-        name: 'Encourage',
-        component: () => import('@/views/settings/encourage/index'),
-        meta: { title: '过失鼓励配置', icon: 'encourage' }
-      },
+      // {
+      //   path: 'encourage',
+      //   name: 'Encourage',
+      //   component: () => import('@/views/settings/encourage/index'),
+      //   meta: { title: '过失鼓励配置', icon: 'encourage' }
+      // },
       {
         path: 'medical-setting',
         name: 'Medical',
