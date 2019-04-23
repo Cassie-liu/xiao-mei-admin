@@ -4,7 +4,7 @@
     <el-tab-pane label="养生大类" name="bigHealth">
       <big-health></big-health>
     </el-tab-pane>
-    <el-tab-pane label="养生小类" name="smallHealth">
+    <el-tab-pane label="养生方式配置" name="smallHealth">
       <small-health></small-health>
     </el-tab-pane>
   </el-tabs>

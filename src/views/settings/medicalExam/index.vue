@@ -4,9 +4,9 @@
         <el-tab-pane label="体检指标" name="medical">
           <medical v-if="activeName === 'medical'"></medical>
         </el-tab-pane>
-        <el-tab-pane label="数据模型" name="model">
-          <modal v-if="activeName === 'model'"></modal>
-        </el-tab-pane>
+        <!--<el-tab-pane label="数据模型" name="model">-->
+          <!--<modal v-if="activeName === 'model'"></modal>-->
+        <!--</el-tab-pane>-->
       </el-tabs>
     </div>
 </template>

@@ -16,10 +16,26 @@
         <el-form-item label="指标名称" label-width="120px">
           <el-input v-model="form.name" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="数据模型" label-width="120px">
-          <el-select class="select" v-model="form.model" size="small">
-            <el-option v-for="(item, index) in 5" :label="'数据模型' + (index + 1)" :value="'数据模型' + (index + 1)" :key="index"></el-option>
+        <el-form-item label="单位" label-width="120px">
+          <el-input v-model="form.unit" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="最大值" label-width="120px">
+          <el-input v-model="form.max" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="最小值" label-width="120px">
+          <el-input v-model="form.min" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="步进" label-width="120px">
+          <el-input v-model="form.step" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="输入类型" label-width="120px">
+          <el-select class="select" v-model="form.input_type" size="small">
+            <el-option value="1" label="普通输入类型"></el-option>
+            <el-option value="2" label="血压两个输入框"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="备注" label-width="120px">
+          <el-input type="textarea" v-model="form.memo"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
