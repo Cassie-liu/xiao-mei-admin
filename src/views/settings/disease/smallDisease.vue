@@ -19,13 +19,19 @@
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <!--新增/编辑弹框-->
-      <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="30%">
+      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="选择疾病类目" label-width="120px">
             <el-select v-model="form.diseaseId" placeholder="请选择疾病类目" size="small" class="select">
               <el-option v-for="item in options" :key="item.diseaseId" :label="item.diseaseName" :value="item.diseaseId"></el-option>
             </el-select>
             <div class="error" v-if="validated && !form.diseaseId">请选择疾病类目</div>
+          </el-form-item>
+          <el-form-item label="疾病类型" label-width="120px">
+            <el-select v-model="form.type" placeholder="请选择疾病类型" size="small" class="select">
+              <el-option key="0" label="普通疾病" :value="0"></el-option>
+              <el-option key="1" label="常见疾病" :value="1"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="编码" label-width="120px" size="small">
             <el-input v-model="form.number"></el-input>
@@ -34,6 +40,39 @@
           <el-form-item label="疾病名称" label-width="120px" size="small">
             <el-input v-model="form.diseaseDetailName"></el-input>
             <div class="error" v-if="validated && !form.diseaseDetailName">请输入疾病名称</div>
+          </el-form-item>
+          <el-form-item label="描述" label-width="120px">
+            <tinymce :height="300" ref="editor" v-model="form.content" :show-modal="false" />
+          </el-form-item>
+          <el-form-item label="背景图" label-width="120px">
+            <el-upload
+              action=""
+              list-type="picture-card"
+              :http-request="uploadUrls"
+              :limit="1"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemoveCourseImage"
+              :before-upload="beforeUpload"
+              :file-list="form.bg_images">
+              <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible" :modal="false">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+          <el-form-item label="图标" label-width="120px">
+            <el-upload
+              action=""
+              list-type="picture-card"
+              :http-request="uploadUrls"
+              :limit="1"
+              :on-remove="handleRemoveCourseImage"
+              :before-upload="beforeUpload"
+              :file-list="form.icon">
+              <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -47,7 +86,10 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import {getDiseaseDetail,getDiseaseMajorCategory,addDiseaseDetail,updateDiseaseDetail, deleteDiseaseDetail} from '@/api/disease';
-  import Pagination from '@/components/Pagination'
+  import Pagination from '@/components/Pagination';
+  import Tinymce from '@/components/Tinymce';
+  import {checkImages} from '@/utils/index';
+  import {uploadSingleImage} from '@/api/uploadImage';
     export default {
         name: 'smallDisease',
         data () {
@@ -115,13 +157,19 @@
             title: '新增',    // 弹框标题
             type: 'add',
             dialogFormVisible: false,
-            form: {},
-            validated: false
+            form: {
+              bg_images: [],
+              icon: []
+            },
+            validated: false,
+            dialogVisible: false,
+            dialogImageUrl: ''
           }
         },
       components: {
         commonTable,
-        Pagination
+        Pagination,
+        Tinymce
       },
       created () {
           // this.query();
@@ -229,6 +277,55 @@
               message: '已取消删除'
             });
           });
+        },
+        beforeUpload (file) {
+          checkImages(file, this);
+        },
+        /**
+         * 上传背景图
+         * */
+        uploadUrls(file) {
+          if (file && file.file) {
+            this.uploadImages(file.file, 0);
+          }
+        },
+        /**
+         * 上传图标
+         * */
+        uploadIcon (file) {
+          if (file && file.file) {
+            this.uploadImages(file.file, 1);
+          }
+        },
+        /**
+         * flag 为0 代表上传背景图， 为1 代表上传图标
+         * */
+        uploadImages(file, flag) {
+          let formData = new FormData();
+          formData.append('image', file);
+          formData.append('model', '1');
+          uploadSingleImage(formData)
+            .then(res => {
+              if (res.code === 200) {
+                // 背景图
+                if (!flag) {
+                  this.form.bg_images.push(res.data);
+                } else {
+                  // 图标
+                  this.form.icon.push(res.data);
+                }
+              }
+            })
+        },
+        uploadError() {
+          this.$message.error('上传失败，请重新上传');
+        },
+        handleRemoveCourseImage (file, fileList) {
+          this.form.coverImage = fileList;
+        },
+        handlePictureCardPreview(file) {
+          this.dialogImageUrl = file.url;
+          this.dialogVisible = true;
         }
       }
     }

@@ -75,7 +75,6 @@
         </el-form-item>
         <el-form-item label="详情描述">
           <div class="solution-ue">
-            <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue"/>-->
             <tinymce :height="300" ref="editor" v-model="form.description" :show-modal="false" />
           </div>
         </el-form-item>
