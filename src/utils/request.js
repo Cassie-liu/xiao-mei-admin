@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { Message,MessageBox} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth';
+import router from '@/router';
 
 axios.defaults.withCredentials  = true;
 // create an axios instance
@@ -90,24 +91,16 @@ service.interceptors.response.use(
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            // location.href = '/#/login';
-            store.dispatch('FedLogOut').then(() => {
-              location.reload()
-              // next({path: '/'});
-            }) // 为了重新实例化vue-router对象 避免bug
+            router.push({path: '/'});
           })
+      } else {
+        router.push({path: '/'});
+        Message({
+          message: message,
+          type: 'warning',
+          duration: 5 * 1000
+        });
       }
-      // location.href = '/#/login';
-      Message({
-        message: message,
-        type: 'warning',
-        duration: 5 * 1000
-      });
-      // debugger;
-      store.dispatch('FedLogOut').then(() => {
-        // next({path: '/'});
-        location.reload()
-      })
     } else{
       Message({
         message: error && error.response && error.response.data && error.response.data.message,

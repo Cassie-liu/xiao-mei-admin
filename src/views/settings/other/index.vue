@@ -2,10 +2,10 @@
 <div class="app-container">
   <el-tabs type="border-card" v-model="activeName">
     <el-tab-pane label="客服电话" name="customerService">
-      <customer-service></customer-service>
+      <customer-service v-if="activeName === 'customerService'"></customer-service>
     </el-tab-pane>
     <el-tab-pane label="机构管理" name="organize">
-      <organize></organize>
+      <organize v-if="activeName === 'organize'"></organize>
     </el-tab-pane>
   </el-tabs>
 </div>

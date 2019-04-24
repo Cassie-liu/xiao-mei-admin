@@ -53,7 +53,7 @@
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemoveCourseImage"
               :before-upload="beforeUpload"
-              :file-list="form.bg_images">
+              :file-list="form.bgImages">
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
@@ -65,7 +65,7 @@
             <el-upload
               action=""
               list-type="picture-card"
-              :http-request="uploadUrls"
+              :http-request="uploadIcon"
               :limit="1"
               :on-remove="handleRemoveCourseImage"
               :before-upload="beforeUpload"
@@ -158,7 +158,7 @@
             type: 'add',
             dialogFormVisible: false,
             form: {
-              bg_images: [],
+              bgImages: [],
               icon: []
             },
             validated: false,
@@ -220,32 +220,47 @@
          * 保存
          * */
         save () {
+          let params = Object.assign({}, this.form);
           if (!this.form.diseaseId || !this.form.diseaseDetailName || !this.form.number) {
             this.validated = true;
             return;
           }
           this.params.diseaseId = this.form.diseaseId;
           this.loading = true;
-          if (this.type === 'add') {
-            addDiseaseDetail(this.form)
+          params.bgImages = {};
+          params.icon = {};
+            for (let i in this.form.bg_images) {
+              params.bgImages.imageId = this.form.bg_images[0].id;
+            }
+          for (let i in this.form.icon) {
+            params.icon.imageId = this.form.icon[0].id;
+          }
+          debugger;
+          if (!params.id) {
+            addDiseaseDetail(params)
               .then(res =>{
                 if (res && res.code === 200) {
                   this.$message({
                     message: res && res.message,
                     type: 'success'
                   });
+                  this.loading = false;
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
                 }
-                this.loading = false;
-                this.query();
               });
-          } else if (this.type === 'edit') {
-            updateDiseaseDetail(this.form)
+          } else {
+            updateDiseaseDetail(params)
               .then(res =>{
                 if (res && res.code === 200) {
                   this.$message({
                     message: res && res.message,
                     type: 'success'
                   });
+                  this.loading = false;
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
                   this.query();
                 }
               });
@@ -303,15 +318,17 @@
         uploadImages(file, flag) {
           let formData = new FormData();
           formData.append('image', file);
-          formData.append('model', '1');
+          formData.append('model', '3');
           uploadSingleImage(formData)
             .then(res => {
               if (res.code === 200) {
                 // 背景图
                 if (!flag) {
+                  this.form.bg_images = [];
                   this.form.bg_images.push(res.data);
                 } else {
                   // 图标
+                  this.form.icon = [];
                   this.form.icon.push(res.data);
                 }
               }

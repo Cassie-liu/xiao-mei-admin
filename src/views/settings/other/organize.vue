@@ -4,37 +4,36 @@
         <el-button type="primary" size="small" @click="add()">新增</el-button>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-      <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                     :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                     @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-      </el-pagination>
+      <pagination v-if="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <!--新增/编辑弹框-->
-      <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
+      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="机构编码" label-width="120px">
-            <el-input v-model="form.coding" size="small"></el-input>
+            <el-input v-model="form.number" size="small"></el-input>
           </el-form-item>
           <el-form-item label="机构名称" label-width="120px">
-            <el-input v-model="form.organizeName" size="small"></el-input>
+            <el-input v-model="form.name" size="small"></el-input>
+            <div class="error" v-if="validated && !form.name">请输入机构名称</div>
           </el-form-item>
           <el-form-item label="机构地址" label-width="120px">
             <el-input v-model="form.address" size="small"></el-input>
           </el-form-item>
           <el-form-item label="联系人姓名" label-width="120px">
-            <el-input v-model="form.contact" size="small"></el-input>
+            <el-input v-model="form.contactName" size="small"></el-input>
           </el-form-item>
           <el-form-item label="联系人电话" label-width="120px">
-            <el-input v-model="form.contactPhone" size="small"></el-input>
+            <el-input v-model="form.phone" size="small"></el-input>
           </el-form-item>
           <el-form-item label="配图" label-width="120px">
             <el-upload
               multiple
               action=""
               list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
+              :http-request="uploadUrls"
               :on-remove="handleRemove"
-              :auto-upload="false"
-              :file-list="form.fileList">
+              :before-upload="beforeUpload"
+              name="image"
+              :file-list="form.officeImages">
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
@@ -42,7 +41,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
+          <el-button type="primary" @click="save" size="small">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -50,14 +49,19 @@
 
 <script>
   import commonTable from '@/views/common/commonTable';
+  import Pagination from '@/components/Pagination';
+  import  * as organize from '@/api/organize';
+  import {checkImages} from '@/utils';
+  import {uploadSingleImage} from '@/api/uploadImage';
     export default {
         name: 'organize',
       data() {
           return {
             params: {
-              page: 1,
-              size: 10
+              pageNumber: 1,
+              pageSize: 20
             },
+            totalCount: 0,
             loading: false,
             columns: [
               {
@@ -65,11 +69,11 @@
                 label: '序号'
               },
               {
-                prop: 'coding',
+                prop: 'number',
                 label: '编码'
               },
               {
-                prop: 'organizeName',
+                prop: 'name',
                 label: '机构名称'
               },
               {
@@ -77,11 +81,11 @@
                 label: '机构地址'
               },
               {
-                prop: 'contact',
+                prop: 'contactName',
                 label: '联系人姓名'
               },
               {
-                prop: 'contactPhone',
+                prop: 'phone',
                 label: '联系人电话'
               },
               {
@@ -102,22 +106,17 @@
               }
             ],
             tableData: [],
-            pageable: {
-              total: 0,
-              currentPage: 1,
-              pageSize: 10
-            },
             title: '新增',    // 弹框标题
             dialogFormVisible: false,
             form: {
-              fileList: []
+              officeImages: []
             },
-            dialogVisible: false,
-            dialogImageUrl: ''
+            validated: false
           };
       },
       components: {
-        commonTable
+        commonTable,
+        Pagination
       },
       created () {
         this.query();
@@ -127,30 +126,20 @@
          *  查询
          * */
         query () {
-          this.tableData = [
-            {
-              coding: '12524512',
-              organizeName: '机构一',
-              contact: 'user1',
-              contactPhone: '15845254525'
-            },
-            {
-              coding: '12524514',
-              organizeName: '机构二',
-              contact: 'user2',
-              contactPhone: '18754255252'
-            }
-          ];
-          this.pageable = {
-            total: 2,
-            currentPage: 1,
-            pageSize: 10
-          };
+          this.loading = true;
+          organize.getOrganizeList(this.params)
+            .then(res => {
+              this.tableData = res && res.data && res.data.content;
+              this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
+            });
         },
         add () {
           this.title ='新增';
           this.dialogFormVisible = true;
-          this.form = {};
+          this.form = {
+            officeImages:[]
+          };
         },
         edit (index, row) {
           this.title ='编辑';
@@ -163,11 +152,18 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.tableData.splice(index, 1);
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+            organize.deleteOrganize(row.officeId)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                }
+              })
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -178,9 +174,61 @@
         handleRemove(file, fileList) {
           console.log(file, fileList);
         },
-        handlePictureCardPreview(file) {
-          this.dialogImageUrl = file.url;
-          this.dialogVisible = true;
+        beforeUpload (file) {
+          checkImages(file, this);
+        },
+        uploadUrls(file) {
+          if (file && file.file) {
+            this.uploadImages(file.file);
+          }
+        },
+        uploadImages(file) {
+          let formData = new FormData();
+          formData.append('image', file);
+          formData.append('model', '4');
+          uploadSingleImage(formData)
+            .then(res => {
+              this.form.officeImages.push(res.data);
+            })
+        },
+        save () {
+          let params = Object.assign({}, this.form);
+          if (!this.form.name) {
+            this.validated = true;
+            return;
+          }
+          params.officeImages = [];
+          for (let i in this.form.officeImages) {
+            params.officeImages.push({imageId: this.form.officeImages[i].id});
+          }
+          if (!params.id) {
+            organize.addOrganize(params)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                }
+              })
+          } else {
+            organize.updateOrganize(params)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                }
+              })
+          }
+          this.dialogFormVisible = false
         }
       }
     }

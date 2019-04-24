@@ -4,24 +4,22 @@
         <el-button type="primary" size="small" @click="add">新增</el-button>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-      <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                     :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                     @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-      </el-pagination>
-
+      <pagination v-if="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <!--新增/编辑 弹框-->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="客服姓名" label-width="120px">
             <el-input v-model="form.name" size="small"></el-input>
+            <div class="error" v-if="validated && !form.name">请输入客服姓名</div>
           </el-form-item>
           <el-form-item label="客服电话" label-width="120px">
-            <el-input v-model="form.customerPhone" size="small"></el-input>
+            <el-input v-model="form.phone" size="small"></el-input>
+            <div class="error" v-if="validated && !form.name">请输入客服电话</div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
+          <el-button type="primary" @click="save" size="small">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -29,7 +27,9 @@
 </template>
 
 <script>
+  import Pagination from '@/components/Pagination';
   import commonTable from '@/views/common/commonTable';
+  import * as other from '@/api/other';
     export default {
         name: 'customerService',
       data() {
@@ -44,7 +44,7 @@
                 label: '客服姓名'
               },
               {
-                prop: 'customerPhone',
+                prop: 'phone',
                 label: '客服电话'
               },
               {
@@ -66,37 +66,33 @@
             ],
             loading: false,
             tableData: [],
-            pageable: {
-              total: 0,
-              currentPage: 1,
-              pageSize: 10
+            params: {
+              pageNumber: 1,
+              pageSize: 20
             },
+            totalCount: 0,
             title: '新增',    // 弹框标题
             dialogFormVisible: false,
-            form: {}
+            form: {},
+            validated: false
           };
       },
       components: {
-        commonTable
+        commonTable,
+        Pagination
       },
       created () {
           this.query();
       },
       methods: {
         query(){
-          this.tableData = [
-            {
-              customerPhone: '15845745825'
-            },
-            {
-              customerPhone: '18457512542'
-            }
-          ];
-          this.pageable = {
-            total: 2,
-            currentPage: 1,
-            pageSize: 10
-          };
+          this.loading = true;
+          other.getCustomList(this.params)
+            .then(res => {
+              this.tableData = res && res.data && res.data.content;
+              this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
+            });
         },
         add(){
           this.dialogFormVisible = true;
@@ -114,17 +110,58 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.tableData.splice(index, 1);
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+            other.deleteCustom(row.id)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                }
+              })
           }).catch(() => {
             this.$message({
               type: 'info',
               message: '已取消删除'
             });
           });
+        },
+        save () {
+          if (!this.form.name && !this.form.phone) {
+            this.validated = true;
+            return;
+          }
+          if (this.form.id) {
+            other.updateCustom(this.form)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                }
+              });
+          }else {
+            other.addCustom(this.form)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                }
+              });
+          }
+          this.dialogFormVisible = false
         }
       }
     }

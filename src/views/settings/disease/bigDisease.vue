@@ -118,15 +118,18 @@
            * 查询
            * */
           query () {
+            this.loading = true;
             getMajorDisease (this.params)
               .then(res => {
                 this.tableData = res && res.data && res.data.content;
                 this.totalCount = res && res.data && res.data.totalElements;
                 this.loading = false;
-              });
+              }).catch(res => {
+              this.loading = false;
+            });
           },
         /**
-         * 新增
+         * 新增*/
         add () {
           this.dialogFormVisible = true;
           this.title = '新增';
@@ -160,6 +163,8 @@
                     message: res.message
                   });
                 }
+                this.params.pageNumber = 1;
+                this.query();
               }).catch(err=>{
 
             })
@@ -189,6 +194,7 @@
                     message: res && res.message,
                     type: 'success'
                   });
+                  this.params.pageNumber = 1;
                   this.query();
                 }
               });
@@ -200,6 +206,7 @@
                     message: res && res.message,
                     type: 'success'
                   });
+                  this.params.pageNumber = 1;
                   this.query();
                 }
               })
