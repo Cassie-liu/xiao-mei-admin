@@ -201,7 +201,7 @@
           for (let i in this.form.officeImages) {
             params.officeImages.push({imageId: this.form.officeImages[i].id});
           }
-          if (!params.id) {
+          if (!params.officeId) {
             organize.addOrganize(params)
               .then(res => {
                 if (res && res.code === 200) {
