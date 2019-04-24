@@ -2,10 +2,10 @@
 <div class="app-container">
   <el-tabs type="border-card" v-model="activeName">
     <el-tab-pane label="养生配置" name="bigHealth">
-      <big-health></big-health>
+      <big-health v-if="activeName === 'bigHealth'"></big-health>
     </el-tab-pane>
     <el-tab-pane label="养生方式配置" name="smallHealth">
-      <small-health></small-health>
+      <small-health v-if="activeName === 'smallHealth'"></small-health>
     </el-tab-pane>
   </el-tabs>
 </div>

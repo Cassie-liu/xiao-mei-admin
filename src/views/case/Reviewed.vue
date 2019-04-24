@@ -12,7 +12,28 @@
         </el-col>
       </el-row>
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-
+      <!--<el-table :data="tableData" :v-loading="loading" style="width:100%" size="small">-->
+        <!--<el-table-column type="index" label="序号" width="120"></el-table-column>-->
+        <!--<el-table-column prop="userName" label="用户名"></el-table-column>-->
+        <!--<el-table-column prop="tripName" label="旅程名称"></el-table-column>-->
+        <!--<el-table-column prop="result" label="养生成果"></el-table-column>-->
+        <!--<el-table-column label="养生日记">-->
+          <!--<template slot-scope="scope">-->
+            <!--<el-button type="text" @click="watchDiary(scope.$index, scope.row)" class="text-primary">查看</el-button>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column label="体检报告">-->
+          <!--<template slot-scope="scope">-->
+            <!--<el-button type="text" @click="watchReport(scope.$index, scope.row)" class="text-primary">查看</el-button>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column label="操作">-->
+          <!--<template slot-scope="scope">-->
+            <!--<el-button type="text" v-if="params.radio !== '3'" @click="cancel(scope.$index, scope.row)" class="text-primary">取消案例</el-button>-->
+            <!--<el-button type="text" v-if="params.radio === '3'" @click="cancel(scope.$index, scope.row)" class="text-primary">评为案例</el-button>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
+      <!--</el-table>-->
       <!--查看养生日记-->
       <el-dialog title="养生日记" v-if="dialogFormVisible" :visible.sync="dialogFormVisible">
           <el-collapse v-model="activeNames" accordion>
@@ -97,7 +118,7 @@
               functionOpt: [
                 {
                   type: 'text',
-                  label: '取消案例',
+                  label: '是否为案例',
                   func: this.cancel
                 }
               ]
