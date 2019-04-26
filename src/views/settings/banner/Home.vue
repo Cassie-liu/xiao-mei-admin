@@ -3,7 +3,25 @@
       <el-row>
         <el-button type="primary" size="small" @click="add">新增</el-button>
       </el-row>
-      <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
+      <el-table :data="tableData" :v-loading="loading" size="small">
+        <el-table-column type="index" label="序号"></el-table-column>
+        <el-table-column label="标题" prop="title"></el-table-column>
+        <el-table-column label="链接" prop="link"></el-table-column>
+        <el-table-column label="图片">
+          <template slot-scope="scope">
+            <div class="image">
+              <img :src="scope.row.imagesEntity.path" alt="">
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="排序" prop="sort"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="edit(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="text" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="40%">
         <el-form v-model="form" label-position="left" label-width="120px">
@@ -14,7 +32,6 @@
             <el-input v-model="form.link" size="small"></el-input>
           </el-form-item>
           <el-form-item label="图片">
-            <!--<el-input v-model="form.image" size="small"></el-input>-->
             <el-upload
               action=""
               :on-error="uploadError"
@@ -26,7 +43,7 @@
               :on-exceed="onExceed"
               :before-upload="beforeUpload"
               name="image"
-              :file-list="form.coverImage">
+              :file-list="form.images">
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
@@ -48,50 +65,15 @@
   import Pagination from '@/components/Pagination';
   import {checkImages} from '@/utils/index';
   import {uploadSingleImage} from '@/api/uploadImage';
+  import * as banner from '@/api/banner';
     export default {
         name: 'Home',
       data () {
           return {
-            columns: [
-              {
-                type: 'index',
-                label: '序号'
-              },
-              {
-                prop: 'title',
-                label: '标题'
-              },
-              {
-                prop: 'link',
-                label: '链接'
-              },
-              {
-                prop: 'image',
-                label: '图片'
-              },
-              {
-                prop: 'sort',
-                label: '排序'
-              },
-              {
-                type: 'function',
-                label: '操作',
-                functionOpt: [
-                  {
-                    type: 'text',
-                    label: '编辑',
-                    func: this.edit
-                  },
-                  {
-                    type: 'text',
-                    label: '删除',
-                    func: this.deleteRow
-                  }
-                ]
-              }
-            ],
             loading: false,
-            form: {},
+            form: {
+              images: []
+            },
             tableData: [],
             params: {
               pageNumber: 1,
@@ -109,16 +91,30 @@
         commonTable,
         Pagination
       },
-      mounted () {},
+      mounted () {
+          this.query();
+      },
       methods: {
-        query () {},
+        query () {
+          this.loading = true;
+          banner.getBannerList(this.params)
+            .then(res => {
+              this.tableData = res && res.data;
+              this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
+            })
+        },
         add () {
-          this.form = {};
+          this.form = {
+            images: []
+          };
           this.title = '新增';
           this.dialogFormVisible = true;
         },
         edit (index, row) {
           this.form = row;
+          this.form.images = [];
+          this.form.images.push({name: this.form.imagesEntity.fileName, url: this.form.imagesEntity.path});
           this.title = '编辑';
           this.dialogFormVisible = true;
         },
@@ -132,13 +128,16 @@
             type: 'warning'
           }).then(() => {
             // this.tableData.splice(index, 1);
-            deleteMajorDisease(row.diseaseId)
+            banner.deleteBannerImage(row.id)
               .then(res => {
                 if (res && res.code === 200) {
                   this.$message({
                     type: 'success',
                     message: res.message
                   });
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
                 }
               }).catch(err=>{
 
@@ -162,7 +161,8 @@
           uploadSingleImage(formData)
             .then(res => {
               if (res.code === 200) {
-                console.log(res);
+                this.form.images = [];
+                this.form.images.push(res.data);
               }
             })
         },
@@ -189,11 +189,37 @@
             duration: 6000
           });
         },
-        save () {}
+        save () {
+          let params = Object.assign({}, this.form);
+            delete params.images;
+            params.imageId = this.form.images[0] && this.form.images[0].id;
+            if (params.id) {
+                banner.updateBannerImage(params)
+                  .then(res => {
+                    this.dialogFormVisible = false;
+                    this.params.pageNumber = 1;
+                    this.totalCount =0;
+                    this.query();
+                  });
+            } else {
+              banner.addBannerImage(params)
+                .then(res => {
+                  this.dialogFormVisible = false;
+                  this.params.pageNumber = 1;
+                  this.totalCount =0;
+                  this.query();
+                });
+            }
+        }
       }
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.image{
+ img{
+   width:100px;
+   height:60px;
+ }
+}
 </style>

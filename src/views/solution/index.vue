@@ -18,7 +18,6 @@
       </el-form-item>
       <el-form-item label="解决方案">
         <div class="solution-ue">
-          <!--<UE ref="ue" :default-msg="defaultMsg" :config="config" :id="ue1"/>-->
           <tinymce :height="300" ref="editor" v-model="form.content"/>
         </div>
       </el-form-item>
@@ -39,14 +38,13 @@
         </el-dialog>
       </el-form-item>
       <el-form-item label="相关课程"  label-width="120px">
-        <el-select v-model="form.refCourses" multiple placeholder="请选择相关课程" size="small" class="select">
+        <el-select v-model="form.courseIds" multiple placeholder="请选择相关课程" size="small" class="select">
           <el-option v-for="(item, index) in courseItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="相关机构" label-width="120px" >
-        <el-select v-model="form.refOffices" multiple placeholder="请选择相关机构" size="small" class="select">
-          <el-option label="机构1" value="jigou1"></el-option>
-          <el-option label="机构2" value="jigou2"></el-option>
+        <el-select v-model="form.officeIds" multiple placeholder="请选择相关机构" size="small" class="select">
+          <el-option v-for="(item, index) in officeItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -62,7 +60,7 @@
   import commonTable from '../common/commonTable';
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
-  import {getSolutionInfo, addSolution,getSolutionList,getRelateOffice} from '@/api/solution';
+  import * as solution from '@/api/solution';
   import {uploadSingleImage} from '@/api/uploadImage';
   import {checkImages} from "@/utils/index";
     export default {
@@ -88,7 +86,7 @@
                 label: '解决方案标题'
               },
               {
-                prop: 'rehabilitationAmount',
+                prop: 'recoverNumber',
                 label: '康复人数'
               },
               {
@@ -129,15 +127,16 @@
               title: '',
               content: '',
               images: [],
-              refCourses: [],
-              refOffices: []
+              courseIds: [],
+              officeIds: []
             },                    // 表单数据
             dialogVisible: false,           // 上传图片弹框显示
             dialogImageUrl: '',
             fileList: [],
             title: '新增',                 // 弹框
             type: 'add',
-            courseItems: []
+            courseItems: [],
+            officeItems: []
           };
         },
       components: {
@@ -153,23 +152,37 @@
       methods: {
         query(){
           this.loading= true;
-          getSolutionList(this.params)
+          solution.getSolutionList(this.params)
             .then(res => {
               this.tableData = res && res.data && res.data.content;
+              this.handleTableData();
               this.totalCount = res && res.data && res.data.totalElements;
               this.loading = false;
             })
         },
+        /**
+         * 处理列表数据
+         * */
+        handleTableData () {
+          for (let item of this.tableData) {
+            if (item.refCourses) {
+              item.refCourses = item.refCourses.join(', ');
+            }
+            if (item.refOffices) {
+              item.refOffices = item.refOffices.join(', ');
+            }
+          }
+        },
         queryCourseItems () {
-          getSolutionInfo()
+          solution.getSolutionInfo()
             .then(res => {
               this.courseItems = res && res.data;
             });
         },
         queryOfficeItems () {
-          getRelateOffice()
+          solution.getRelateOffice()
             .then(res => {
-
+              this.officeItems = res && res.data;
             });
         },
         /**
@@ -178,7 +191,11 @@
         edit (index, row) {
           this.title =  '编辑';
           this.dialogFormVisible = true;
-          this.form = row;
+          solution.getSolutionById(row.id)
+            .then(res => {
+              // this.form = res.data;
+              console.log(res.data);
+            });
         },
         /**
          * 删除
@@ -212,7 +229,7 @@
           };
         },
         handleRemove(file, fileList) {
-          console.log(file, fileList);
+          this.form.images = fileList;
         },
         handlePictureCardPreview(file) {
           this.dialogImageUrl = file.url;
@@ -243,14 +260,8 @@
             });
         },
         save () {
-          console.log(this.form);
-          let params = {
-            number: this.form.number,
-            title: this.form.title,
-            content: this.form.content,
-            images: [],
-            courseIds: this.form.courseIds
-          };
+          let params = Object.assign({}, this.form);
+            params.images = [];
           if (this.form.images && this.form.images.length>0){
             for (let i in this.form.images){
               params.images.push({imageId: this.form.images[i].id});
@@ -258,12 +269,22 @@
           }
           if (this.form.id) {
             params.id = this.form.id;
+            solution.updateSolution(params)
+              .then(res => {
+                this.dialogFormVisible = false;
+                this.params.pageNumber = 1;
+                this.totalCount =0;
+                this.query();
+              });
+          } else {
+            solution.addSolution(params)
+              .then(res => {
+                this.dialogFormVisible = false;
+                this.params.pageNumber = 1;
+                this.totalCount =0;
+                this.query();
+              })
           }
-          addSolution(params)
-            .then(res => {
-              this.dialogFormVisible = false;
-              this.query();
-            })
         }
       }
     }

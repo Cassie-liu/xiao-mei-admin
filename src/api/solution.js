@@ -10,10 +10,22 @@ export function getSolutionInfo(params) {
     params: params
   })
 }
-
+/**
+ * 新增解决方案
+ * */
 export function addSolution(data) {
   return request({
     url: '/solution/save',
+    method: 'POST',
+    data
+  })
+}
+/**
+ * 更新解决方案
+ * */
+export  function updateSolution(data) {
+  return request({
+    url: '/solution/modify',
     method: 'POST',
     data
   })
@@ -26,6 +38,15 @@ export function getSolutionList(params) {
     url: '/solution/list',
     method: 'GET',
     params
+  })
+}
+/**
+ * 查询单个解决方案
+ * */
+export function getSolutionById (id) {
+  return request({
+    url: '/solution/' + id,
+    method: 'GET'
   })
 }
 /**
