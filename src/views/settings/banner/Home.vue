@@ -10,7 +10,7 @@
         <el-table-column label="图片">
           <template slot-scope="scope">
             <div class="image">
-              <img :src="scope.row.imagesEntity.path" alt="">
+              <img :src="scope.row.image.url" alt="">
             </div>
           </template>
         </el-table-column>
@@ -112,10 +112,10 @@
           this.dialogFormVisible = true;
         },
         edit (index, row) {
-          this.form = row;
-          this.form.images = [];
-          this.form.images.push({name: this.form.imagesEntity.fileName, url: this.form.imagesEntity.path});
+          this.form = Object.assign({}, row);
           this.title = '编辑';
+          this.form.images = [];
+          this.form.images.push(this.form.image);
           this.dialogFormVisible = true;
         },
         /**

@@ -20,12 +20,10 @@
         </el-form-item>
         <el-form-item label="课程类型" label-width="120px">
           <el-select v-model="form.type" size="small" class="select">
-            <el-option label="11" value="111"></el-option>
-            <el-option label="112" value="1112"></el-option>
+            <el-option v-for="(item, index) in courseType" :label="item.value" :value="item.key" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="开始时间" label-width="120px">
-          <!--<el-input v-model="form.startTime"></el-input>-->
           <el-date-picker
             v-model="form.startTime"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -97,7 +95,7 @@
   import commonTable from '../common/commonTable';
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
-  import {getCourseInfo,uploadSingleImage,addCourse, updateCourse,deleteCourse} from '@/api/lesson';
+  import {getCourseInfo,uploadSingleImage,addCourse, updateCourse,deleteCourse,getCourseType} from '@/api/lesson';
   import {checkImages} from "../../utils";
 
   export default {
@@ -169,7 +167,8 @@
         dialogImageUrl: '',
         fileList: [],
         title: '新增',                 // 弹框
-        validated: false
+        validated: false,
+        courseType: []
       };
     },
     components: {
@@ -179,6 +178,7 @@
     },
     created () {
       this.query();
+      this.queryCourseType();
     },
     methods: {
       query(){
@@ -190,13 +190,19 @@
             this.totalCount = res && res.data && res.data.totalElements;
           });
       },
+      queryCourseType () {
+        getCourseType()
+          .then(res => {
+            this.courseType = res.data;
+          });
+      },
       /**
        * 编辑
        * */
       edit (index, row) {
         this.title =  '编辑';
         this.dialogFormVisible = true;
-        this.form = row;
+        this.form = Object.assign({}, row);
       },
       /**
        * 删除

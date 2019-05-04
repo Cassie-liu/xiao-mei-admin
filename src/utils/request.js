@@ -32,20 +32,14 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data;
-    if (res.code !== 200) {
+    if (res && res.code && res.code !== 200) {
       Message({
         message: res.message,
         type: 'error',
         duration: 5 * 1000
       })
-    } else {
-      // Message({
-      //   message: res.message,
-      //   type: 'success',
-      //   duration: 5 * 1000
-      // })
-      return response.data
     }
+    return response.data
   },
   /**
    * 下面的注释为通过在response里，自定义code来标示请求状态

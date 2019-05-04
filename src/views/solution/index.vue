@@ -193,8 +193,8 @@
           this.dialogFormVisible = true;
           solution.getSolutionById(row.id)
             .then(res => {
-              // this.form = res.data;
-              console.log(res.data);
+              this.form = res.data;
+              // console.log(res.data);
             });
         },
         /**

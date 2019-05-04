@@ -4,6 +4,9 @@
       <el-button type="primary" size="small" @click="add">新增</el-button>
     </el-row>
     <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
+    <!--<el-table :data="tableData" :v-loading="loading" @selection-change="handleDeleteChange">-->
+
+    <!--</el-table>-->
     <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
 
     <!--新增课程轮播图-->
@@ -25,7 +28,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
-  import {getCourseInfo} from '@/api/lesson';
+  import * as banner from '@/api/banner'
 export default {
   name: 'Course',
   data() {
@@ -93,7 +96,7 @@ export default {
   methods: {
     queryCourses () {
       this.courseLoading = true;
-      getCourseInfo(this.courseParams)
+      banner.getCourseLsit(this.courseParams)
         .then(res => {
           this.courseLoading = false;
           this.courseData = res && res.data && res.data.content;
@@ -102,7 +105,16 @@ export default {
         this.courseLoading = false;
       });
     },
-    query () {},
+    query () {
+      this.loading = true;
+      banner.getCourseBannerList()
+        .then(res => {
+          this.tableData = res.data;
+          this.loading = false;
+        }).catch(err => {
+          this.loading = false;
+      });
+    },
     add () {
       this.courseTotalCount = 0;
       this.courseParams.pageNumber = 1;
@@ -115,6 +127,9 @@ export default {
     handleSelectionChange (val) {
       this.multipleSelection = val;
     },
+    handleDeleteChange () {
+
+    },
     /**
      * 删除
      * */
@@ -124,6 +139,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -132,8 +148,15 @@ export default {
       });
     },
     save () {
-      console.log(this.multipleSelection);
-      this.dialogFormVisible = false;
+      let params = [];
+      for (let item of this.multipleSelection) {
+        params.push(item.courseId);
+      }
+      banner.addCourseBanner(params)
+        .then(res => {
+          this.dialogFormVisible = false;
+          this.query();
+        })
     }
   }
 }

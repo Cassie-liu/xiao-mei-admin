@@ -143,7 +143,7 @@
           this.dialogFormVisible = true;
           this.title = '编辑';
           this.type = 'edit';
-          this.form = row;
+          this.form = Object.assign({}, row);
         },
         /**
          * 删除
@@ -197,7 +197,9 @@
                   this.params.pageNumber = 1;
                   this.query();
                 }
-              });
+              }).catch(err => {
+              this.loading = false;
+            });
           } else if (this.type === 'edit') {
             updateMajorDisease({diseaseId: this.form.diseaseId, number: this.form.number, diseaseName: this.form.diseaseName})
               .then(res => {
@@ -209,10 +211,11 @@
                   this.params.pageNumber = 1;
                   this.query();
                 }
-              })
+              }).catch(err => {
+                this.loading = false;
+            });
           }
           this.dialogFormVisible = false;
-          this.params.pageNumber = 1;
         }
       }
     }

@@ -61,6 +61,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
+  import * as caseService from '@/api/case';
     export default {
         name: 'unReviewed',
       data () {
@@ -117,6 +118,11 @@
               ]
             }
           ],
+          params: {
+            pageNumber: 1,
+            pageSize: 20,
+            audit: 0      // 0 代表未审核
+          },
           tableData: [],
           form: {},
           dialogFormVisible: false,
@@ -134,20 +140,13 @@
       },
       methods: {
           query () {
-            this.tableData = [
-              {
-                userName: '11111',
-                JourneyName: '123344'
-              },
-              {
-                userName: '11111',
-                JourneyName: '123344'
-              },
-              {
-                userName: '11111',
-                JourneyName: '123344'
-              }
-            ]
+            this.loading = true;
+            caseService.getCaseList(this.params)
+              .then(res => {
+                this.tableData = res.data.content;
+                this.totalCount = res && res.data && res.data.totalElements;
+                this.loading = false;
+              });
           },
           /**
            * 查看

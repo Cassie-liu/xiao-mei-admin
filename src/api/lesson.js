@@ -53,3 +53,12 @@ export function deleteCourse(id) {
     method: 'DELETE'
   })
 }
+/**
+ * 获取课程报名类型
+ * */
+export function getCourseType() {
+  return request({
+    url: '/course/courseType',
+    method: 'GET'
+  })
+}

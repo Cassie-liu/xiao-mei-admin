@@ -29,8 +29,8 @@
           </el-form-item>
           <el-form-item label="疾病类型" label-width="120px">
             <el-select v-model="form.type" placeholder="请选择疾病类型" size="small" class="select">
-              <el-option key="0" label="普通疾病" :value="0"></el-option>
-              <el-option key="1" label="常见疾病" :value="1"></el-option>
+              <el-option key="0" label="普通疾病" value="0"></el-option>
+              <el-option key="1" label="常见疾病" value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="编码" label-width="120px" size="small">
@@ -50,12 +50,13 @@
               list-type="picture-card"
               :http-request="uploadUrls"
               :limit="1"
+              :on-exceed="onExceed"
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemoveCourseImage"
               :before-upload="beforeUpload"
               :file-list="form.bgImages">
               <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" :modal="false">
               <img width="100%" :src="dialogImageUrl" alt="">
@@ -67,11 +68,12 @@
               list-type="picture-card"
               :http-request="uploadIcon"
               :limit="1"
+              :on-exceed="onExceed"
               :on-remove="handleRemoveCourseImage"
               :before-upload="beforeUpload"
               :file-list="form.icon">
               <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -211,10 +213,18 @@
           this.form = {};
         },
         edit (index, row) {
+          let params = {
+            bgImages : [],
+            icon: []
+          };
           this.title ='编辑';
           this.type = 'edit';
+          this.form = Object.assign({}, row);
+          this.form.bgImages &&  params.bgImages.push(this.form.bgImages);
+          this.form.icon && params.icon.push(this.form.icon);
+          this.form.bgImages = params.bgImages;
+          this.form.icon = params.icon;
           this.dialogFormVisible = true;
-          this.form = row;
         },
         /**
          * 保存
@@ -229,14 +239,13 @@
           this.loading = true;
           params.bgImages = {};
           params.icon = {};
-            for (let i in this.form.bg_images) {
-              params.bgImages.imageId = this.form.bg_images[0].id;
+            for (let i in this.form.bgImages) {
+              params.bgImages.imageId = this.form.bgImages[0].id;
             }
           for (let i in this.form.icon) {
             params.icon.imageId = this.form.icon[0].id;
           }
-          debugger;
-          if (!params.id) {
+          if (!params.diseaseDetailId) {
             addDiseaseDetail(params)
               .then(res =>{
                 if (res && res.code === 200) {
@@ -324,8 +333,8 @@
               if (res.code === 200) {
                 // 背景图
                 if (!flag) {
-                  this.form.bg_images = [];
-                  this.form.bg_images.push(res.data);
+                  this.form.bgImages = [];
+                  this.form.bgImages.push(res.data);
                 } else {
                   // 图标
                   this.form.icon = [];
@@ -333,6 +342,13 @@
                 }
               }
             })
+        },
+        onExceed() {
+          this.$message({
+            type: 'info',
+            message: '最多只能上传一个图片',
+            duration: 6000
+          });
         },
         uploadError() {
           this.$message.error('上传失败，请重新上传');

@@ -36,6 +36,13 @@
         <el-form-item label="内容介绍" label-width="120px">
           <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
         </el-form-item>
+        <el-form-item label="相关解决方案" label-width="120px">
+          <el-select v-model="form.relateSolveCase"  multiple class="select" size="small">
+            <el-option label="解决方案一" value="case1"></el-option>
+            <el-option label="解决方案二" value="case2"></el-option>
+            <el-option label="解决方案三" value="case3"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
