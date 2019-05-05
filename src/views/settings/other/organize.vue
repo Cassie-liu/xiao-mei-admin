@@ -173,6 +173,7 @@
         },
         handleRemove(file, fileList) {
           console.log(file, fileList);
+          this.form.officeImages = fileList;
         },
         beforeUpload (file) {
           checkImages(file, this);

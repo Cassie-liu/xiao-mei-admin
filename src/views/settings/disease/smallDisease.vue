@@ -194,7 +194,9 @@
               this.tableData = res && res.data && res.data.content;
               this.totalCount = res && res.data && res.data.totalElements;
               this.loading = false;
-            })
+            }).catch(err => {
+              this.loading = false;
+          })
         },
         /**
          * 查询疾病类目
@@ -248,33 +250,28 @@
           if (!params.diseaseDetailId) {
             addDiseaseDetail(params)
               .then(res =>{
-                if (res && res.code === 200) {
-                  this.$message({
-                    message: res && res.message,
-                    type: 'success'
-                  });
-                  this.loading = false;
-                  this.params.pageNumber = 1;
-                  this.totalCount =0;
-                  this.query();
-                }
+                this.resetParams(res);
+                this.dialogFormVisible = false;
               });
           } else {
             updateDiseaseDetail(params)
               .then(res =>{
-                if (res && res.code === 200) {
-                  this.$message({
-                    message: res && res.message,
-                    type: 'success'
-                  });
-                  this.loading = false;
-                  this.params.pageNumber = 1;
-                  this.totalCount =0;
-                  this.query();
-                }
+                this.resetParams(res);
+                this.dialogFormVisible = false;
               });
           }
-          this.dialogFormVisible = false;
+        },
+        resetParams (res) {
+          if (res && res.code === 200) {
+            this.$message({
+              message: res && res.message,
+              type: 'success'
+            });
+            this.loading = false;
+            this.params.pageNumber = 1;
+            this.totalCount =0;
+            this.query();
+          }
         },
         deleteRow (index, row) {
           this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

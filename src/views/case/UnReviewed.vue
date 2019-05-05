@@ -77,7 +77,7 @@
               label: '用户名'
             },
             {
-              prop: 'JourneyName',
+              prop: 'journeyName',
               label: '旅程名称'
             },
             {

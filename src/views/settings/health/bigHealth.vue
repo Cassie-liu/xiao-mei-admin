@@ -4,18 +4,16 @@
       <el-button type="primary" size="small" @click="add()">新增</el-button>
     </el-row>
     <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-    <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                   :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                   @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-    </el-pagination>
+    <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
+
     <!--新增/编辑 弹框-->
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog">
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="编码" label-width="120px">
-          <el-input v-model="form.coding" size="small"></el-input>
+          <el-input v-model="form.number" size="small"></el-input>
         </el-form-item>
         <el-form-item label="养生类目名称" label-width="120px">
-          <el-input v-model="form.healthCategoryName" size="small"></el-input>
+          <el-input v-model="form.healthName" size="small"></el-input>
         </el-form-item>
         <el-form-item label="背景图" label-width="120px">
           <el-upload
@@ -28,7 +26,7 @@
             :on-exceed="onExceed"
             :before-upload="beforeUpload"
             name="image"
-            :file-list="form.bg_images">
+            :file-list="form.bgImage">
             <i class="el-icon-plus"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
           </el-upload>
@@ -46,7 +44,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
+        <el-button type="primary" @click="save" size="small">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -55,9 +53,10 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Tinymce from '@/components/Tinymce';
-  import Pagination from '@/components/Pagination';
+  import Pagination from '@/components/Pagination'
   import {uploadSingleImage} from '@/api/uploadImage';
   import {checkImages} from '@/utils/index';
+  import * as health from '@/api/health';
     export default {
         name: 'bigHealth',
       data () {
@@ -68,11 +67,11 @@
                 label: '序号'
               },
               {
-                prop: 'coding',
+                prop: 'number',
                 label: '编码'
               },
               {
-                prop: 'healthCategoryName',
+                prop: 'healthName',
                 label: '养生类目名称'
               },
               {
@@ -110,15 +109,15 @@
             ],
             loading: false,
             tableData: [],
-            pageable: {
-              total: 0,
-              currentPage: 1,
-              pageSize: 10
+            params: {
+              pageNumber: 1,
+              pageSize: 20
             },
+            totalCount: 0,
             title: '新增',    // 弹框标题
             dialogFormVisible: false,
             form: {
-              bg_images: []
+              bgImage: []
             }
           };
       },
@@ -135,29 +134,15 @@
            * 查询
            * */
         query(){
-            this.tableData = [
-              {
-                coding: '125245125',
-                healthCategoryName: '类目A',
-                createBy: 'sysadmin',
-                createTime: '2018-12-12',
-                modifyBy: 'datadmin',
-                modifyTime: '2018-12-21'
-              },
-              {
-                coding: '125245126',
-                healthCategoryName: '类目B',
-                createBy: 'sysadmin',
-                createTime: '2018-12-12',
-                modifyBy: 'sysadmin',
-                modifyTime: '2018-12-21'
-              }
-            ];
-            this.pageable = {
-              total: 2,
-              currentPage: 1,
-              pageSize: 10
-            };
+            this.loading = true;
+            health.getHealthList(this.params)
+              .then(res => {
+                this.tableData = res && res.data && res.data.content;
+                this.totalCount = res && res.data && res.data.totalElements;
+                this.loading = false;
+              }).catch(res => {
+              this.loading = false;
+            });
         },
         /**
          * 新增
@@ -165,7 +150,9 @@
         add () {
           this.dialogFormVisible = true;
           this.title = '新增';
-          this.form = {};
+          this.form = {
+            bgImage: []
+          };
         },
         /**
          * 编辑
@@ -173,7 +160,11 @@
         edit (index, row){
           this.dialogFormVisible = true;
           this.title = '编辑';
-          this.form = row;
+          this.form = Object.assign({}, row);
+          this.form.bgImage = [];
+          if (row.bgImage) {
+            this.form.bgImage.push(row.bgImage)
+          }
         },
         /**
          * 删除
@@ -184,11 +175,16 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.tableData.splice(index, 1);
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+            health.deleteHealth(row.healthId)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res.message
+                  });
+                  this.query();
+                }
+              });
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -208,18 +204,58 @@
         },
         uploadUrl (file) {
           if (file && file.file) {
-            this.uploadImages(file.file, 1);
+            this.uploadImages(file.file);
           }
         },
-        uploadImages () {
+        uploadImages (file) {
           let formData = new FormData();
           formData.append('image', file);
           formData.append('model', '1');
+          uploadSingleImage(formData)
+            .then(res => {
+              if (res.code === 200) {
+                this.form.bgImage = [];
+                this.form.bgImage.push(res.data)
+              }
+            })
         },
         beforeUpload (file) {
           checkImages(file, this);
         },
-        handleRemoveImage (file, fileList) {}
+        handleRemoveImage (file, fileList) {
+          console.log(fileList);
+          this.form.bgImage = fileList;
+        },
+        save () {
+          let params = Object.assign({}, this.form);
+          console.log(params);
+          params.bgImage = {};
+          params.bgImage.imageId = this.form.bgImage[0].id;
+          if (!params.healthId) {
+            health.addHealth(params)
+              .then(res => {
+                this.resetParams(res);
+              })
+          } else {
+            health.updateHealth(params)
+              .then(res => {
+                this.resetParams(res);
+              })
+          }
+          this.dialogFormVisible = false
+        },
+        resetParams (res) {
+          if (res && res.code === 200) {
+            this.$message({
+              message: res && res.message,
+              type: 'success'
+            });
+            this.loading = false;
+            this.params.pageNumber = 1;
+            this.totalCount =0;
+            this.query();
+          }
+        }
       }
     }
 </script>

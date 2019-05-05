@@ -14,7 +14,7 @@
           <el-input v-model="form.number" size="small"></el-input>
         </el-form-item>
         <el-form-item label="指标名称" label-width="120px">
-          <el-input v-model="form.name" size="small"></el-input>
+          <el-input v-model="form.normName" size="small"></el-input>
         </el-form-item>
         <el-form-item label="单位" label-width="120px">
           <el-input v-model="form.unit" size="small"></el-input>
@@ -29,7 +29,7 @@
           <el-input v-model="form.step" size="small"></el-input>
         </el-form-item>
         <el-form-item label="输入类型" label-width="120px">
-          <el-select class="select" v-model="form.input_type" size="small">
+          <el-select class="select" v-model="form.inputType" size="small">
             <el-option value="1" label="1 (普通输入类型)"></el-option>
             <el-option value="2" label="2 (双参数输入类型)"></el-option>
           </el-select>
@@ -46,6 +46,7 @@
 <script>
   import commonTable from '../../common/commonTable';
   import Pagination from '@/components/Pagination';
+  import * as health from '@/api/health'
   export default {
     name: 'Medical',
     data () {
@@ -66,7 +67,7 @@
             label: '编码'
           },
           {
-            prop: 'name',
+            prop: 'normName',
             label: '指标名称'
           },
           {
@@ -86,7 +87,7 @@
             label: '步进'
           },
           {
-            prop: 'type',
+            prop: 'inputType',
             label: '输入类型'
           },
           {
@@ -106,6 +107,10 @@
             ]
           }
         ],
+        INPUTTYPE: {
+          1: '普通输入类型',
+          2: '双参数输入类型'
+        },
         tableData: [],
         dialogFormVisible: false,
         title: '新增',
@@ -121,13 +126,16 @@
     },
     methods: {
       query() {
-        this.tableData = [
-          {
-            number: '001',
-            name: '指标一',
-            model: '模型一'
-          }
-        ];
+        this.loading = true;
+        health.getHelthNormalType(this.params)
+          .then(res => {
+            console.log(res.data);
+            this.tableData = res && res.data && res.data.content;
+            this.totalCount = res && res.data && res.data.totalElements;
+            this.loading = false;
+          }).catch(err => {
+          this.loading = false;
+        })
       },
       /**
        * 新增
@@ -154,11 +162,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tableData.splice(index, 1);
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+         health.deleteHealthNormalType({normTypeId: row.normTypeId})
+           .then(res => {
+             this.resetParams(res);
+           })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -169,7 +176,25 @@
       /**
        * 保存
        * */
-      save() {}
+      save() {
+        health.updateHelthNormalType(this.form)
+          .then(res => {
+            this.resetParams(res);
+            this.dialogFormVisible = false;
+          })
+      },
+      resetParams (res) {
+        if (res && res.code === 200) {
+          this.$message({
+            message: res && res.message,
+            type: 'success'
+          });
+          this.loading = false;
+          this.params.pageNumber = 1;
+          this.totalCount =0;
+          this.query();
+        }
+      }
     }
   };
 </script>
