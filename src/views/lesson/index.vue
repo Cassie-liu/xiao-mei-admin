@@ -19,7 +19,7 @@
           <el-input v-model="form.price" size="small"></el-input>
         </el-form-item>
         <el-form-item label="课程类型" label-width="120px">
-          <el-select v-model="form.type" size="small" class="select">
+          <el-select v-model="form.courseType.typeId" size="small" class="select">
             <el-option v-for="(item, index) in courseType" :label="item.value" :value="item.key" :key="index"></el-option>
           </el-select>
         </el-form-item>

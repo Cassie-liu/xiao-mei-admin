@@ -139,7 +139,20 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-
+        let params = {
+          courseIds: []
+        };
+        params.courseIds.push(row.courseId);
+        banner.deleteCourseBanner(params)
+          .then(res => {
+            if (res && res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: res.message
+              });
+              this.query();
+            }
+          })
       }).catch(() => {
         this.$message({
           type: 'info',

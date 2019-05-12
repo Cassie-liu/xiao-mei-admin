@@ -4,10 +4,7 @@
       <el-button type="primary" size="small" @click="add()">新增</el-button>
     </el-row>
     <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-    <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                   :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                   @current-change="query" @size-change="query" layout="total, sizes, prev, pager, next">
-    </el-pagination>
+    <pagination v-if="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
     <!--新增/编辑弹框-->
     <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
@@ -16,13 +13,14 @@
          <el-input v-model="form.number"></el-input>
         </el-form-item>
         <el-form-item label="选择养生类目"  label-width="120px">
-          <el-select v-model="form.healthCategory" class="select" size="small">
-            <el-option label="养生类目一" value="A"></el-option>
-            <el-option label="养生类目二" value="B"></el-option>
+          <el-select v-model="form.healthId" class="select" size="small">
+            <!--<el-option label="养生类目一" value="A"></el-option>-->
+            <!--<el-option label="养生类目二" value="B"></el-option>-->
+            <el-option v-for="(item, index) in healthList" :label="item.healthName" :value="item.healthId" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="养生方式名称" label-width="120px">
-          <el-input v-model="form.name" size="small"></el-input>
+          <el-input v-model="form.wayName" size="small"></el-input>
         </el-form-item>
         <el-form-item label="介绍标题" label-width="120px">
           <el-input v-model="form.title" size="small"></el-input>
@@ -38,13 +36,13 @@
             :on-exceed="onExceed"
             :before-upload="beforeUpload"
             name="image"
-            :file-list="form.bg_images">
+            :file-list="form.bgImage">
             <i class="el-icon-plus"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
           </el-upload>
         </el-form-item>
         <el-form-item label="音乐链接" label-width="120px">
-          <el-input size="small" v-model="form.musicLink"></el-input>
+          <el-input size="small" v-model="form.musicUrl"></el-input>
         </el-form-item>
         <el-form-item label="养生方式类型" label-width="120px">
           <el-select v-model="form.type">
@@ -73,6 +71,7 @@
   import Pagination from '@/components/Pagination';
   import {uploadSingleImage} from '@/api/uploadImage';
   import {checkImages} from '@/utils/index';
+  import * as health from '@/api/health';
   export default {
     name: 'cause',
     data () {
@@ -87,18 +86,18 @@
             prop: 'number',
             label: '编码'
           },
+          // {
+          //   prop: 'healthCategory',
+          //   label: '所属养生类目'
+          // },
           {
-            prop: 'healthCategory',
-            label: '所属养生类目'
-          },
-          {
-            prop: 'name',
+            prop: 'wayName',
             label: '养生方式名称'
           },
-          {
-            prop: 'title',
-            label: '介绍标题'
-          },
+          // {
+          //   prop: 'title',
+          //   label: '介绍标题'
+          // },
           {
             type: 'function',
             label: '操作',
@@ -117,11 +116,11 @@
           }
         ],
         tableData: [],
-        pageable: {
-          total: 0,
-          currentPage: 1,
-          pageSize: 10
+        params: {
+          pageNumber: 1,
+          pageSize: 20
         },
+        totalCount: 0,
         title: '新增',    // 弹框标题
         type: 'add',
         dialogFormVisible: false,
@@ -132,7 +131,8 @@
           name: '',
           content: '',
           relateSolveCase: []
-        }
+        },
+        healthList: []
       }
     },
     components: {
@@ -141,55 +141,79 @@
       Pagination
     },
     created () {
+      this.queryHealthList();
       this.query();
     },
     methods: {
       /**
+       * 查询养生类目
+       * */
+      queryHealthList () {
+        health.getHealthList()
+          .then(res => {
+            this.healthList = res.data.content;
+          })
+      },
+      /**
        *  查询
        * */
       query () {
-        this.tableData = [
-          {
-            number: '1252452152',
-            healthCategory: '养生类目A',
-            name: '口腔溃疡',
-            title: '15214814',
-            relateSolveCase: ['解决方案一', '解决方案二'],
-            content: '<u>111111111111111111111111111111111111</u>'
-          },
-          {
-            number: '1252452152',
-            healthCategory: '养生类目B',
-            name: '口腔溃疡',
-            title: '15214814',
-            relateSolveCase: ['解决方案二', '解决方案三'],
-            content: '<u>2222222222222222222222222</u>'
-          },
-        ];
-        this.pageable = {
-          total: 2,
-          currentPage: 1,
-          pageSize: 10
-        };
+       this.loading = true;
+       health.getHealthWay(this.params)
+         .then(res => {
+           this.tableData = res && res.data && res.data.content;
+           this.totalCount = res && res.data && res.data.totalElements;
+           this.loading = false;
+         }).catch(res => {
+          this.loading = false;
+       })
       },
       add () {
         this.title ='新增';
         this.type = 'add';
         this.dialogFormVisible = true;
         this.form = {
-          relateSolveCase: [],
-          content: ''
+          bgImage: []
         };
       },
       edit (index, row) {
         this.title ='编辑';
         this.type = 'edit';
         this.dialogFormVisible = true;
-        this.form = row;
+        this.form = Object.assign({}, row);
+        this.form.bgImage = [];
+        if (row.bgImage) {
+          this.form.bgImage.push(row.bgImage)
+        }
       },
       save () {
-        this.dialogFormVisible = false;
-        console.log(this.form);
+        let params = Object.assign({}, this.form);
+        params.bgImage = {};
+        params.bgImageId = this.form.bgImage[0].id;
+        if (!params.healthWayId) {
+          health.addHealthWay(params)
+            .then(res => {
+              this.resetParams(res);
+            })
+        } else {
+          health.updateHealthWay(params)
+            .then(res => {
+              this.resetParams(res);
+            })
+        }
+        this.dialogFormVisible = false
+      },
+      resetParams (res) {
+        if (res && res.code === 200) {
+          this.$message({
+            message: res && res.message,
+            type: 'success'
+          });
+          this.loading = false;
+          this.params.pageNumber = 1;
+          this.totalCount =0;
+          this.query();
+        }
       },
       deleteRow (index, row) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -197,7 +221,16 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tableData.splice(index, 1);
+          health.updateHealthWay(row.healthWayId)
+            .then(res => {
+              if (res && res.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: res.message
+                });
+                this.query();
+              }
+            })
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -221,18 +254,27 @@
       },
       uploadUrl (file) {
         if (file && file.file) {
-          this.uploadImages(file.file, 1);
+          this.uploadImages(file.file);
         }
       },
-      uploadImages () {
+      uploadImages (file) {
         let formData = new FormData();
         formData.append('image', file);
         formData.append('model', '1');
+        uploadSingleImage(formData)
+          .then(res => {
+            if (res.code === 200) {
+              this.form.bgImage = [];
+              this.form.bgImage.push(res.data)
+            }
+          })
       },
       beforeUpload (file) {
         checkImages(file, this);
       },
-      handleRemoveImage (file, fileList) {}
+      handleRemoveImage (file, fileList) {
+        this.form.bgImage = fileList;
+      }
     }
   }
 </script>

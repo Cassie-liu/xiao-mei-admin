@@ -41,6 +41,45 @@ export function deleteHealth(id) {
   })
 }
 /**
+ * 获取养生方式列表
+ * */
+export function getHealthWay(params) {
+  return request({
+    url: '/health/healthWay',
+    method: 'GET',
+    params
+  })
+}
+/**
+ * 新增养生方式列表
+ * */
+export function addHealthWay(data) {
+  return request({
+    url: '/health/healthWay',
+    method: 'POST',
+    data
+  })
+}
+/**
+ * 修改养生方式列表
+ * */
+export function updateHealthWay(data) {
+  return request({
+    url: '/health/healthWay',
+    method: 'PUT',
+    data
+  })
+}
+/**
+ * 删除养生方式列表
+ * */
+export function deleteHealthWay(id) {
+  return request({
+    url: '/health/healthWay/' + id,
+    method: 'DELETE'
+  })
+}
+/**
  * 获取体检指标
  * */
 export function getHelthNormalType(params) {

@@ -11,7 +11,7 @@
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%">
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="编码" label-width="120px">
-          <el-input v-model="form.number" size="small"></el-input>
+          <el-input v-model="form.normNumber" size="small"></el-input>
         </el-form-item>
         <el-form-item label="指标名称" label-width="120px">
           <el-input v-model="form.normName" size="small"></el-input>
@@ -63,7 +63,7 @@
             label: '序号'
           },
           {
-            prop: 'number',
+            prop: 'normNumber',
             label: '编码'
           },
           {
@@ -129,7 +129,6 @@
         this.loading = true;
         health.getHelthNormalType(this.params)
           .then(res => {
-            console.log(res.data);
             this.tableData = res && res.data && res.data.content;
             this.totalCount = res && res.data && res.data.totalElements;
             this.loading = false;

@@ -4,7 +4,7 @@
       <el-button type="primary" size="small" @click="add()">新增</el-button>
     </el-row>
     <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-    <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
+    <pagination v-if="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
 
     <!--新增/编辑 弹框-->
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog">
@@ -35,7 +35,7 @@
           <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
         </el-form-item>
         <el-form-item label="相关解决方案" label-width="120px">
-          <el-select v-model="form.relateSolveCase"  multiple class="select" size="small">
+          <el-select v-model="form.solutions"   class="select" size="small">
             <el-option label="解决方案一" value="case1"></el-option>
             <el-option label="解决方案二" value="case2"></el-option>
             <el-option label="解决方案三" value="case3"></el-option>
@@ -74,22 +74,22 @@
                 prop: 'healthName',
                 label: '养生类目名称'
               },
-              {
-                prop: 'createBy',
-                label: '创建人'
-              },
-              {
-                prop: 'createTime',
-                label: '创建时间'
-              },
-              {
-                prop: 'modifyBy',
-                label: '修改人'
-              },
-              {
-                prop: 'modifyTime',
-                label: '修改时间'
-              },
+              // {
+              //   prop: 'createBy',
+              //   label: '创建人'
+              // },
+              // {
+              //   prop: 'createTime',
+              //   label: '创建时间'
+              // },
+              // {
+              //   prop: 'modifyBy',
+              //   label: '修改人'
+              // },
+              // {
+              //   prop: 'modifyTime',
+              //   label: '修改时间'
+              // },
               {
                 type: 'function',
                 label: '操作',
@@ -223,14 +223,12 @@
           checkImages(file, this);
         },
         handleRemoveImage (file, fileList) {
-          console.log(fileList);
           this.form.bgImage = fileList;
         },
         save () {
           let params = Object.assign({}, this.form);
-          console.log(params);
           params.bgImage = {};
-          params.bgImage.imageId = this.form.bgImage[0].id;
+          params.bgImageId = this.form.bgImage[0].id;
           if (!params.healthId) {
             health.addHealth(params)
               .then(res => {
