@@ -4,9 +4,9 @@
     <el-tab-pane label="账号管理" name="accounts">
       <account></account>
     </el-tab-pane>
-    <el-tab-pane label="角色管理" name="roles">
-      <role></role>
-    </el-tab-pane>
+    <!--<el-tab-pane label="角色管理" name="roles">-->
+      <!--<role></role>-->
+    <!--</el-tab-pane>-->
   </el-tabs>
 </div>
 </template>

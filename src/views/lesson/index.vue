@@ -8,7 +8,7 @@
 
     <!--新增-->
 
-    <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog1" top="5%" bottom="5%" width="80%">
+    <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog1" top="5%" bottom="5%" width="70%">
     <!--<el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" :fullscreen="true">-->
       <el-form :model="form" :label-position="'left'">
         <el-form-item label="标题" label-width="120px">
@@ -19,7 +19,7 @@
           <el-input v-model="form.price" size="small"></el-input>
         </el-form-item>
         <el-form-item label="课程类型" label-width="120px">
-          <el-select v-model="form.courseType.typeId" size="small" class="select">
+          <el-select v-model="form.typeId" size="small" class="select">
             <el-option v-for="(item, index) in courseType" :label="item.value" :value="item.key" :key="index"></el-option>
           </el-select>
         </el-form-item>
@@ -208,7 +208,7 @@
        * 删除
        * */
       deleteRow (index, row) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

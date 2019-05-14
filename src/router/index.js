@@ -217,7 +217,7 @@ export const constantRouterMap = [
         path: 'heart',
         name: 'Heart',
         component: () => import('@/views/settings/heart/index'),
-        meta: { title: '行善类别配置', icon: 'heart' }
+        meta: { title: '行善过失配置', icon: 'heart' }
       },
       // {
       //   path: 'encourage',

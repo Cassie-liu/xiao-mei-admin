@@ -19,7 +19,7 @@
       <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <!--新增/编辑弹框-->
-      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog">
+      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" width="70%" >
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="选择疾病类目" label-width="120px">
             <el-select v-model="form.diseaseId" placeholder="请选择疾病类目" size="small" class="select">

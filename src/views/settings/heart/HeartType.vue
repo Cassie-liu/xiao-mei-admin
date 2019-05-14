@@ -10,14 +10,18 @@
 
       <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="40%">
         <el-form :model="form" :label-position="'left'">
-          <el-form-item label="编码" label-width="120px">
-            <el-input v-model="form.number" size="small"></el-input>
-          </el-form-item>
+          <!--<el-form-item label="编码" label-width="120px">-->
+            <!--<el-input v-model="form.number" size="small"></el-input>-->
+          <!--</el-form-item>-->
           <el-form-item label="名称" label-width="120px">
             <el-input v-model="form.name" size="small"></el-input>
           </el-form-item>
           <el-form-item label="行善类型" label-width="120px">
-            <el-input v-model="form.type" size="small"></el-input>
+            <!--<el-input v-model="form.type" size="small"></el-input>-->
+            <el-select size="small" v-model="form.type" placeholder="请选择行善类型">
+              <el-option value="0" label="行善"></el-option>
+              <el-option value="1" label="过失"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="积分计算" label-width="120px">
             <el-input v-model="form.score" size="small"></el-input>

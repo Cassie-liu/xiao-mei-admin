@@ -28,8 +28,8 @@
         </el-form-item>
         <el-form-item label="行善类型" label-width="120px">
           <el-select v-model="form.type" placeholder="请选择行善类型" size="small" class="select">
-            <el-option label="行善类型1" value="key1"></el-option>
-            <el-option label="行善类型2" value="key2"></el-option>
+            <el-option label="行善" value="0"></el-option>
+            <el-option label="过失" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="行善内容" label-width="120px">

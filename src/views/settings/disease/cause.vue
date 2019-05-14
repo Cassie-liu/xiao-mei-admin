@@ -26,7 +26,7 @@
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query"/>
       <!--新增/编辑弹框-->
       <!--<el-scrollbar :native="false" wrap-style="" wrap-class="" view-class="" tag="section">-->
-        <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="80%">
+        <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="70%">
           <el-form :model="form" :label-position="'left'">
             <el-form-item label="选择疾病类目" label-width="120px">
               <el-select v-model="form.categoryName" class="select" size="small">
@@ -113,7 +113,7 @@
                 label: '原因标题'
               },
               {
-                prop: 'solutions',
+                prop: 'solutionNames',
                 label: '相关解决方案'
               },
               {

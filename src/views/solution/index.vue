@@ -8,7 +8,7 @@
 
   <!--新增-->
 
-  <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%" width="80%">
+  <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%" width="70%">
     <el-form :model="form" :label-position="'left'">
       <el-form-item label="编码" label-width="120px">
         <el-input v-model="form.number" size="small"></el-input>
@@ -201,11 +201,12 @@
          * 删除
          * */
         deleteRow (index, row) {
-          this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          this.$confirm('此操作将永久删除该解决方案, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            // todo need interface
             this.tableData.splice(index, 1);
             this.$message({
               type: 'success',
