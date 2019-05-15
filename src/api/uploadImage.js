@@ -14,3 +14,13 @@ export function uploadSingleImage(params) {
     data: params
   })
 }
+/**
+ * 删除图片
+ * */
+export function deleteImage(imageId) {
+  return request({
+    url: '/common/deleteImage/' + imageId,
+    method: 'DELETE'
+  })
+}
+

@@ -9,7 +9,7 @@
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible"  top="5%" bottom="5%" width="40%">
       <el-form :model="form" :label-position="'left'">
         <el-form-item label-width="120px" label="类型名称">
-          <el-input v-model="form.name" size="small"></el-input>
+          <el-input v-model="form.courseTypeName" size="small"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -23,6 +23,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
+  import * as lesson from '@/api/lesson';
     export default {
         name: 'index',
       data () {
@@ -33,7 +34,7 @@
                 label: '序号'
               },
               {
-                prop: 'name',
+                prop: 'courseTypeName',
                 label: '类型名称'
               },
               {
@@ -74,12 +75,15 @@
       },
       methods: {
         query () {
-          this.tableData = [
-            {
-              name: '类型一'
-            }
-          ];
-          this.totalCount = 1;
+          this.loading = true;
+          lesson.getCourseTypeList(this.params)
+            .then(res => {
+              this.tableData = res && res.data && res.data.content;
+              this.totalCount = res && res.data && res.data.totalElements;
+              this.loading = false;
+            }).catch(err => {
+              this.loading = false;
+          });
         },
           add () {
             this.title =  '新增';
@@ -92,7 +96,7 @@
         edit (index, row) {
           this.title =  '编辑';
           this.dialogFormVisible = true;
-          this.form = row;
+          this.form = Object.assign({}, row);
         },
         /**
          * 删除
@@ -103,7 +107,10 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-
+            lesson.deleteCourseType(row.id)
+              .then(res => {
+                this.resetParams(res);
+              })
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -113,7 +120,34 @@
         },
         // 保存
         save () {
+          let params = {
+            courseTypeName: this.form.courseTypeName
+          };
+          if (this.form.id) {
+            params.id = this.form.id;
+            lesson.updateCourseType(params)
+              .then(res => {
+                this.resetParams(res);
+              })
+          } else {
+            lesson.addCourseType(this.form)
+              .then(res => {
+                this.resetParams(res);
+              })
+          }
           this.dialogFormVisible = false;
+        },
+        resetParams (res) {
+          if (res && res.code === 200) {
+            this.$message({
+              message: res && res.message,
+              type: 'success'
+            });
+            this.loading = false;
+            this.params.pageNumber = 1;
+            this.totalCount =0;
+            this.query();
+          }
         }
       }
     }

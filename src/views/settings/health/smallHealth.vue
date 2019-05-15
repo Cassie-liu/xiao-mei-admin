@@ -12,19 +12,17 @@
         <el-form-item label="编码" label-width="120px" size="small">
          <el-input v-model="form.number"></el-input>
         </el-form-item>
-        <el-form-item label="选择养生类目"  label-width="120px">
-          <el-select v-model="form.healthId" class="select" size="small">
-            <!--<el-option label="养生类目一" value="A"></el-option>-->
-            <!--<el-option label="养生类目二" value="B"></el-option>-->
-            <el-option v-for="(item, index) in healthList" :label="item.healthName" :value="item.healthId" :key="index"></el-option>
-          </el-select>
-        </el-form-item>
+        <!--<el-form-item label="选择养生类目"  label-width="120px">-->
+          <!--<el-select v-model="form.categoryName" class="select" size="small">-->
+            <!--<el-option v-for="(item, index) in healthList" :label="item.healthName" :value="item.healthId" :key="index"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
         <el-form-item label="养生方式名称" label-width="120px">
           <el-input v-model="form.wayName" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="介绍标题" label-width="120px">
-          <el-input v-model="form.title" size="small"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="介绍标题" label-width="120px">-->
+          <!--<el-input v-model="form.title" size="small"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item label="背景图" label-width="120px">
           <el-upload
             action=""
@@ -46,8 +44,11 @@
         </el-form-item>
         <el-form-item label="养生方式类型" label-width="120px">
           <el-select v-model="form.type">
-            <el-option label="1" value="1"></el-option>
-            <el-option label="2" value="2"></el-option>
+            <el-option label="类型一" value="1"></el-option>
+            <el-option label="类型二" value="2"></el-option>
+            <el-option label="类型三" value="3"></el-option>
+            <el-option label="类型四" value="4"></el-option>
+            <el-option label="类型五" value="5"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="介绍描述" label-width="120px">
@@ -187,15 +188,22 @@
         }
       },
       save () {
-        let params = Object.assign({}, this.form);
-        params.bgImage = {};
-        params.bgImageId = this.form.bgImage[0].id;
-        if (!params.healthWayId) {
+        let params = {
+          bgImageId: '',
+          content: this.form.content,
+          musicUrl: this.form.musicUrl,
+          number: this.form.number,
+          type: this.form.type,
+          wayName: this.form.wayName,
+        };
+        params.bgImageId = this.form.bgImage  && this.form.bgImage[0] &&  this.form.bgImage[0].id;
+        if (!this.form.healthWayId) {
           health.addHealthWay(params)
             .then(res => {
               this.resetParams(res);
             })
         } else {
+          params.healthWayId = this.form.healthWayId;
           health.updateHealthWay(params)
             .then(res => {
               this.resetParams(res);
@@ -221,7 +229,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          health.updateHealthWay(row.healthWayId)
+          health.deleteHealthWay(row.healthWayId)
             .then(res => {
               if (res && res.code === 200) {
                 this.$message({

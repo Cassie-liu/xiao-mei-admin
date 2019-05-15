@@ -3,37 +3,37 @@
       <el-row>
         <el-col :span="23">
           <span class="font">是否案例：</span>
-          <el-radio label="1" v-model="params.radio">全部</el-radio>
-          <el-radio label="2" v-model="params.radio">案例</el-radio>
-          <el-radio label="3" v-model="params.radio">非案例</el-radio>
+          <el-radio label="" v-model="params.recoverCase">全部</el-radio>
+          <el-radio label="1" v-model="params.recoverCase">案例</el-radio>
+          <el-radio label="0" v-model="params.recoverCase">非案例</el-radio>
         </el-col>
         <el-col :span="1">
           <el-button type="primary" size="small">查询</el-button>
         </el-col>
       </el-row>
-      <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-      <!--<el-table :data="tableData" :v-loading="loading" style="width:100%" size="small">-->
-        <!--<el-table-column type="index" label="序号" width="120"></el-table-column>-->
-        <!--<el-table-column prop="userName" label="用户名"></el-table-column>-->
-        <!--<el-table-column prop="tripName" label="旅程名称"></el-table-column>-->
-        <!--<el-table-column prop="result" label="养生成果"></el-table-column>-->
-        <!--<el-table-column label="养生日记">-->
-          <!--<template slot-scope="scope">-->
-            <!--<el-button type="text" @click="watchDiary(scope.$index, scope.row)" class="text-primary">查看</el-button>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
-        <!--<el-table-column label="体检报告">-->
-          <!--<template slot-scope="scope">-->
-            <!--<el-button type="text" @click="watchReport(scope.$index, scope.row)" class="text-primary">查看</el-button>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
-        <!--<el-table-column label="操作">-->
-          <!--<template slot-scope="scope">-->
-            <!--<el-button type="text" v-if="params.radio !== '3'" @click="cancel(scope.$index, scope.row)" class="text-primary">取消案例</el-button>-->
-            <!--<el-button type="text" v-if="params.radio === '3'" @click="cancel(scope.$index, scope.row)" class="text-primary">评为案例</el-button>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
-      <!--</el-table>-->
+      <!--<common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>-->
+      <el-table :data="tableData" :v-loading="loading" style="width:100%" size="small">
+        <el-table-column type="index" label="序号" width="120"></el-table-column>
+        <el-table-column prop="nickName" label="用户名"></el-table-column>
+        <el-table-column prop="journeyName" label="旅程名称"></el-table-column>
+        <el-table-column prop="result" label="养生成果"></el-table-column>
+        <el-table-column label="养生日记">
+          <template slot-scope="scope">
+            <el-button type="text" @click="watchDiary(scope.$index, scope.row)" class="text-primary">查看</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="体检报告">
+          <template slot-scope="scope">
+            <el-button type="text" @click="watchReport(scope.$index, scope.row)" class="text-primary">查看</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" v-if="scope.row.recoverCase" @click="cancel(scope.$index, scope.row)" class="text-primary">取消案例</el-button>
+            <el-button type="text" v-if="scope.row.recoverCase === false" @click="cancel(scope.$index, scope.row)" class="text-primary">确认为案例</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <!--查看养生日记-->
       <el-dialog title="养生日记" v-if="dialogFormVisible" :visible.sync="dialogFormVisible">
           <el-collapse v-model="activeNames" accordion>
@@ -68,6 +68,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
+  import * as caseService from '@/api/case';
     export default {
         name: 'Reviewed',
       data () {
@@ -79,11 +80,11 @@
               label: '序号'
             },
             {
-              prop: 'userName',
+              prop: 'nickName',
               label: '用户名'
             },
             {
-              prop: 'tripName',
+              prop: 'journeyName',
               label: '旅程名称'
             },
             {
@@ -126,7 +127,10 @@
           ],
           tableData: [],
           params: {
-            radio: '1'
+            pageNumber: 1,
+            pageSize: 20,
+            audit: 1,      // 1 代表未审核
+            recoverCase: ''   // 是否评为案例  1 是 0 否
           },
           dialogFormVisible: false,
           dialogReportVisible: false,
@@ -142,13 +146,18 @@
       },
       methods: {
           query() {
-            this.tableData = [
-              {
-                userName: '111111',
-                tripName: '111111111111'
-
-              }
-            ]
+            this.loading = true;
+            caseService.getCaseList(this.params)
+              .then(res => {
+                this.tableData = res.data.content;
+                this.totalCount = res && res.data && res.data.totalElements;
+                this.loading = false;
+                for(let data of this.tableData) {
+                  data.result = data.healthResult.join(',');
+                }
+              }).catch(res => {
+              this.loading = false;
+            });
           },
         /**
          * 查看养生日记
@@ -178,6 +187,14 @@
           }).catch(err => {
           })
         }
+      },
+      watch: {
+          'params.recoverCase': {
+            handler (curVal, oldVal) {
+              this.query();
+            },
+            deep: true
+          }
       }
     }
 </script>

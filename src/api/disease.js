@@ -97,3 +97,41 @@ export function getDiseaseCause(params) {
     params
   })
 }
+/**
+ * 新增疾病原因
+ * */
+export function addDiseaseCause(data) {
+  return request({
+    url: '/diseaseReason/add',
+    method: 'POST',
+    data
+  })
+}
+/**
+ * 修改疾病原因
+ * */
+export function updateDiseaseCause(data) {
+  return request({
+    url: '/diseaseReason/modify',
+    method: 'PUT',
+    data
+  })
+}
+/**
+ * 删除疾病原因
+ * */
+export function deleteDiseaseCause(id) {
+  return request({
+    url: '/diseaseReason/' + id,
+    method: 'DELETE'
+  })
+}
+/**
+ * 获取疾病原因类型
+ * */
+export function getCauseType() {
+  return request({
+    url: '/diseaseReason/types',
+    method: 'GET'
+  })
+}

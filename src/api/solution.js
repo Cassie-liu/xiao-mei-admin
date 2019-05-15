@@ -59,3 +59,12 @@ export function getRelateOffice(params) {
     params
   })
 }
+/**
+ * 获取解决方案下拉框
+ * */
+export function getSolutionOptions() {
+  return request({
+    url: '/common/solutionOptions',
+    method: 'GET'
+  })
+}

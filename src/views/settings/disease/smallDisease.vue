@@ -33,12 +33,12 @@
               <el-option key="1" label="常见疾病" value="1"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="编码" label-width="120px" size="small">
-            <el-input v-model="form.number"></el-input>
+          <el-form-item label="编码" label-width="120px">
+            <el-input v-model="form.number" size="small"></el-input>
             <div class="error" v-if="validated && !form.number">请输入编码</div>
           </el-form-item>
-          <el-form-item label="疾病名称" label-width="120px" size="small">
-            <el-input v-model="form.diseaseDetailName"></el-input>
+          <el-form-item label="疾病名称" label-width="120px">
+            <el-input v-model="form.diseaseDetailName" size="small"></el-input>
             <div class="error" v-if="validated && !form.diseaseDetailName">请输入疾病名称</div>
           </el-form-item>
           <el-form-item label="描述" label-width="120px">
@@ -52,12 +52,13 @@
               :limit="1"
               :on-exceed="onExceed"
               :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemoveCourseImage"
+              :on-remove="handleRemoveBgImage"
               :before-upload="beforeUpload"
               :file-list="form.bgImages">
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
+            <div class="error" v-if="validated && form.bgImages.length === 0">请选择背景图进行上传</div>
             <el-dialog :visible.sync="dialogVisible" :modal="false">
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
@@ -69,12 +70,13 @@
               :http-request="uploadIcon"
               :limit="1"
               :on-exceed="onExceed"
-              :on-remove="handleRemoveCourseImage"
+              :on-remove="handleRemoveIconmage"
               :before-upload="beforeUpload"
               :file-list="form.icon">
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
+            <div class="error" v-if="validated && form.icon.length === 0">请选择图标进行上传</div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -91,7 +93,7 @@
   import Pagination from '@/components/Pagination';
   import Tinymce from '@/components/Tinymce';
   import {checkImages} from '@/utils/index';
-  import {uploadSingleImage} from '@/api/uploadImage';
+  import * as common from  '@/api/uploadImage';
     export default {
         name: 'smallDisease',
         data () {
@@ -212,7 +214,10 @@
           this.title ='新增';
           this.type = 'add';
           this.dialogFormVisible = true;
-          this.form = {};
+          this.form = {
+            bgImages : [],
+            icon: []
+          };
         },
         edit (index, row) {
           let params = {
@@ -232,34 +237,41 @@
          * 保存
          * */
         save () {
-          let params = Object.assign({}, this.form);
-          if (!this.form.diseaseId || !this.form.diseaseDetailName || !this.form.number) {
+          let params = {
+            bgImages: {
+              imageId: null
+            },
+            icon: {
+              imageId: null
+            },
+            number: this.form.number,
+            type: this.form.type,
+            content: this.form.content,
+            diseaseId: this.form.diseaseId,
+            diseaseDetailName: this.form.diseaseDetailName
+          };
+          this.params.diseaseId = this.form.diseaseId;
+          params.bgImages.imageId = this.form.bgImages && this.form.bgImages[0] && this.form.bgImages[0].id;
+          params.icon.imageId = this.form.icon && this.form.icon[0] && this.form.icon[0].id;
+          if (!params.diseaseId || !params.diseaseDetailName || !params.number || !params.icon.imageId || !params.bgImages.imageId) {
             this.validated = true;
             return;
+          } else {
+            this.validated = false;
           }
-          this.params.diseaseId = this.form.diseaseId;
-          this.loading = true;
-          params.bgImages = {};
-          params.icon = {};
-            for (let i in this.form.bgImages) {
-              params.bgImages.imageId = this.form.bgImages[0].id;
-            }
-          for (let i in this.form.icon) {
-            params.icon.imageId = this.form.icon[0].id;
-          }
-          if (!params.diseaseDetailId) {
+          if (!this.form.diseaseDetailId) {
             addDiseaseDetail(params)
               .then(res =>{
                 this.resetParams(res);
-                this.dialogFormVisible = false;
               });
           } else {
+            params.diseaseDetailId = this.form.diseaseDetailId;
             updateDiseaseDetail(params)
               .then(res =>{
                 this.resetParams(res);
-                this.dialogFormVisible = false;
               });
           }
+          this.dialogFormVisible = false;
         },
         resetParams (res) {
           if (res && res.code === 200) {
@@ -279,7 +291,6 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            // this.tableData.splice(index, 1);
             deleteDiseaseDetail(row.diseaseDetailId)
               .then(res => {
                 if (res && res.code === 200) {
@@ -325,7 +336,7 @@
           let formData = new FormData();
           formData.append('image', file);
           formData.append('model', '3');
-          uploadSingleImage(formData)
+          common.uploadSingleImage(formData)
             .then(res => {
               if (res.code === 200) {
                 // 背景图
@@ -337,6 +348,7 @@
                   this.form.icon = [];
                   this.form.icon.push(res.data);
                 }
+                this.$forceUpdate();
               }
             })
         },
@@ -350,8 +362,16 @@
         uploadError() {
           this.$message.error('上传失败，请重新上传');
         },
-        handleRemoveCourseImage (file, fileList) {
-          this.form.coverImage = fileList;
+        /**
+         * 删除图片
+         * */
+        handleRemoveBgImage(file, fileList) {
+          this.form.bgImages = fileList;
+          common.deleteImage(file.id)
+        },
+        handleRemoveIconmage(file, fileList) {
+          this.form.icon = fileList;
+          common.deleteImage(file.id)
         },
         handlePictureCardPreview(file) {
           this.dialogImageUrl = file.url;

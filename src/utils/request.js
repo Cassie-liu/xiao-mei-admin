@@ -32,13 +32,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data;
-    if (res && res.code && res.code !== 200) {
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
-    }
+    // if (res && res.code && res.code !== 200) {
+    //   Message({
+    //     message: res.message,
+    //     type: 'error',
+    //     duration: 5 * 1000
+    //   })
+    // }
     return response.data
   },
   /**

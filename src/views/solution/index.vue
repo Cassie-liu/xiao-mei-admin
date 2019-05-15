@@ -38,12 +38,12 @@
         </el-dialog>
       </el-form-item>
       <el-form-item label="相关课程"  label-width="120px">
-        <el-select v-model="form.courseIds" multiple placeholder="请选择相关课程" size="small" class="select">
+        <el-select v-model="form.courseIds" multiple placeholder="请选择相关课程" size="small" class="select" @change="changeSelect">
           <el-option v-for="(item, index) in courseItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="相关机构" label-width="120px" >
-        <el-select v-model="form.officeIds" multiple placeholder="请选择相关机构" size="small" class="select">
+        <el-select v-model="form.officeIds" multiple placeholder="请选择相关机构" size="small" class="select" @change="changeSelect">
           <el-option v-for="(item, index) in officeItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
@@ -61,8 +61,8 @@
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
   import * as solution from '@/api/solution';
-  import {uploadSingleImage} from '@/api/uploadImage';
   import {checkImages} from "@/utils/index";
+  import * as common from  '@/api/uploadImage';
     export default {
         name: 'Index',
         data () {
@@ -194,7 +194,20 @@
           solution.getSolutionById(row.id)
             .then(res => {
               this.form = res.data;
-              // console.log(res.data);
+              this.form.courseIds = [];
+              this.form.officeIds = [];
+              for (let image of this.form.images) {
+                if (image) {
+                  image.name = image.fileName;
+                  image.url = image.path;
+                }
+              }
+              for (let course of this.form.courseRegistrations){
+                this.form.courseIds.push(String(course.courseId));
+              }
+              for (let office of this.form.offices){
+                this.form.officeIds.push(String(office.officeId));
+              }
             });
         },
         /**
@@ -207,11 +220,6 @@
             type: 'warning'
           }).then(() => {
             // todo need interface
-            this.tableData.splice(index, 1);
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -226,11 +234,13 @@
           this.form = {
             content: '',
             images: [],
-            courseIds: []
+            courseIds: [],
+            officeIds: []
           };
         },
         handleRemove(file, fileList) {
           this.form.images = fileList;
+          common.deleteImage(file.id)
         },
         handlePictureCardPreview(file) {
           this.dialogImageUrl = file.url;
@@ -255,14 +265,23 @@
           let formData = new FormData();
           formData.append('image', file);
           formData.append('model', '2');
-          uploadSingleImage(formData)
+          common.uploadSingleImage(formData)
             .then(res => {
               this.form.images.push(res.data);
             });
         },
+        changeSelect () {
+          this.$forceUpdate();
+        },
         save () {
-          let params = Object.assign({}, this.form);
-            params.images = [];
+          let params = {
+            content: this.form.content,
+            courseIds: this.form.courseIds,
+            officeIds: this.form.officeIds,
+            number: this.form.number,
+            title: this.form.title,
+            images: []
+          };
           if (this.form.images && this.form.images.length>0){
             for (let i in this.form.images){
               params.images.push({imageId: this.form.images[i].id});

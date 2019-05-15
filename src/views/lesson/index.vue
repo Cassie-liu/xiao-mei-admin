@@ -19,7 +19,7 @@
           <el-input v-model="form.price" size="small"></el-input>
         </el-form-item>
         <el-form-item label="课程类型" label-width="120px">
-          <el-select v-model="form.typeId" size="small" class="select">
+          <el-select v-model="form.typeId" size="small" class="select" @change="changeSelect">
             <el-option v-for="(item, index) in courseType" :label="item.value" :value="item.key" :key="index"></el-option>
           </el-select>
         </el-form-item>
@@ -96,6 +96,7 @@
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
   import {getCourseInfo,uploadSingleImage,addCourse, updateCourse,deleteCourse,getCourseType} from '@/api/lesson';
+  import * as common from  '@/api/uploadImage';
   import {checkImages} from "../../utils";
 
   export default {
@@ -161,7 +162,10 @@
         dialogFormVisible: false,      // 是否显示弹框
         form: {
           coverImage: [],   // 封面图
-          courseImages: []        // 展示图
+          courseImages: [],        // 展示图
+          typeId: '',
+          title: '',
+          number: ''
         },                    // 表单数据
         dialogVisible: false,           // 上传图片弹框显示
         dialogImageUrl: '',
@@ -203,6 +207,7 @@
         this.title =  '编辑';
         this.dialogFormVisible = true;
         this.form = Object.assign({}, row);
+        this.form.typeId = this.form.courseType && this.form.courseType.typeId && String(this.form.courseType.typeId);
       },
       /**
        * 删除
@@ -236,6 +241,9 @@
           courseImages: [],
           coverImage: []
         };
+      },
+      changeSelect () {
+        this.$forceUpdate();
       },
       /**
        * 上传封面图
@@ -278,9 +286,11 @@
       },
       handleRemoveCoverImage (file, fileList) {
         this.form.coverImage = fileList;
+        common.deleteImage(file.id);
       },
       handleRemoveCourseImage(file, fileList) {
         this.form.courseImages = fileList;
+        common.deleteImage(file.id)
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
@@ -328,7 +338,8 @@
           title: this.form.title,
           price: this.form.price,
           coverImage: {},
-          courseImages: []
+          courseImages: [],
+          typeId: this.form.typeId
         };
         if (this.form.coverImage && this.form.coverImage.length>0) {
           params.coverImage = {

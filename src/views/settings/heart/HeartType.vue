@@ -14,17 +14,17 @@
             <!--<el-input v-model="form.number" size="small"></el-input>-->
           <!--</el-form-item>-->
           <el-form-item label="名称" label-width="120px">
-            <el-input v-model="form.name" size="small"></el-input>
+            <el-input v-model="form.typeName" size="small"></el-input>
           </el-form-item>
           <el-form-item label="行善类型" label-width="120px">
             <!--<el-input v-model="form.type" size="small"></el-input>-->
-            <el-select size="small" v-model="form.type" placeholder="请选择行善类型">
-              <el-option value="0" label="行善"></el-option>
-              <el-option value="1" label="过失"></el-option>
+            <el-select size="small" v-model="form.type" placeholder="请选择行善类型" class="select">
+              <el-option :value="0" label="行善"></el-option>
+              <el-option :value="1" label="过失"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="积分计算" label-width="120px">
-            <el-input v-model="form.score" size="small"></el-input>
+            <el-input v-model="form.integral" size="small"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -38,6 +38,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination'
+  import * as heart from '@/api/heart';
     export default {
         name: 'HeartType',
       data () {
@@ -47,20 +48,20 @@
               type: 'index',
               label: '序号'
             },
+            // {
+            //   prop: 'number',
+            //   label: '编码'
+            // },
             {
-              prop: 'number',
-              label: '编码'
-            },
-            {
-              prop: 'name',
+              prop: 'typeName',
               label: '名称'
             },
             {
-              prop: 'type',
+              prop: 'CharityType',
               label: '行善类型'
             },
             {
-              prop: 'score',
+              prop: 'integral',
               label: '积分'
             },
             {
@@ -102,7 +103,22 @@
       },
       methods: {
           query () {
-
+            this.loading = true;
+            heart.getCharityFaultTypeList(this.params)
+              .then(res => {
+                this.tableData = res && res.data && res.data.content;
+                this.totalCount = res && res.data && res.data.totalElements;
+                this.loading = false;
+                for  (let data of this.tableData) {
+                  if (data.type === 0) {
+                    data.CharityType = '行善';
+                  } else if (data.type === 1) {
+                    data.CharityType = '过失';
+                  }
+                }
+              }).catch(res => {
+              this.loading = false;
+            });
           },
         /**
          * 新增
@@ -120,7 +136,7 @@
           this.dialogFormVisible = true;
           this.title = '编辑';
           this.type = 'edit';
-          this.form = row;
+          this.form = Object.assign({}, row);
         },
         /**
          * 删除
@@ -131,11 +147,10 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.tableData.splice(index, 1);
-            this.$message({
-              type: 'success',
-              message: '已删除'
-            });
+            heart.deleteCharityFaultType(row.cfTypeId)
+              .then(res => {
+                this.resetParams(res);
+              })
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -143,7 +158,38 @@
             });
           });
         },
-        save() {}
+        save() {
+          let params = {
+            typeName: this.form.typeName,
+            type: this.form.type,
+            integral: this.form.integral
+          };
+          if (!this.form.cfTypeId) {
+            heart.addCharityFaultType(params)
+              .then(res => {
+                this.resetParams(res);
+              })
+          } else {
+            params.cfTypeId = this.form.cfTypeId;
+            heart.updateCharityFaultType(params)
+              .then(res => {
+                this.resetParams(res);
+              })
+          }
+          this.dialogFormVisible = false;
+        },
+        resetParams (res) {
+          if (res && res.code === 200) {
+            this.$message({
+              message: res && res.message,
+              type: 'success'
+            });
+            this.loading = false;
+            this.params.pageNumber = 1;
+            this.totalCount =0;
+            this.query();
+          }
+        }
       }
     }
 </script>

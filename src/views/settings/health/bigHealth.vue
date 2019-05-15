@@ -14,6 +14,7 @@
         </el-form-item>
         <el-form-item label="养生类目名称" label-width="120px">
           <el-input v-model="form.healthName" size="small"></el-input>
+          <div class="error" v-if="validated && !form.healthName">请输入养生类目名称</div>
         </el-form-item>
         <el-form-item label="背景图" label-width="120px">
           <el-upload
@@ -35,10 +36,8 @@
           <tinymce :height="300" ref="editor" v-model="form.content"  :show-modal="false"/>
         </el-form-item>
         <el-form-item label="相关解决方案" label-width="120px">
-          <el-select v-model="form.solutions"   class="select" size="small">
-            <el-option label="解决方案一" value="case1"></el-option>
-            <el-option label="解决方案二" value="case2"></el-option>
-            <el-option label="解决方案三" value="case3"></el-option>
+          <el-select v-model="form.solutionIds" multiple  class="select" size="small" :aria-readonly="false" @change="changeSelect">
+            <el-option v-for="(item, index) in solutions" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -57,6 +56,7 @@
   import {uploadSingleImage} from '@/api/uploadImage';
   import {checkImages} from '@/utils/index';
   import * as health from '@/api/health';
+  import {getSolutionOptions} from '@/api/solution';
     export default {
         name: 'bigHealth',
       data () {
@@ -117,8 +117,11 @@
             title: '新增',    // 弹框标题
             dialogFormVisible: false,
             form: {
-              bgImage: []
-            }
+              bgImage: [],
+              solutionIds: []
+            },
+            solutions: [],
+            validated: false
           };
       },
       components: {
@@ -128,6 +131,7 @@
       },
       created() {
           this.query();
+          this.querySolutionOptions();
       },
       methods: {
           /**
@@ -145,13 +149,23 @@
             });
         },
         /**
+         * 查询相关解决方案下拉选
+         * */
+        querySolutionOptions () {
+          getSolutionOptions()
+            .then(res => {
+              this.solutions =  res.data;
+            })
+        },
+        /**
          * 新增
          * */
         add () {
           this.dialogFormVisible = true;
           this.title = '新增';
           this.form = {
-            bgImage: []
+            bgImage: [],
+            solutionIds: []
           };
         },
         /**
@@ -164,6 +178,10 @@
           this.form.bgImage = [];
           if (row.bgImage) {
             this.form.bgImage.push(row.bgImage)
+          }
+          this.form.solutionIds = [];
+          for (let solution of this.form.solutions) {
+            this.form.solutionIds.push(String(solution.id));
           }
         },
         /**
@@ -225,16 +243,31 @@
         handleRemoveImage (file, fileList) {
           this.form.bgImage = fileList;
         },
+        changeSelect () {
+          this.$forceUpdate();
+        },
         save () {
-          let params = Object.assign({}, this.form);
-          params.bgImage = {};
-          params.bgImageId = this.form.bgImage[0].id;
-          if (!params.healthId) {
+          let params ={
+            bgImageId: '',
+            content: this.form.content,
+            number: this.form.number,
+            healthName: this.form.healthName,
+            solutionIds: this.form.solutionIds
+          };
+          params.bgImageId = this.form.bgImage && this.form.bgImage[0] && this.form.bgImage[0].id;
+          if (!params.healthName) {
+            this.validated = true;
+            return;
+          } else {
+            this.validated = false;
+          }
+          if (!this.form.healthId) {
             health.addHealth(params)
               .then(res => {
                 this.resetParams(res);
               })
           } else {
+            params.healthId = this.form.healthId;
             health.updateHealth(params)
               .then(res => {
                 this.resetParams(res);

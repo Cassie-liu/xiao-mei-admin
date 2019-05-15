@@ -10,7 +10,7 @@
         <el-table-column label="图片">
           <template slot-scope="scope">
             <div class="image">
-              <img :src="scope.row.image.url" alt="">
+              <img :src="scope.row.image && scope.row.image.url" alt="">
             </div>
           </template>
         </el-table-column>
@@ -47,6 +47,7 @@
               <i class="el-icon-plus"></i>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
+            <div class="error" v-if="validated && form.images.length === 0">请选择图片进行上传</div>
           </el-form-item>
           <el-form-item label="排序">
             <el-input-number v-model="form.sort" size="small" :min="0" :step="1"></el-input-number>
@@ -64,8 +65,8 @@
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
   import {checkImages} from '@/utils/index';
-  import {uploadSingleImage} from '@/api/uploadImage';
   import * as banner from '@/api/banner';
+  import * as common from  '@/api/uploadImage';
     export default {
         name: 'Home',
       data () {
@@ -83,8 +84,8 @@
             title: '新增',
             dialogFormVisible: false,
             dialogImageUrl: '',
-            dialogVisible: false
-
+            dialogVisible: false,
+            validated: false
           };
       },
       components: {
@@ -115,7 +116,7 @@
           this.form = Object.assign({}, row);
           this.title = '编辑';
           this.form.images = [];
-          this.form.images.push(this.form.image);
+          this.form.image && this.form.images.push(this.form.image);
           this.dialogFormVisible = true;
         },
         /**
@@ -140,7 +141,9 @@
                   this.query();
                 }
               }).catch(err=>{
-
+                this.params.pageNumber = 1;
+                this.totalCount =0;
+                this.query();
             })
           }).catch(() => {
             this.$message({
@@ -157,12 +160,12 @@
         uploadImages(file) {
           let formData = new FormData();
           formData.append('image', file);
-          // formData.append('model', '1');
-          uploadSingleImage(formData)
+          common.uploadSingleImage(formData)
             .then(res => {
               if (res.code === 200) {
                 this.form.images = [];
                 this.form.images.push(res.data);
+                this.$forceUpdate();
               }
             })
         },
@@ -173,10 +176,8 @@
           this.$message.error('上传失败，请重新上传');
         },
         handleRemoveCoverImage (file, fileList) {
-          this.form.coverImage = fileList;
-        },
-        handleRemoveCourseImage(file, fileList) {
-          this.form.courseImages = fileList;
+          this.form.images = fileList;
+          common.deleteImage(file.id)
         },
         handlePictureCardPreview(file) {
           this.dialogImageUrl = file.url;
@@ -190,10 +191,23 @@
           });
         },
         save () {
-          let params = Object.assign({}, this.form);
-            delete params.images;
+          let params = {
+            imageId: '',
+            link: this.form.link,
+            title: this.form.title,
+            sort: this.form.sort
+          };
+          if (this.form.images && this.form.images.length>0) {
             params.imageId = this.form.images[0] && this.form.images[0].id;
-            if (params.id) {
+          }
+          if (!params.imageId) {
+           this.validated = true;
+            return;
+          } else {
+            this.validated = false;
+          }
+            if (this.form.id) {
+                params.id = this.form.id;
                 banner.updateBannerImage(params)
                   .then(res => {
                     this.dialogFormVisible = false;

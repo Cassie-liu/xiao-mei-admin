@@ -71,7 +71,7 @@ export function updateHealthWay(data) {
   })
 }
 /**
- * 删除养生方式列表
+ * 删除养生方式
  * */
 export function deleteHealthWay(id) {
   return request({
@@ -102,11 +102,50 @@ export function updateHelthNormalType(data) {
 /**
  * 删除体检指标
  * */
-export function deleteHealthNormalType(data) {
+export function deleteHealthNormalType(id) {
   return request({
-    url: '/journeyHealth/deleteHealthNormType',
-    method: 'post',
+    url: '/journeyHealth/deleteHealthNormType/' + id,
+    method: 'DELETE'
+  })
+}
+
+/**
+ * 获取养生成果列表
+ * */
+export function getHealthResultList(params) {
+  return request({
+    url: '/health/result',
+    method: 'GET',
+    params
+  })
+}
+/**
+ * 新增养生成果
+ * */
+export function addHealthResult(data) {
+  return request({
+    url: '/health/result',
+    method: 'POST',
     data
+  })
+}
+/**
+ * 修改养生成果
+ * */
+export function updateHealthResult(data) {
+  return request({
+    url: '/health/result',
+    method: 'PUT',
+    data
+  })
+}
+/**
+ * 删除养生成果
+ * */
+export function deleteHealthResult(id) {
+  return request({
+    url: '/health/result/' + id,
+    method: 'DELETE'
   })
 }
 

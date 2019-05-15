@@ -82,8 +82,7 @@ export function addCourseBanner(data) {
  * */
 export  function deleteCourseBanner(data) {
   return request({
-    url: '/banner/courseBanner',
-    method: 'DELETE',
-    data
+    url: '/banner/courseBanner?courseIds=' + data.courseIds,
+    method: 'DELETE'
   })
 }

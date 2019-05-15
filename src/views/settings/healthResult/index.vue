@@ -26,6 +26,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
+  import * as health from '@/api/health';
   export default {
     name: 'index',
     data () {
@@ -81,13 +82,14 @@
     },
     methods: {
       query () {
-        this.tableData = [
-          {
-            number: '001',
-            name: '成果一'
-          }
-        ];
-        this.totalCount = 1;
+        health.getHealthResultList(this.params)
+          .then(res => {
+            this.tableData = res && res.data && res.data.content;
+            this.totalCount = res && res.data && res.data.totalElements;
+            this.loading = false;
+          }).catch(res => {
+          this.loading = false;
+        })
       },
       add () {
         this.title =  '新增';
@@ -100,7 +102,7 @@
       edit (index, row) {
         this.title =  '编辑';
         this.dialogFormVisible = true;
-        this.form = row;
+        this.form = Object.assign({},row);
       },
       /**
        * 删除
@@ -111,7 +113,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-
+          health.deleteHealthResult(row.id)
+            .then(res => {
+              this.resetParams(res);
+            })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -121,7 +126,35 @@
       },
       // 保存
       save () {
+        let params = {
+          number: this.form.number,
+          name: this.form.name
+        }
+        if (!this.form.id) {
+          health.addHealthResult(params)
+            .then(res => {
+              this.resetParams(res);
+            })
+        } else {
+          params.id = this.form.id;
+          health.updateHealthResult(params)
+            .then(res => {
+              this.resetParams(res);
+            })
+        }
         this.dialogFormVisible = false;
+      },
+      resetParams (res) {
+        if (res && res.code === 200) {
+          this.$message({
+            message: res && res.message,
+            type: 'success'
+          });
+          this.loading = false;
+          this.params.pageNumber = 1;
+          this.totalCount =0;
+          this.query();
+        }
       }
     }
   }

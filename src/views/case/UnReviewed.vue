@@ -26,24 +26,40 @@
       <el-dialog title="审核" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog">
         <el-form :model="form" :label-position="'left'">
           <el-form-item label="旅程描述" label-width="120px">
-            <el-input type="textarea"></el-input>
+            <el-input type="textarea" v-model="form.title"></el-input>
           </el-form-item>
           <el-form-item label="疾病" label-width="120px">
-            <span>糖尿病</span> ; <span>高血压</span>
+            <!--<span>糖尿病</span> ; <span>高血压</span>-->
+            <span v-for="(item, index) in form.diseaseNames">
+              <span>{{item}}</span>
+              <span v-if="index < form.diseaseNames.length - 1">; </span>
+            </span>
           </el-form-item>
           <el-form-item label="养生" label-width="120px">
-            <span>辟谷</span> ; <span>跑步</span>
+            <!--<span>辟谷</span> ; <span>跑步</span>-->
+            <span v-for="(item, index) in form.healthResult">
+              <span>{{form.healths[index]}}: {{item}}</span>
+              <span v-if="index < form.healthResult.length - 1">; </span>
+            </span>
           </el-form-item>
           <el-form-item label="参加课程" label-width="120px">
-            <span>课程A</span> ; <span>课程B</span>
+            <!--<span>课程A</span> ; <span>课程B</span>-->
+            <span v-for="(item, index) in form.courses">
+              <span>{{item}}</span>
+              <span v-if="index < form.courses.length - 1">; </span>
+            </span>
           </el-form-item>
           <el-form-item label="使用方案" label-width="120px">
-            <span>方案一</span> ; <span>方案二</span>
+            <!--<span>方案一</span> ; <span>方案二</span>-->
+            <span v-for="(item, index) in form.solutions">
+              <span>{{item}}</span>
+              <span v-if="index < form.solutions.length - 1">; </span>
+            </span>
           </el-form-item>
         </el-form>
         <div class="dialog-footer" slot="footer">
-          <el-button type="primary" size="small">标记为已审核</el-button>
-          <el-button type="primary" size="small">审核被评为案例</el-button>
+          <el-button type="primary" size="small" @click="doAudit(1)">标记为已审核</el-button>
+          <el-button type="primary" size="small" @click="doAudit(2)">审核被评为案例</el-button>
         </div>
       </el-dialog>
 
@@ -73,7 +89,7 @@
               label: '序号'
             },
             {
-              prop: 'userName',
+              prop: 'nickName',
               label: '用户名'
             },
             {
@@ -124,7 +140,13 @@
             audit: 0      // 0 代表未审核
           },
           tableData: [],
-          form: {},
+          form: {
+            diseaseNames: [],
+            healthResult: [],
+            courses: [],
+            solutions: [],
+            healths: []
+          },
           dialogFormVisible: false,
           dialogFormVisibles: false,
           dialogReportVisible: false,
@@ -146,7 +168,12 @@
                 this.tableData = res.data.content;
                 this.totalCount = res && res.data && res.data.totalElements;
                 this.loading = false;
-              });
+                for(let data of this.tableData) {
+                  data.result = data.healthResult.join(',');
+                }
+              }).catch(res => {
+                this.loading = false;
+            });
           },
           /**
            * 查看
@@ -165,7 +192,34 @@
            * */
         review (index, row) {
           this.dialogFormVisible = true;
-          }
+          this.form = Object.assign({}, row);
+          },
+        /**
+         * 案例审核
+         * @flag 1：标记为已审核
+         *       2：审核被被评为案例
+         * */
+        doAudit (flag) {
+          let params = {
+            checkType: flag,
+            journeyId: this.form.journeyId,
+            title: this.form.title
+          };
+          caseService.doAuditforCase(params)
+            .then(res => {
+              if (res.code === 200) {
+                this.$alert(res.message, '提示', {
+                  confirmButtonText: true
+                });
+              } else {
+                this.$alert(res.data, '提示', {
+                  confirmButtonText: true
+                });
+              }
+              this.query();
+            });
+          this.dialogFormVisible = false;
+        }
       }
     }
 </script>

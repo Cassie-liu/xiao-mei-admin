@@ -211,7 +211,7 @@ export const constantRouterMap = [
         path: 'health-result',
         name: 'HealthResult',
         component: () => import('@/views/settings/healthResult/index'),
-        meta: { title: '养生成果配置', icon: 'healthConfig' }
+        meta: { title: '养生成果配置', icon: 'result' }
       },
       {
         path: 'heart',

@@ -30,8 +30,8 @@
         </el-form-item>
         <el-form-item label="输入类型" label-width="120px">
           <el-select class="select" v-model="form.inputType" size="small">
-            <el-option value="1" label="1 (普通输入类型)"></el-option>
-            <el-option value="2" label="2 (双参数输入类型)"></el-option>
+            <el-option :value="1" label="1 (普通输入类型)"></el-option>
+            <el-option :value="2" label="2 (双参数输入类型)"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -150,7 +150,7 @@
       edit (index, row) {
         this.title =  '编辑';
         this.dialogFormVisible = true;
-        this.form = row;
+        this.form = Object.assign({}, row);
       },
       /**
        * 删除
@@ -161,7 +161,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-         health.deleteHealthNormalType({normTypeId: row.normTypeId})
+         health.deleteHealthNormalType(row.normTypeId)
            .then(res => {
              this.resetParams(res);
            })
@@ -176,11 +176,23 @@
        * 保存
        * */
       save() {
-        health.updateHelthNormalType(this.form)
+        let params = {
+          normNumber: this.form.normNumber,
+          normName: this.form.normName,
+          unit: this.form.unit,
+          max: this.form.max,
+          min: this.form.min,
+          step: this.form.step,
+          inputType: this.form.inputType
+        };
+        if (this.form.normTypeId) {
+          params.normTypeId = this.form.normTypeId;
+        }
+        health.updateHelthNormalType(params)
           .then(res => {
             this.resetParams(res);
-            this.dialogFormVisible = false;
-          })
+          });
+        this.dialogFormVisible = false;
       },
       resetParams (res) {
         if (res && res.code === 200) {

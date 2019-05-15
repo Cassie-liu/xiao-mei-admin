@@ -3,9 +3,8 @@
     <el-row>
       <el-form :inline="true" :model="params">
         <el-form-item label="选择行善类型">
-          <el-select v-model="params.type" placeholder="请选择行善类型" size="small">
-            <el-option label="行善类型1" value="key1"></el-option>
-            <el-option label="行善类型2" value="key2"></el-option>
+          <el-select v-model="params.cfTypeId" placeholder="请选择行善类型" size="small">
+            <el-option v-for="(item, index) in allTypes" :value="item.cfTypeId" :key="item.cfTypeId" :label="item.typeName"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -23,13 +22,9 @@
 
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialog" top="5%" width="40%">
       <el-form :model="form" :label-position="'left'">
-        <el-form-item label="编码" label-width="120px">
-          <el-input v-model="form.number" size="small"></el-input>
-        </el-form-item>
         <el-form-item label="行善类型" label-width="120px">
-          <el-select v-model="form.type" placeholder="请选择行善类型" size="small" class="select">
-            <el-option label="行善" value="0"></el-option>
-            <el-option label="过失" value="1"></el-option>
+          <el-select v-model="form.cfTypeId" placeholder="请选择行善类型" size="small" class="select">
+            <el-option v-for="(item, index) in allTypes" :value="item.cfTypeId" :key="item.cfTypeId" :label="item.typeName"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="行善内容" label-width="120px">
@@ -47,6 +42,7 @@
 <script>
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination'
+  import * as heart from '@/api/heart';
   export default {
     name: 'HeartContent',
     data () {
@@ -57,11 +53,7 @@
             label: '序号'
           },
           {
-            prop: 'number',
-            label: '编码'
-          },
-          {
-            prop: 'type',
+            prop: 'typeName',
             label: '行善类型'
           },
           {
@@ -91,11 +83,13 @@
         form: {},
         params: {
           pageNumber: 1,
-          pageSize: 20
+          pageSize: 20,
+          cfTypeId: ''
         },
         totalCount: 0,
         tableData: [],
-        loading: false
+        loading: false,
+        allTypes: []      // 行善类型
       };
     },
     components: {
@@ -103,11 +97,29 @@
       Pagination
     },
     mounted() {
+      this.queryCharityType();
       this.query();
     },
     methods: {
       query () {
-
+        this.loading = true;
+        heart.getCharityFaultContentList(this.params)
+          .then(res => {
+            this.tableData = res && res.data && res.data.content;
+            this.totalCount = res && res.data && res.data.totalElements;
+            this.loading = false;
+          }).catch(res => {
+          this.loading = false;
+        });
+      },
+      /**
+       * 查询行善类型
+       * */
+      queryCharityType () {
+        heart.getCharityFaultTypeList()
+          .then(res => {
+              this.allTypes = res && res.data && res.data.content;
+          })
       },
       /**
        * 新增
@@ -125,7 +137,7 @@
         this.dialogFormVisible = true;
         this.title = '编辑';
         this.type = 'edit';
-        this.form = row;
+        this.form = Object.assign({}, row);
       },
       /**
        * 删除
@@ -136,11 +148,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tableData.splice(index, 1);
-          this.$message({
-            type: 'success',
-            message: '已删除'
-          });
+            heart.deleteCharityFaultContent(row.id)
+              .then(res => {
+                this.resetParams(res);
+              })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -148,7 +159,38 @@
           });
         });
       },
-      save() {}
+      save() {
+        let params = {
+          cfTypeId: this.form.cfTypeId,
+          content: this.form.content
+        };
+        this.params.cfTypeId = this.form.cfTypeId;
+        if (!this.form.id) {
+          heart.addCharityFaultContent(params)
+            .then(res => {
+              this.resetParams(res);
+            })
+        } else {
+          heart.id = this.form.id;
+          heart.updateCharityFaultContent(params)
+            .then(res => {
+              this.resetParams(res);
+            })
+        }
+        this.dialogFormVisible = false;
+      },
+      resetParams (res) {
+        if (res && res.code === 200) {
+          this.$message({
+            message: res && res.message,
+            type: 'success'
+          });
+          this.loading = false;
+          this.params.pageNumber = 1;
+          this.totalCount =0;
+          this.query();
+        }
+      }
     }
   }
 </script>
