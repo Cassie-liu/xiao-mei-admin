@@ -1,13 +1,15 @@
 <template>
 <div class="app-container">
-  <el-row>
-    <el-button size="small" type="primary" @click="add">新增</el-button>
-  </el-row>
-  <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-  <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
-
+  <el-tabs type="border-card">
+    <el-tab-pane label="解决方案管理">
+      <el-row>
+        <el-button size="small" type="primary" @click="add">新增</el-button>
+      </el-row>
+      <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
+      <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
+    </el-tab-pane>
+  </el-tabs>
   <!--新增-->
-
   <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="add-dialogs" top="5%" width="70%">
     <el-form :model="form" :label-position="'left'">
       <el-form-item label="编码" label-width="120px">

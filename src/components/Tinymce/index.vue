@@ -10,7 +10,7 @@
 <script>
 import editorImage from './components/editorImage'
 import plugins from './plugins'
-import toolbar from './toolbar'
+import setting from './toolbar'
 
 export default {
   name: 'Tinymce',
@@ -31,6 +31,7 @@ export default {
       required: false,
       default() {
         return []
+        // return ['removeformat undo redo |  bullist numlist | outdent indent | forecolor | fullscreen code', 'bold italic blockquote | h2 p  media link | alignleft aligncenter alignright | fontsizeselect | fontselect']
       }
     },
     menubar: {
@@ -96,7 +97,7 @@ export default {
         height: this.height,
         body_class: 'panel-body ',
         object_resizing: false,
-        toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
+        toolbar: this.toolbar.length > 0 ? this.toolbar : setting.toolbar,
         menubar: this.menubar,
         plugins: plugins,
         end_container_on_empty_block: true,
@@ -123,7 +124,9 @@ export default {
           editor.on('FullscreenStateChanged', (e) => {
             _this.fullscreen = e.state
           })
-        }
+        },
+        fontsize_formats: setting.font_size,
+        font_formats: setting.font_format
         // 整合七牛上传
         // images_dataimg_filter(img) {
         //   setTimeout(() => {
@@ -164,9 +167,8 @@ export default {
       if (this.fullscreen) {
         tinymce.execCommand('mceFullScreen')
       }
-
       if (tinymce) {
-        tinymce.destroy()
+        // tinymce.destroy()
       }
     },
     setContent(value) {

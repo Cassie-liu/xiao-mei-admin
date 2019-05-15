@@ -1,10 +1,14 @@
 <template>
   <div class="app-container">
-    <el-row>
-      <el-button size="small" type="primary" @click="add">新增</el-button>
-    </el-row>
-    <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-    <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
+    <el-tabs type="border-card">
+      <el-tab-pane label="养生成果">
+        <el-row>
+          <el-button size="small" type="primary" @click="add">新增</el-button>
+        </el-row>
+        <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
+        <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
+      </el-tab-pane>
+    </el-tabs>
     <!--新增/编辑-->
     <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible"  top="5%" bottom="5%" width="40%">
       <el-form :model="form" :label-position="'left'">

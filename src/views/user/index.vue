@@ -1,24 +1,28 @@
 <template>
 <div class="app-container">
-  <el-form :inline="true" :model="user" size="mini" class="user">
-    <el-form-item label="手机号码">
-      <el-input v-model="user.phone" placeholder="请输入手机号码"></el-input>
-    </el-form-item>
-    <el-form-item label="是否认证" class="label">
-      <el-select v-model="user.auth" placeholder="请选择">
-        <el-option label="已认证" value="true"></el-option>
-        <el-option label="未认证" value="false"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSubmit">查询</el-button>
-    </el-form-item>
-  </el-form>
-  <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
-  <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
-                 :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
-                 @current-change="onSubmit" @size-change="onSubmit" layout="total, sizes, prev, pager, next">
-  </el-pagination>
+  <el-tabs type="border-card">
+    <el-tab-pane label="用户管理">
+      <el-form :inline="true" :model="user" size="mini" class="user">
+        <el-form-item label="手机号码">
+          <el-input v-model="user.phone" placeholder="请输入手机号码"></el-input>
+        </el-form-item>
+        <el-form-item label="是否认证" class="label">
+          <el-select v-model="user.auth" placeholder="请选择">
+            <el-option label="已认证" value="true"></el-option>
+            <el-option label="未认证" value="false"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+      <common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>
+      <el-pagination style="text-align: right;margin-top: 20px;" v-if="pageable.total"
+                     :total="pageable.total" :current-page.sync="pageable.currentPage" :page-size.sync="pageable.pageSize"
+                     @current-change="onSubmit" @size-change="onSubmit" layout="total, sizes, prev, pager, next">
+      </el-pagination>
+    </el-tab-pane>
+  </el-tabs>
 </div>
 </template>
 
