@@ -26,7 +26,17 @@
               <el-form-item label="角色名称" label-width="120px">
                 <el-input v-model="form.roleName" size="small"/>
               </el-form-item>
-              <el-form-item label="权限信息" label-width="120px"/>
+              <el-form-item label="权限信息" label-width="120px">
+                <el-tree
+                  ref="tree"
+                  :data="tree"
+                  :default-checked-keys="idList"
+                  :props="defaultProps"
+                  show-checkbox
+                  default-expand-all
+                  node-key="id"
+                  highlight-current/>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
@@ -42,6 +52,7 @@
 
 <script>
 import { constantRouterMap } from '@/router'
+import roleMap from './roleMap'
 import commonTable from '@/views/common/commonTable'
 export default {
   name: 'Roles',
@@ -108,16 +119,18 @@ export default {
       form: {},
       tree: [],
       defaultProps: {
-        label: 'name'
+        label: 'label'
       },
-      constantRouterMap
+      idList: [],
+      constantRouterMap,
+      roleMap
     }
   },
   created() {
     this.query()
   },
-  mounted () {
-    this.tree = constantRouterMap
+  mounted() {
+    this.tree = roleMap
   },
   methods: {
     query() {
