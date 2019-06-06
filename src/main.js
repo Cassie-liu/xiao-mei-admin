@@ -17,7 +17,7 @@ import '../static/UE/lang/zh-cn/zh-cn.js'
 import '../static/UE/ueditor.parse.min.js'
 
 import '@/icons' // icon
-// import '@/permission' // permission control
+import '@/permission' // permission control
 
 Vue.use(ElementUI, { locale })
 

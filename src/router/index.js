@@ -29,7 +29,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/login',
+    redirect: '/user/index',
     name: 'User',
     hidden: true,
     meta: { title: '用户管理', icon: 'user' },
@@ -152,18 +152,18 @@ export const constantRouterMap = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/commodity',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Commodity',
-  //       component: () => import('@/views/commodity/index'),
-  //       meta: { title: '商品管理', icon: 'commodity' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/commodity',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Commodity',
+        component: () => import('@/views/commodity/index'),
+        meta: { title: '商品管理', icon: 'commodity' }
+      }
+    ]
+  },
   // {
   //   path: '/health',
   //   component: Layout,
@@ -242,16 +242,24 @@ export const constantRouterMap = [
   {
     path: '/operation',
     component: Layout,
+    redirect: '/operation/accounts',
+    name: 'Operation',
+    meta: { title: '系统运维', icon: 'operation' },
     children: [
       {
-        path: 'index',
-        name: 'Operation',
-        component: () => import('@/views/operation/index'),
-        meta: { title: '系统运维', icon: 'operation' }
+        path: 'accounts',
+        name: 'Accounts',
+        component: () => import('@/views/operation/accounts'),
+        meta: { title: '账号管理', icon: 'operation' }
+      },
+      {
+        path: 'roles',
+        name: 'Roles',
+        component: () => import('@/views/operation/roles'),
+        meta: { title: '角色管理', icon: 'operation' }
       }
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
 

@@ -31,10 +31,12 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
-          commit('SET_NAME', data.userName);
-          sessionStorage.setItem('userName', data.userName);
+          commit('SET_NAME', data.userName)
+          sessionStorage.setItem('userName', data.userName)
           // commit('SET_TOKEN', data.token)
           // setToken(response.data.token)
+          commit('SET_TOKEN', data.userName + '-token')
+          setToken(data.userName + '-token')
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -73,6 +75,15 @@ const user = {
         }).catch(error => {
           reject(error)
         })
+      })
+    },
+
+    // remove token
+    resetToken({ commit }) {
+      return new Promise(resolve => {
+        commit('SET_TOKEN', '')
+        removeToken()
+        resolve()
       })
     },
 

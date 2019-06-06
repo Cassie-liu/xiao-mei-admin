@@ -8,9 +8,9 @@ export function login(username, password) {
       username,
       password
     },
-    transformRequest: [function (data) {
+    transformRequest: [function(data) {
       let ret = ''
-      for (let it in data) {
+      for (const it in data) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
       }
       return ret
@@ -29,9 +29,9 @@ export function loginByUsername(username, password) {
   return request({
     url: '/login',
     method: 'post',
-    transformRequest: [function (data) {
+    transformRequest: [function(data) {
       let ret = ''
-      for (let it in data) {
+      for (const it in data) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
       }
       return ret
