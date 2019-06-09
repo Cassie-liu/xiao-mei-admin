@@ -27,3 +27,13 @@ export function doAuditforCase(data) {
     data
   })
 }
+/**
+ * 获取养生日记
+ * */
+export function getDiaryList(data) {
+  return request({
+    url: '/audit/notes',
+    method: 'post',
+    data
+  })
+}

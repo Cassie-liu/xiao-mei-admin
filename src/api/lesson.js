@@ -101,3 +101,33 @@ export function deleteCourseType(id) {
     method: 'DELETE'
   })
 }
+/**
+ * 查询报名列表
+ * */
+export function getFollowPageList(data) {
+  return request({
+    url: '/course/getFollowPage',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 获取课程配置下来狂
+ * */
+export function getCourseList () {
+  return request({
+    url: '/course/courseRegistrationList',
+    method: 'get'
+  })
+}
+/**
+ * 报名列表导出
+ * */
+export function exportList(params){
+  return request({
+    url: '/course/export',
+    method: 'get',
+    params
+  })
+}
+

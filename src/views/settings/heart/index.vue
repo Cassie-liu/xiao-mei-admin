@@ -7,6 +7,9 @@
         <el-tab-pane label="行善过失内容" name="content">
           <heart-content v-if="activeName === 'content'"></heart-content>
         </el-tab-pane>
+        <el-tab-pane label="过失鼓励话语" name="heartWord">
+          <heart-words v-if="activeName === 'heartWord'"></heart-words>
+        </el-tab-pane>
       </el-tabs>
     </div>
 </template>
@@ -14,6 +17,7 @@
 <script>
   import HeartType from './HeartType';
   import HeartContent from './HeartContent';
+  import HeartWords from './HeartWords';
     export default {
       name: 'Index',
       props: [],
@@ -24,7 +28,8 @@
       },
       components: {
         HeartType,
-        HeartContent
+        HeartContent,
+        HeartWords
       }
     };
 </script>

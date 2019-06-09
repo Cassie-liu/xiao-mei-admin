@@ -56,3 +56,13 @@ export function logout() {
     method: 'post'
   })
 }
+/**
+ * 查询用户列表
+ * */
+export function getUsers(data) {
+  return request({
+    url: '/user/list',
+    method: 'post',
+    data
+  })
+}

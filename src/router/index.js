@@ -22,10 +22,12 @@ import Layout from '../views/layout/Layout'
     breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
   }
 **/
-export const constantRouterMap = [
+export let constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
+]
 
+export const asyncRoutes = [
   {
     path: '/',
     component: Layout,
@@ -92,18 +94,6 @@ export const constantRouterMap = [
       }
     ]
   },
-  // {
-  //   path: '/dynamic',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Dynamic',
-  //       component: () => import('@/views/Dynamic/index'),
-  //       meta: { title: '动态管理', icon: 'dynamic' }
-  //     }
-  //   ]
-  // },
   {
     path: '/case',
     component: Layout,
@@ -131,27 +121,23 @@ export const constantRouterMap = [
   {
     path: '/lesson',
     component: Layout,
+    redirect: '/lesson/index',
+    meta: { title: '课程报名', icon: 'lesson' },
     children: [
       {
         path: 'index',
         name: 'Lesson',
         component: () => import('@/views/lesson/index'),
-        meta: { title: '课程报名', icon: 'lesson' }
+        meta: { title: '课程配置', icon: 'class' }
+      },
+      {
+        path: 'sign',
+        name: 'SignUp',
+        component: () => import('@/views/lesson/Sign'),
+        meta: { title: '报名管理', icon: 'signUp' }
       }
     ]
   },
-  // {
-  //   path: '/report',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'MedicalReport',
-  //       component: () => import('@/views/medicalReport/index'),
-  //       meta: { title: '体检报告', icon: 'report' }
-  //     }
-  //   ]
-  // },
   {
     path: '/commodity',
     component: Layout,
@@ -164,18 +150,6 @@ export const constantRouterMap = [
       }
     ]
   },
-  // {
-  //   path: '/health',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Health',
-  //       component: () => import('@/views/health/index'),
-  //       meta: { title: '养生排行榜', icon: 'ranking' }
-  //     }
-  //   ]
-  // },
   {
     path: '/settings',
     component: Layout,
@@ -193,7 +167,7 @@ export const constantRouterMap = [
         path: 'lessons-type',
         name: 'LessonType',
         component: () => import('@/views/settings/lesson/Index'),
-        meta: { title: '课程类型配置', icon: 'banner' }
+        meta: { title: '课程类型配置', icon: 'course' }
       },
       {
         path: 'disease',
@@ -219,17 +193,23 @@ export const constantRouterMap = [
         component: () => import('@/views/settings/heart/index'),
         meta: { title: '行善过失配置', icon: 'heart' }
       },
-      // {
-      //   path: 'encourage',
-      //   name: 'Encourage',
-      //   component: () => import('@/views/settings/encourage/index'),
-      //   meta: { title: '过失鼓励配置', icon: 'encourage' }
-      // },
+      {
+        path: 'encourage',
+        name: 'Encourage',
+        component: () => import('@/views/settings/encourage/index'),
+        meta: { title: '爱心养生介绍', icon: 'encourage' }
+      },
       {
         path: 'medical-setting',
         name: 'Medical',
         component: () => import('@/views/settings/medicalExam/index'),
         meta: { title: '体检指标配置', icon: 'exam' }
+      },
+      {
+        path: 'version-setting',
+        name: 'Version',
+        component: () => import('@/views/settings/version/index'),
+        meta: { title: '版本更新', icon: 'version' }
       },
       {
         path: 'other',
@@ -250,19 +230,19 @@ export const constantRouterMap = [
         path: 'accounts',
         name: 'Accounts',
         component: () => import('@/views/operation/accounts'),
-        meta: { title: '账号管理', icon: 'operation' }
+        meta: { title: '账号管理', icon: 'account' }
       },
       {
         path: 'roles',
         name: 'Roles',
         component: () => import('@/views/operation/roles'),
-        meta: { title: '角色管理', icon: 'operation' }
+        meta: { title: '角色管理', icon: 'role' }
       }
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
-
+constantRouterMap = constantRouterMap.concat(asyncRoutes);
 export default new Router({
   // mode: 'hash', //后端支持可开
   // base: 'smile',

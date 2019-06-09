@@ -39,3 +39,22 @@ export function deleteCustom(id) {
     method: 'DELETE'
   })
 }
+/**
+ * 版本更新
+ * */
+export function getAppVersion() {
+  return request({
+    url: '/system/getAppVersion',
+    method: 'get'
+  })
+}
+/**
+ * 上传app更新
+ * */
+export function updateApp(data) {
+  return request({
+    url: '/system/uploadApp',
+    method: 'post',
+    data
+  })
+}

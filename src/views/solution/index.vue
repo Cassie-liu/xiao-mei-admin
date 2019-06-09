@@ -2,6 +2,17 @@
 <div class="app-container">
   <el-tabs type="border-card">
     <el-tab-pane label="解决方案管理">
+      <el-form :inline="true" :model="params" size="small">
+        <el-form-item label="编码">
+          <el-input v-model="params.number" placeholder="请输入编码"></el-input>
+        </el-form-item>
+        <el-form-item label="解决方案名称">
+          <el-input v-model="params.title" placeholder="请输入解决方案名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" type="primary" @click="params.pageNumber = 1;query()">查询</el-button>
+        </el-form-item>
+      </el-form>
       <el-row>
         <el-button size="small" type="primary" @click="add">新增</el-button>
       </el-row>
@@ -47,6 +58,11 @@
       <el-form-item label="相关机构" label-width="120px" >
         <el-select v-model="form.officeIds" multiple placeholder="请选择相关机构" size="small" class="select" @change="changeSelect">
           <el-option v-for="(item, index) in officeItems" :label="item.value" :value="item.key" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="相关商品" label-width="120px" >
+        <el-select v-model="form.commodityIds" multiple placeholder="请选择相关商品" size="small" class="select" @change="changeSelect">
+          <el-option v-for="(item, index) in commodityItems" :label="item.value" :value="item.key" :key="index"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -118,11 +134,6 @@
             ],                  // 表格表头
             loading: false,                 // 显示加载
             tableData: [],                  // 表格数据
-            pageable: {
-              total: 0,
-              currentPage: 1,
-              pageSize: 10
-            },                // 分页
             dialogFormVisible: false,      // 是否显示弹框
             form: {
               number: '',
@@ -130,7 +141,8 @@
               content: '',
               images: [],
               courseIds: [],
-              officeIds: []
+              officeIds: [],
+              commodityIds: []
             },                    // 表单数据
             dialogVisible: false,           // 上传图片弹框显示
             dialogImageUrl: '',
@@ -138,7 +150,8 @@
             title: '新增',                 // 弹框
             type: 'add',
             courseItems: [],
-            officeItems: []
+            officeItems: [],
+            commodityItems: []
           };
         },
       components: {
@@ -150,6 +163,7 @@
           this.query();
           this.queryCourseItems();
           this.queryOfficeItems();
+          this.queryCommodityItems();
       },
       methods: {
         query(){
@@ -187,6 +201,12 @@
               this.officeItems = res && res.data;
             });
         },
+        queryCommodityItems () {
+          solution.getCommodityOptions()
+            .then(res => {
+              this.commodityItems = res && res.data;
+            });
+        },
         /**
          * 编辑
          * */
@@ -198,6 +218,7 @@
               this.form = res.data;
               this.form.courseIds = [];
               this.form.officeIds = [];
+              this.form.commodityIds = [];
               for (let image of this.form.images) {
                 if (image) {
                   image.name = image.fileName;
@@ -209,6 +230,9 @@
               }
               for (let office of this.form.offices){
                 this.form.officeIds.push(String(office.officeId));
+              }
+              for (let commody of this.form.commodities) {
+                this.form.commodityIds.push(String(commody.commodityId));
               }
             });
         },
@@ -237,7 +261,8 @@
             content: '',
             images: [],
             courseIds: [],
-            officeIds: []
+            officeIds: [],
+            commodityIds: []
           };
         },
         handleRemove(file, fileList) {
@@ -280,6 +305,7 @@
             content: this.form.content,
             courseIds: this.form.courseIds,
             officeIds: this.form.officeIds,
+            commodityIds: this.form.commodityIds,
             number: this.form.number,
             title: this.form.title,
             images: []

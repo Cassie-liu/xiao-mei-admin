@@ -3,18 +3,6 @@
     <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click=" dialogVisible=true">上传图片
     </el-button>
     <el-dialog :visible.sync="dialogVisible" :modal="showModal">
-      <!--<el-upload-->
-        <!--:multiple="true"-->
-        <!--:file-list="fileList"-->
-        <!--:show-file-list="true"-->
-        <!--:on-remove="handleRemove"-->
-        <!--:on-success="handleSuccess"-->
-        <!--:before-upload="beforeUpload"-->
-        <!--class="editor-slide-upload"-->
-        <!--action="https://httpbin.org/post"-->
-        <!--list-type="picture-card">-->
-        <!--<el-button size="small" type="primary">点击上传</el-button>-->
-      <!--</el-upload>-->
       <el-upload
         :multiple="true"
         :file-list="fileList"

@@ -4,11 +4,11 @@
         <el-col :span="23">
           <span class="font">是否案例：</span>
           <el-radio label="" v-model="params.recoverCase">全部</el-radio>
-          <el-radio label="1" v-model="params.recoverCase">案例</el-radio>
-          <el-radio label="0" v-model="params.recoverCase">非案例</el-radio>
+          <el-radio label="true" v-model="params.recoverCase">案例</el-radio>
+          <el-radio label="false" v-model="params.recoverCase">非案例</el-radio>
         </el-col>
         <el-col :span="1">
-          <el-button type="primary" size="small">查询</el-button>
+          <el-button type="primary" size="small" @click="params.pageNumber = 1;query()">查询</el-button>
         </el-col>
       </el-row>
       <!--<common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>-->
@@ -34,24 +34,34 @@
           </template>
         </el-table-column>
       </el-table>
+      <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
       <!--查看养生日记-->
-      <el-dialog title="养生日记" v-if="dialogFormVisible" :visible.sync="dialogFormVisible">
-          <el-collapse v-model="activeNames" accordion>
-            <el-collapse-item v-for="(item, index) in 10" :title="'养生日记标题' + (index+1)" :name="index+1" :key="index">
-             <el-row>
-               <el-card>
-                 养生日记图文内容xxxxxxxxxxxxxx
-               </el-card>
-             </el-row>
-              <el-row>
-                <el-card class="box-card">
-                  <div>体检指标</div>
-                  <div>血脂：<span>xxx</span></div>
-                  <div>血糖：<span>xxx</span></div>
-                </el-card>
-              </el-row>
-            </el-collapse-item>
-          </el-collapse>
+      <el-dialog title="养生日记" v-if="dialogFormVisibles" :visible.sync="dialogFormVisibles" class="add-dialog" top="5%" bottom="5%">
+        <el-collapse v-model="activeNames" accordion :loading="diaryLoading">
+          <el-collapse-item v-for="(item, index) in diaryList" :title="item.noteDateStr" :name="index+1" :key="index">
+            <el-row>
+              <el-card class="box-card">
+                <div>{{item.content}}</div>
+              </el-card>
+            </el-row>
+            <el-row>
+              <el-card class="box-card">
+                <div  class="images">
+                  <img v-for="(image, index) in item.images" :src="image.url" alt="">
+                </div>
+              </el-card>
+            </el-row>
+            <el-row>
+              <el-card class="box-card">
+                <div>体检指标</div>
+                <div v-for="(noteNorm, index) in item && item.journeyNoteNorms">
+                  <div>{{noteNorm.normName}}：<span>{{noteNorm.value1}} {{noteNorm.value2}}</span></div>
+                </div>
+              </el-card>
+            </el-row>
+          </el-collapse-item>
+        </el-collapse>
+        <pagination v-show="noteTotalCount>0" :total="noteTotalCount" :page.sync="noteParams.pageNumber" :limit.sync="noteParams.pageSize" @pagination="watchDiary" />
       </el-dialog>
 
       <!--查看体检报告-->
@@ -129,12 +139,22 @@
           params: {
             pageNumber: 1,
             pageSize: 20,
-            audit: 1,      // 1 代表未审核
+            audit: 'true',      // 1 代表未审核
             recoverCase: ''   // 是否评为案例  1 是 0 否
           },
+          totalCount: 0,
           dialogFormVisible: false,
+          dialogFormVisibles: false,
           dialogReportVisible: false,
-          activeNames: ['1']
+          activeNames: ['1'],
+          noteParams: {
+            pageNumber: 1,
+            pageSize: 10,
+            journeyId: ''
+          },
+          diaryList: [],
+          noteTotalCount: 0,
+          diaryLoading: false
         };
       },
       components: {
@@ -163,7 +183,20 @@
          * 查看养生日记
          * */
         watchDiary (index, row) {
-          this.dialogFormVisible = true;
+          this.dialogFormVisibles = true;
+          this.diaryLoading = true;
+          this.noteParams.journeyId = row.journeyId;
+          caseService.getDiaryList(this.noteParams)
+            .then(res => {
+              this.diaryLoading = false;
+              this.diaryList = res.data.content;
+              for (let list of this.diaryList) {
+                if (list.coverImageUrl) {
+                  list.images.unshift({url: list.coverImageUrl});
+                }
+              }
+              this.noteTotalCount = res && res.data && res.data.totalElements;
+            })
         },
         /**
          * 查看体检报告
@@ -206,6 +239,13 @@
   }
   .box-card{
     margin-top:20px;
+  }
+  .images{
+   img{
+     width:200px;
+     height:200px;
+     margin-right:10px;
+   }
   }
   .el-carousel__item h3 {
     color: #475669;

@@ -153,11 +153,6 @@
         ],                  // 表格表头
         loading: false,                 // 显示加载
         tableData: [],                  // 表格数据
-        pageable: {
-          total: 0,
-          currentPage: 1,
-          pageSize: 10
-        },                // 分页
         params: {
           pageNumber: 1,
           pageSize: 20
@@ -228,6 +223,7 @@
                 type: 'success',
                 message: res && res.message
               });
+              this.params.pageNumber = 1;
               this.query();
             });
         }).catch(() => {
@@ -367,6 +363,7 @@
                   duration: 6000
                 });
               }
+              this.params.pageNumber = 1;
               this.query();
             })
         } else {
@@ -380,6 +377,7 @@
                   duration: 6000
                 });
               }
+              this.params.pageNumber = 1;
               this.query();
             })
         }

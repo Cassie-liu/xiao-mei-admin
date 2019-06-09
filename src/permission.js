@@ -21,6 +21,17 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       if (store.getters.roles.length === 0) {
+        // store.dispatch('permission/generateRoutes', { roles: []})
+        //   .then(res => {
+        //     console.log(store.getters.addRoutes);
+        //       router.addRoutes(store.getters.addRoutes);
+        //       next({ ...to, replace: true })
+        //   }).catch(err => {
+        //     store.dispatch('FedLogOut').then(() => {
+        //       Message.error(err || '验证失败, 请重新登录');
+        //       next({ path: '/' })
+        //     })
+        // })
         // get user info
         // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
         // store.dispatch('GetInfo')
@@ -43,7 +54,6 @@ router.beforeEach(async(to, from, next) => {
         //   })
         next()
       } else {
-        // if (hasPermission(store.getters.))
         next()
       }
     }
@@ -51,7 +61,6 @@ router.beforeEach(async(to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      console.log(`/login?redirect=${to.path}`)
       next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
       NProgress.done()
     }

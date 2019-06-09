@@ -32,13 +32,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    // if (res && res.code && res.code !== 200) {
-    //   Message({
-    //     message: res.message,
-    //     type: 'error',
-    //     duration: 5 * 1000
-    //   })
-    // }
+    if (res && res.code && res.code !== 200) {
+      Message({
+        message: res.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
     return response.data
   },
   /**
@@ -79,7 +79,7 @@ service.interceptors.response.use(
     const message = error && error.response && error.response.data && error.response.data.message
     if (error && error.response && error.response.status === 401) {
       // return error && error.response && error.response.data;
-      if (error && error.response && error.response.data && error.response.data.code === 500) {
+      if (error && error.response && error.response.data && error.response.data.code === 50014) {
         MessageBox.confirm(message, '确定登出', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -91,7 +91,14 @@ service.interceptors.response.use(
           })
         })
       } else {
-        // router.push({ path: '/' })
+        Message({
+          message: error.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        store.dispatch('resetToken').then(() => {
+          location.reload()
+        })
       }
     } else {
       return Promise.reject(error)

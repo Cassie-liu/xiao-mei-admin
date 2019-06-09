@@ -96,7 +96,7 @@ export default {
                 duration: 5 * 1000
               });
               // location.href = '/#/user/index';
-              this.$router.push({path: '/user/index'});
+              this.$router.push({ path: this.redirect || '/' })
             }).catch(() => {
               this.loading = false
             })

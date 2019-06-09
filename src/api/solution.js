@@ -33,11 +33,11 @@ export  function updateSolution(data) {
 /**
  * 获取解决方案列表
  * */
-export function getSolutionList(params) {
+export function getSolutionList(data) {
   return request({
     url: '/solution/list',
-    method: 'GET',
-    params
+    method: 'post',
+    data
   })
 }
 /**
@@ -65,6 +65,15 @@ export function getRelateOffice(params) {
 export function getSolutionOptions() {
   return request({
     url: '/common/solutionOptions',
+    method: 'GET'
+  })
+}
+/**
+ * 获取相关商品下拉框
+ * */
+export function getCommodityOptions() {
+  return request({
+    url: '/solution/commodities',
     method: 'GET'
   })
 }
