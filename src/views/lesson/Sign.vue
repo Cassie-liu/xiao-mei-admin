@@ -5,7 +5,7 @@
           <el-row>
             <el-form :inline="true" :model="params">
               <el-form-item label="手机号码">
-                <el-input size="small" v-model="params.phone"></el-input>
+                <el-input size="small" v-model.trim="params.phone"></el-input>
               </el-form-item>
               <el-form-item label="选择课程">
                 <el-select size="small" placeholder="选择课程" v-model="params.courseId">

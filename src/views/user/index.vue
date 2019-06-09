@@ -4,10 +4,10 @@
     <el-tab-pane label="用户管理">
       <el-form :inline="true" :model="params" size="mini" class="user">
         <el-form-item label="手机号码">
-          <el-input v-model="params.mobile" placeholder="请输入手机号码"></el-input>
+          <el-input v-model.trim="params.mobile" placeholder="请输入手机号码"></el-input>
         </el-form-item>
         <el-form-item label="昵称" class="label">
-          <el-input v-model="params.nickName" placeholder="请输入昵称"></el-input>
+          <el-input v-model.trim="params.nickName" placeholder="请输入昵称"></el-input>
         </el-form-item>
         <el-form-item label="起始注册日期">
           <el-date-picker
@@ -49,7 +49,7 @@
              pageNumber: 1,
              pageSize: 20,
              createTimeStart: '',
-             createTimeEnd: formatDate(new Date(), 'yyyy-MM-dd'),
+             createTimeEnd: '',
              mobile: '',
              nickName: ''
            },
@@ -81,8 +81,6 @@
         Pagination
       },
       mounted () {
-          this.params.createTimeStart = formatDate(new Date(), 'yyyy-MM-dd');
-          this.params.createTimeEnd = formatDate(new Date(), 'yyyy-MM-dd');
           this.query();
       },
       methods: {

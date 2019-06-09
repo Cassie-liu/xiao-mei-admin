@@ -4,10 +4,10 @@
     <el-tab-pane label="解决方案管理">
       <el-form :inline="true" :model="params" size="small">
         <el-form-item label="编码">
-          <el-input v-model="params.number" placeholder="请输入编码"></el-input>
+          <el-input v-model.trim="params.number" placeholder="请输入编码"></el-input>
         </el-form-item>
         <el-form-item label="解决方案名称">
-          <el-input v-model="params.title" placeholder="请输入解决方案名称"></el-input>
+          <el-input v-model.trim="params.title" placeholder="请输入解决方案名称"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" @click="params.pageNumber = 1;query()">查询</el-button>

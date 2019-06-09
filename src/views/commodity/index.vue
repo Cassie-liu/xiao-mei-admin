@@ -4,17 +4,17 @@
     <el-tab-pane label="商品管理">
       <el-form :inline="true" :model="params" size="mini" class="user">
         <el-form-item label="商品名称">
-          <el-input v-model="params.name" placeholder="请输入商品名称"></el-input>
+          <el-input v-model.trim="params.name" placeholder="请输入商品名称"></el-input>
         </el-form-item>
         <el-form-item label="商品SKU" class="label">
-          <el-input v-model="params.sku" placeholder="请输入商品编码"></el-input>
+          <el-input v-model.trim="params.sku" placeholder="请输入商品编码"></el-input>
         </el-form-item>
         <el-form-item label="价格最大值" class="label">
           <!--<el-input-number v-model="params.priceMax" :precision="2" :step="0.1"  placeholder="请输入价格最大值"></el-input-number>-->
-          <el-input v-model="params.priceMax" placeholder="请输入价格最大值"></el-input>
+          <el-input v-model.trim="params.priceMax" placeholder="请输入价格最大值"></el-input>
         </el-form-item>
         <el-form-item label="价格最小值" class="label">
-          <el-input v-model="params.priceMin" placeholder="请输入价格最小值"></el-input>
+          <el-input v-model.trim="params.priceMin" placeholder="请输入价格最小值"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="query">查询</el-button>

@@ -66,11 +66,23 @@
 
       <!--查看体检报告-->
       <el-dialog title="体检报告" v-if="dialogReportVisible" :visible.sync="dialogReportVisible">
-        <el-carousel :interval="5000" arrow="always">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <h3>{{ item }}</h3>
-          </el-carousel-item>
-        </el-carousel>
+        <el-table :data="reportData" size="small">
+          <el-table-column type="index" label="序号"></el-table-column>
+          <el-table-column prop="name" label="名称"></el-table-column>
+          <el-table-column  label="类型">
+            <template slot-scope="scope">
+              {{scope.row.type ? '旅程结束体检报告' : '旅程开始体检报告'}}
+            </template>
+          </el-table-column>
+          <el-table-column  label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="watchReportDetails(scope.row)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="dialog-footer" slot="footer">
+          <el-button type="primary" size="small" @click="dialogReportVisible = false">关闭</el-button>
+        </div>
       </el-dialog>
     </div>
 </template>
@@ -154,7 +166,8 @@
           },
           diaryList: [],
           noteTotalCount: 0,
-          diaryLoading: false
+          diaryLoading: false,
+          reportData: []
         };
       },
       components: {
@@ -203,6 +216,10 @@
          * */
         watchReport (index, row) {
           this.dialogReportVisible = true;
+          this.reportData = row.reports || [];
+        },
+        watchReportDetails(row) {
+          window.open(row.url, '_blank');
         },
       /**
        *  取消案例
