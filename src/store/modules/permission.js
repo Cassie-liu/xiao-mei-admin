@@ -1,4 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router'
+import Vuex from 'vuex'
+
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -56,7 +58,7 @@ const actions = {
       // } else {
       //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       // }
-      commit('SET_ROUTES', accessedRoutes)
+      commit('SET_ROUTES', constantRoutes)
       resolve(accessedRoutes)
     })
   }

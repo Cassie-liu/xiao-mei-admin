@@ -7,15 +7,6 @@
             <el-button type="primary" size="small" @click="add">新增</el-button>
           </el-row>
           <common-table :columns="columns" :loading="loading" :table-data="tableData"/>
-          <el-pagination
-            v-if="pageable.total"
-            :total="pageable.total"
-            :current-page.sync="pageable.currentPage"
-            :page-size.sync="pageable.pageSize"
-            style="text-align: right;margin-top: 20px;"
-            layout="total, sizes, prev, pager, next"
-            @current-change="query"
-            @size-change="query"/>
 
           <!--新增/编辑 弹框-->
           <el-dialog :title="title" :visible.sync="dialogFormVisible" class="add-dialog" width="40%">
@@ -31,6 +22,7 @@
                   ref="tree"
                   :data="tree"
                   :default-checked-keys="idList"
+                  :current-node-key="idList"
                   :props="defaultProps"
                   show-checkbox
                   default-expand-all
@@ -40,7 +32,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" size="small" @click="dialogFormVisible = false">确 定</el-button>
+              <el-button type="primary" size="small" @click="save">确 定</el-button>
             </div>
           </el-dialog>
 
@@ -52,12 +44,14 @@
 
 <script>
 import { constantRouterMap } from '@/router'
+import Pagination from '@/components/Pagination';
 import roleMap from './roleMap'
 import commonTable from '@/views/common/commonTable'
 export default {
   name: 'Roles',
   components: {
-    commonTable
+    commonTable,
+    Pagination
   },
   data() {
     return {
@@ -109,11 +103,6 @@ export default {
       ],
       loading: false,
       tableData: [],
-      pageable: {
-        total: 0,
-        currentPage: 1,
-        pageSize: 10
-      },
       title: '新增', // 弹框标题
       dialogFormVisible: false,
       form: {},
@@ -185,6 +174,11 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    save() {
+      this.idList = this.$refs.tree.getCheckedKeys()
+      this.idList.concat(this.$refs.tree.getHalfCheckedKeys())
+      this.dialogFormVisible = false
     }
   }
 }

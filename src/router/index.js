@@ -25,6 +25,203 @@ import Layout from '../views/layout/Layout'
 export let constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/user/index',
+    name: 'User',
+    hidden: true,
+    requiredPermission: 'USER_MANAGEMENT',
+    meta: { title: '用户管理', icon: 'user' },
+    children: [{
+      path: 'user/index',
+      component: () => import('@/views/user/index')
+    }]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    requiredPermission: 'USER_MANAGEMENT',
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        requiredPermission: 'USER_MANAGEMENT',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/case',
+    component: Layout,
+    requiredPermission: 'CASE_REVIEW',
+    children: [
+      {
+        path: 'index',
+        name: 'Case',
+        requiredPermission: 'CASE_REVIEW',
+        component: () => import('@/views/case/index'),
+        meta: { title: '案例审核', icon: 'case' }
+      }
+    ]
+  },
+  {
+    path: '/solution',
+    component: Layout,
+    requiredPermission: 'SOLUTION_MANAGEMENT',
+    children: [
+      {
+        path: 'index',
+        name: 'Solution',
+        requiredPermission: 'SOLUTION_MANAGEMENT',
+        component: () => import('@/views/solution/index'),
+        meta: { title: '解决方案管理', icon: 'solution' }
+      }
+    ]
+  },
+  {
+    path: '/lesson',
+    component: Layout,
+    redirect: '/lesson/index',
+    requiredPermission: 'COURSE_REGISTRATION',
+    meta: { title: '课程报名', icon: 'lesson' },
+    children: [
+      {
+        path: 'index',
+        name: 'Lesson',
+        requiredPermission: 'COURSE_CONFIGURATION',
+        component: () => import('@/views/lesson/index'),
+        meta: { title: '课程配置', icon: 'class' }
+      },
+      {
+        path: 'sign',
+        name: 'SignUp',
+        requiredPermission: 'REGISTRATION_MANAGEMENT',
+        component: () => import('@/views/lesson/Sign'),
+        meta: { title: '报名管理', icon: 'signUp' }
+      }
+    ]
+  },
+  {
+    path: '/commodity',
+    component: Layout,
+    requiredPermission: 'COMMODITY_MANAGEMENT',
+    children: [
+      {
+        path: 'index',
+        name: 'Commodity',
+        requiredPermission: 'COMMODITY_MANAGEMENT',
+        component: () => import('@/views/commodity/index'),
+        meta: { title: '商品管理', icon: 'commodity' }
+      }
+    ]
+  },
+  {
+    path: '/settings',
+    component: Layout,
+    redirect: '/settings/disease',
+    name: 'Settings',
+    requiredPermission: 'SYSTEM_SETTING',
+    meta: { title: '系统设置', icon: 'setting' },
+    children: [
+      {
+        path: 'banner',
+        name: 'Banner',
+        requiredPermission: 'BANNER_SETTING',
+        component: () => import('@/views/settings/banner/Index'),
+        meta: { title: '轮播图设置', icon: 'banner' }
+      },
+      {
+        path: 'lessons-type',
+        name: 'LessonType',
+        requiredPermission: 'COURSE_TYPE_CONFIGURATION',
+        component: () => import('@/views/settings/lesson/Index'),
+        meta: { title: '课程类型配置', icon: 'course' }
+      },
+      {
+        path: 'disease',
+        name: 'Disease',
+        requiredPermission: 'DISEASE_CONFIGURATION',
+        component: () => import('@/views/settings/disease/index'),
+        meta: { title: '疾病配置', icon: 'disease' }
+      },
+      {
+        path: 'health',
+        name: 'HealthConfig',
+        requiredPermission: 'HEALTH_CONFIGURATION',
+        component: () => import('@/views/settings/health/index'),
+        meta: { title: '养生配置', icon: 'healthConfig' }
+      },
+      {
+        path: 'health-result',
+        name: 'HealthResult',
+        requiredPermission: 'HEALTH_RESULT_CONFIGURATION',
+        component: () => import('@/views/settings/healthResult/index'),
+        meta: { title: '养生成果配置', icon: 'result' }
+      },
+      {
+        path: 'heart',
+        name: 'Heart',
+        requiredPermission: 'GOOD_FAULT_CONFIGURATION',
+        component: () => import('@/views/settings/heart/index'),
+        meta: { title: '行善过失配置', icon: 'heart' }
+      },
+      {
+        path: 'encourage',
+        name: 'Encourage',
+        requiredPermission: 'HEART_HEALTH_INTRO',
+        component: () => import('@/views/settings/encourage/index'),
+        meta: { title: '爱心养生介绍', icon: 'encourage' }
+      },
+      {
+        path: 'medical-setting',
+        name: 'Medical',
+        requiredPermission: 'PHYSICAL_EXAM_INDEX_CONFIGURATION',
+        component: () => import('@/views/settings/medicalExam/index'),
+        meta: { title: '体检指标配置', icon: 'exam' }
+      },
+      {
+        path: 'version-setting',
+        name: 'Version',
+        requiredPermission: 'VERSION_UPDATE',
+        component: () => import('@/views/settings/version/index'),
+        meta: { title: '版本更新', icon: 'version' }
+      },
+      {
+        path: 'other',
+        name: 'Other',
+        requiredPermission: 'OTHER_CONFIGURATION',
+        component: () => import('@/views/settings/other/index'),
+        meta: { title: '其他配置', icon: 'other' }
+      }
+    ]
+  },
+  {
+    path: '/operation',
+    component: Layout,
+    redirect: '/operation/accounts',
+    name: 'Operation',
+    requiredPermission: 'SYSTEM_OPERATION',
+    meta: { title: '系统运维', icon: 'operation' },
+    children: [
+      {
+        path: 'accounts',
+        name: 'Accounts',
+        requiredPermission: 'ACCOUNT_MANAGEMENT',
+        component: () => import('@/views/operation/accounts'),
+        meta: { title: '账号管理', icon: 'account' }
+      },
+      {
+        path: 'roles',
+        name: 'Roles',
+        requiredPermission: 'ROLE_MANAGEMENT',
+        component: () => import('@/views/operation/roles'),
+        meta: { title: '角色管理', icon: 'role' }
+      }
+    ]
+  },
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 export const asyncRoutes = [
@@ -242,7 +439,8 @@ export const asyncRoutes = [
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
-constantRouterMap = constantRouterMap.concat(asyncRoutes);
+
+// constantRouterMap = constantRouterMap.concat(asyncRoutes);
 export default new Router({
   // mode: 'hash', //后端支持可开
   // base: 'smile',

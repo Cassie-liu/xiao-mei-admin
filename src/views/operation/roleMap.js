@@ -58,12 +58,12 @@ module.exports = [
         label: '行善过失配置'
       },
       {
-        id: 'PHYSICAL_EXAM_INDEX_CONFIGURATION',
-        label: '体检指标配置'
-      },
-      {
         id: 'HEART_HEALTH_INTRO',
         label: '爱心养生介绍'
+      },
+      {
+        id: 'PHYSICAL_EXAM_INDEX_CONFIGURATION',
+        label: '体检指标配置'
       },
       {
         id: 'VERSION_UPDATE',
