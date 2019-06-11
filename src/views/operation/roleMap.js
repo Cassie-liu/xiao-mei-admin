@@ -1,11 +1,13 @@
 module.exports = [
   {
     id: 'USER_MANAGEMENT',
-    label: '用户管理'
+    label: '用户管理',
+    children: []
   },
   {
     id: 'CASE_REVIEW',
-    label: '案例审核'
+    label: '案例审核',
+    children: []
   },
   {
     id: 'SOLUTION_MANAGEMENT',

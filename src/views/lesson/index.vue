@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-tabs type="border-card">
-      <el-tab-pane label="课程报名">
+      <el-tab-pane label="课程配置">
         <el-row>
           <el-button size="small" type="primary" @click="add">新增</el-button>
         </el-row>

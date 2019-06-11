@@ -110,7 +110,7 @@ export default {
       defaultProps: {
         label: 'label'
       },
-      idList: [],
+      idList: ['COURSE_CONFIGURATION'],
       constantRouterMap,
       roleMap
     }
@@ -178,6 +178,8 @@ export default {
     save() {
       this.idList = this.$refs.tree.getCheckedKeys()
       this.idList.concat(this.$refs.tree.getHalfCheckedKeys())
+      console.log(this.$refs.tree.getCheckedKeys());
+      // console.log(this.$refs.tree.getHalfCheckedKeys());
       this.dialogFormVisible = false
     }
   }

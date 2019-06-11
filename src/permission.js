@@ -21,42 +21,43 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       // if (store.getters.roles.length === 0) {
-      if (JSON.parse(sessionStorage.getItem('role')).role.length === 0) {
-        store.dispatch('permission/generateRoutes', { roles: []})
-          .then(res => {
-              sessionStorage.setItem('role', JSON.stringify({role: ['admin']}))
-              // router.addRoutes(store.getters.addRoutes);
-              next({ ...to, replace: true })
-          }).catch(err => {
-            store.dispatch('FedLogOut').then(() => {
-              Message.error(err || '验证失败, 请重新登录');
-              next({ path: '/' })
-            })
-        })
-        // get user info
-        // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-        // store.dispatch('GetInfo')
-        //   .then(res => {
-        //     // const roles = res.data.role
-        //     // generate accessible routes map based on roles
-        //     store.dispatch('generateRoutes', { roles })
-        //       .then(res => {
-        //         // dynamically add accessible route
-        //         // hack method to ensure that addRoutes is complete
-        //         router.addRoutes(store.getters.addRoutes)
-        //         // set the replace: true, so the navigation will not leave a history record
-        //         next({ ...to, replace: true })
-        //       }).catch(err => {
-        //         store.dispatch('FedLogOut').then(() => {
-        //           Message.error(err || 'Verification failed, please login again')
-        //           next({ path: '/' })
-        //         })
-        //       })
-        //   })
-        next()
-      } else {
-        next()
-      }
+      // if (JSON.parse(sessionStorage.getItem('role')).role.length === 0) {
+      //   store.dispatch('permission/generateRoutes', { roles: []})
+      //     .then(res => {
+      //         sessionStorage.setItem('role', JSON.stringify({role: ['admin']}))
+      //         // router.addRoutes(store.getters.addRoutes);
+      //         next({ ...to, replace: true })
+      //     }).catch(err => {
+      //       store.dispatch('FedLogOut').then(() => {
+      //         Message.error(err || '验证失败, 请重新登录');
+      //         next({ path: '/' })
+      //       })
+      //   })
+      //   // get user info
+      //   // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
+      //   // store.dispatch('GetInfo')
+      //   //   .then(res => {
+      //   //     // const roles = res.data.role
+      //   //     // generate accessible routes map based on roles
+      //   //     store.dispatch('generateRoutes', { roles })
+      //   //       .then(res => {
+      //   //         // dynamically add accessible route
+      //   //         // hack method to ensure that addRoutes is complete
+      //   //         router.addRoutes(store.getters.addRoutes)
+      //   //         // set the replace: true, so the navigation will not leave a history record
+      //   //         next({ ...to, replace: true })
+      //   //       }).catch(err => {
+      //   //         store.dispatch('FedLogOut').then(() => {
+      //   //           Message.error(err || 'Verification failed, please login again')
+      //   //           next({ path: '/' })
+      //   //         })
+      //   //       })
+      //   //   })
+      //   next()
+      // } else {
+      //   next()
+      // }
+      next()
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {

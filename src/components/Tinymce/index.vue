@@ -96,6 +96,8 @@ export default {
         selector: `#${this.tinymceId}`,
         height: this.height,
         body_class: 'panel-body ',
+        fullpage_default_font_size: "1.5rem",
+        content_style: 'html{font-size:14px;}body,td,pre{font-size:14px}',
         object_resizing: false,
         toolbar: this.toolbar.length > 0 ? this.toolbar : setting.toolbar,
         menubar: this.menubar,

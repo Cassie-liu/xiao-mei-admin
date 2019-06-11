@@ -67,7 +67,7 @@ export function getCourseType() {
  * */
 export function getCourseTypeList(params) {
   return request({
-    url: '/course/type',
+    url: '/courseType',
     method: 'GET',
     params
   })
@@ -77,7 +77,7 @@ export function getCourseTypeList(params) {
  * */
 export function addCourseType(data) {
   return request({
-    url: '/course/type',
+    url: '/courseType',
     method: 'POST',
     data
   })
@@ -87,7 +87,7 @@ export function addCourseType(data) {
  * */
 export function updateCourseType(data) {
   return request({
-    url: '/course/type',
+    url: '/courseType',
     method: 'PUT',
     data
   })
@@ -97,7 +97,7 @@ export function updateCourseType(data) {
  * */
 export function deleteCourseType(id) {
   return request({
-    url: '/course/type/' + id,
+    url: '/courseType/' + id,
     method: 'DELETE'
   })
 }
@@ -106,7 +106,7 @@ export function deleteCourseType(id) {
  * */
 export function getFollowPageList(data) {
   return request({
-    url: '/course/getFollowPage',
+    url: '/courseFollow/getFollowPage',
     method: 'post',
     data
   })
@@ -116,7 +116,7 @@ export function getFollowPageList(data) {
  * */
 export function getCourseList () {
   return request({
-    url: '/course/courseRegistrationList',
+    url: '/courseFollow/courseRegistrationList',
     method: 'get'
   })
 }
@@ -125,7 +125,7 @@ export function getCourseList () {
  * */
 export function exportList(params){
   return request({
-    url: '/course/export',
+    url: '/courseFollow/export',
     method: 'get',
     params
   })
