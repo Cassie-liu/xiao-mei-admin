@@ -59,7 +59,7 @@
           query() {
             other.getAppVersion()
               .then(res => {
-                this.params = res.data;
+                this.params = res.data || {};
               });
           },
         download () {

@@ -94,6 +94,7 @@ export default {
       window.tinymce.init({
         language: this.language,
         selector: `#${this.tinymceId}`,
+        object_resizing: true,
         height: this.height,
         body_class: 'panel-body ',
         fullpage_default_font_size: "1.5rem",
@@ -102,6 +103,7 @@ export default {
         toolbar: this.toolbar.length > 0 ? this.toolbar : setting.toolbar,
         menubar: this.menubar,
         plugins: plugins,
+        autoresize_on_init: true,
         end_container_on_empty_block: true,
         powerpaste_word_import: 'clean',
         code_dialog_height: 450,
@@ -174,9 +176,11 @@ export default {
       }
     },
     setContent(value) {
-      window.tinymce.get(this.tinymceId).setContent(value)
+      debugger;
+      window.tinymce.get(this.tinymceId).setContent(`<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">` + value)
     },
     getContent() {
+      debugger;
       window.tinymce.get(this.tinymceId).getContent()
     },
     imageSuccessCBK(arr) {
