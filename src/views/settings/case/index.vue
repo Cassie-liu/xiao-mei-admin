@@ -79,17 +79,17 @@
            </el-form>
            <el-form :label-position="'right'" label-width="120px" :inline="true" class="inline-form">
              <el-form-item label="开始时间">
-               <el-date-picker v-model="form.startTime" size="small" type="date" placeholder="选择日期"></el-date-picker>
+               <el-date-picker v-model="form.startTime" size="small" type="datetime" placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
              </el-form-item>
              <el-form-item label="结束时间">
-               <el-date-picker v-model="form.endTime" size="small"  type="date" placeholder="选择日期"></el-date-picker>
+               <el-date-picker v-model="form.endTime" size="small"  type="datetime" placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
              </el-form-item>
            </el-form>
            <hr>
            <el-button size="small" type="primary" @click="addNote">添加日记</el-button>
            <el-form :label-position="'right'" label-width="120px" v-for="(item, index) in form.note">
              <el-form-item label="日记时间">
-               <el-date-picker v-model="item.noteDate" size="small" type="date" placeholder="选择日期"></el-date-picker>
+               <el-date-picker v-model="item.noteDate" size="small" type="datetime" placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
                <el-button size="small" type="text" @click="deleteRow(form.note, index)">删除</el-button>
              </el-form-item>
              <el-form-item label="日记内容">

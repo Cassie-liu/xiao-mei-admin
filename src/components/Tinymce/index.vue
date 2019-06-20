@@ -24,7 +24,7 @@ export default {
     },
     value: {
       type: String,
-      default: ''
+      default: '<meta name="viewport" content="width=device-width">'
     },
     toolbar: {
       type: Array,
@@ -121,7 +121,8 @@ export default {
           _this.hasInit = true
           editor.on('NodeChange Change KeyUp SetContent', () => {
             this.hasChange = true
-            this.$emit('input', editor.getContent())
+            console.log(editor.getContent());
+            this.$emit('input', `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">` + editor.getContent())
           })
         },
         setup(editor) {
@@ -172,15 +173,13 @@ export default {
         tinymce.execCommand('mceFullScreen')
       }
       if (tinymce) {
-        // tinymce.destroy()
+        tinymce.destroy()
       }
     },
     setContent(value) {
-      debugger;
       window.tinymce.get(this.tinymceId).setContent(`<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">` + value)
     },
     getContent() {
-      debugger;
       window.tinymce.get(this.tinymceId).getContent()
     },
     imageSuccessCBK(arr) {
