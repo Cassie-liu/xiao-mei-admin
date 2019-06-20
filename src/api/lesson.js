@@ -67,7 +67,7 @@ export function getCourseType() {
  * */
 export function getCourseTypeList(params) {
   return request({
-    url: '/courseType',
+    url: '/courseType/type',
     method: 'GET',
     params
   })
@@ -77,7 +77,7 @@ export function getCourseTypeList(params) {
  * */
 export function addCourseType(data) {
   return request({
-    url: '/courseType',
+    url: '/courseType/type',
     method: 'POST',
     data
   })
@@ -87,7 +87,7 @@ export function addCourseType(data) {
  * */
 export function updateCourseType(data) {
   return request({
-    url: '/courseType',
+    url: '/courseType/type',
     method: 'PUT',
     data
   })
@@ -97,7 +97,7 @@ export function updateCourseType(data) {
  * */
 export function deleteCourseType(id) {
   return request({
-    url: '/courseType/' + id,
+    url: '/courseType/type/' + id,
     method: 'DELETE'
   })
 }

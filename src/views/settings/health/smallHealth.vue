@@ -43,7 +43,7 @@
           <el-input size="small" v-model="form.musicUrl"></el-input>
         </el-form-item>
         <el-form-item label="养生方式类型" label-width="120px">
-          <el-select v-model="form.type">
+          <el-select v-model="form.type" size="small">
             <el-option label="类型一" value="1"></el-option>
             <el-option label="类型二" value="2"></el-option>
             <el-option label="类型三" value="3"></el-option>

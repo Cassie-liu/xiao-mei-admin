@@ -121,7 +121,6 @@ export default {
           _this.hasInit = true
           editor.on('NodeChange Change KeyUp SetContent', () => {
             this.hasChange = true
-            console.log(editor.getContent());
             this.$emit('input', `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">` + editor.getContent())
           })
         },
@@ -173,7 +172,7 @@ export default {
         tinymce.execCommand('mceFullScreen')
       }
       if (tinymce) {
-        tinymce.destroy()
+        // tinymce.destroy()
       }
     },
     setContent(value) {

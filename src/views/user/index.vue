@@ -51,7 +51,8 @@
              createTimeStart: '',
              createTimeEnd: '',
              mobile: '',
-             nickName: ''
+             nickName: '',
+             recommenderNickName: ''
            },
            totalCount: 0,
            columns: [     // 表格表头
@@ -66,6 +67,10 @@
              {
                prop: 'mobile',
                label: '手机号码'
+             },
+             {
+               prop: 'recommenderNickName',
+               label: '推荐人'
              },
              {
                prop: 'createTime',
@@ -88,7 +93,6 @@
         * 查询
         * */
         query(){
-          console.log(this.params);
           this.loading = true;
           login.getUsers(this.params)
             .then(res => {

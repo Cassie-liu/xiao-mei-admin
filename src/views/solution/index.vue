@@ -325,7 +325,7 @@
             content: this.form.content,
             courseIds: this.form.courseIds,
             officeIds: this.form.officeIds,
-            commodityIds: this.form.commodityIds,
+            commodityIds: [],
             number: this.form.number,
             title: this.form.title,
             images: []
@@ -333,6 +333,11 @@
           if (this.form.images && this.form.images.length>0){
             for (let i in this.form.images){
               params.images.push({imageId: this.form.images[i].id});
+            }
+          }
+          if (this.form.commodityIds && this.form.commodityIds.length > 0) {
+            for (let i in this.form.commodityIds) {
+              params.commodityIds.push(Number(this.form.commodityIds[i]));
             }
           }
           if (this.form.id) {

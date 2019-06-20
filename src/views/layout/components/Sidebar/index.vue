@@ -22,12 +22,14 @@ export default {
   components: { SidebarItem },
   data() {
     return {
-      permission_routes: []
+      permission_routes: [],
+      permission_roles: []
     }
   },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'roles'
     ]),
     routes() {
       return this.$router.options.routes
@@ -44,32 +46,41 @@ export default {
     }
   },
   mounted() {
-    const roleMaps = [
-      'USER_MANAGEMENT',
-      'CASE_REVIEW',
-      'SOLUTION_MANAGEMENT',
-      'COURSE_REGISTRATION',
-      'COURSE_CONFIGURATION',
-      'REGISTRATION_MANAGEMENT',
-      'COMMODITY_MANAGEMENT',
-      'SYSTEM_SETTING',
-      'BANNER_SETTING',
-      'COURSE_TYPE_CONFIGURATION',
-      'DISEASE_CONFIGURATION',
-      'HEALTH_CONFIGURATION',
-      'HEALTH_RESULT_CONFIGURATION',
-      'GOOD_FAULT_CONFIGURATION',
-      'HEART_HEALTH_INTRO',
-      'PHYSICAL_EXAM_INDEX_CONFIGURATION',
-      'VERSION_UPDATE',
-      // 'CASE_ENTRY',
-      'OTHER_CONFIGURATION',
-      'SYSTEM_OPERATION',
-      'ACCOUNT_MANAGEMENT',
-      'ROLE_MANAGEMENT'
-    ]
-    this.permission_routes = this.handleMenuPermission(this.routes, roleMaps)
-    console.log(this.permission_routes)
+    // const roleMaps = [
+    //   'USER_MANAGEMENT',
+    //   'CASE_REVIEW',
+    //   'SOLUTION_MANAGEMENT',
+    //   'COURSE_REGISTRATION',
+    //   'COURSE_CONFIGURATION',
+    //   'REGISTRATION_MANAGEMENT',
+    //   'COMMODITY_MANAGEMENT',
+    //   'SYSTEM_SETTING',
+    //   'BANNER_SETTING',
+    //   'COURSE_TYPE_CONFIGURATION',
+    //   'DISEASE_CONFIGURATION',
+    //   'HEALTH_CONFIGURATION',
+    //   'HEALTH_RESULT_CONFIGURATION',
+    //   'GOOD_FAULT_CONFIGURATION',
+    //   'HEART_HEALTH_INTRO',
+    //   'PHYSICAL_EXAM_INDEX_CONFIGURATION',
+    //   'VERSION_UPDATE',
+    //   'CASE_ENTRY',
+    //   'OTHER_CONFIGURATION',
+    //   'SYSTEM_OPERATION',
+    //   'ACCOUNT_MANAGEMENT',
+    //   'ROLE_MANAGEMENT'
+    // ];
+    // console.log(this.roles.length === 0);
+    // console.log(this.$store.getters.roles);
+    // console.log(this.routes);
+    if (this.$store.getters.roles.length > 0) {
+      this.permission_routes = this.handleMenuPermission(this.routes, this.$store.getters.roles)
+    } else {
+      this.$store.dispatch('GetInfo')
+        .then(res => {
+          this.permission_routes = this.handleMenuPermission(this.routes, res.data)
+        })
+    }
   },
   methods: {
     handleMenuPermission(menus, permission) {
@@ -77,7 +88,7 @@ export default {
         if (!menu.hidden) {
           if (menu.hasOwnProperty('requiredPermission')) {
             if (permission.indexOf(menu.requiredPermission) === -1) {
-              menu.hidden = true
+               menu.hidden = true
             }
             if (menu.hasOwnProperty('children')) {
               this.handleMenuPermission(menu.children, permission)

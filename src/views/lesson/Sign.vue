@@ -81,7 +81,7 @@
          * 导出
          * */
         drive () {
-          window.open(`${process.env.BASE_API}/course/export?courseId=${this.params.courseId}&phone=${this.params.phone}`, '_blank')
+          window.open(`${process.env.BASE_API}/courseFollow/export?courseId=${this.params.courseId}&phone=${this.params.phone}`, '_blank')
         }
       }
     }

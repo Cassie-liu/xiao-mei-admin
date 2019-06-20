@@ -3,7 +3,7 @@
     <el-tabs type="border-card" >
       <el-tab-pane label="版本更新">
         <div class="version">
-          <el-form :label-position="'right'" :model="params" label-width="120px" >
+          <el-form :label-position="'right'" :model="params" label-width="120px" :v-loading="loading" >
             <el-form-item label="版本序号">
               <el-input size="small" v-model="params.versionId" :disabled="readonly"></el-input>
             </el-form-item>
@@ -15,15 +15,15 @@
               <el-radio :label="false" v-model="params.forceUpdate"  :disabled="readonly">否</el-radio>
             </el-form-item>
             <el-form-item label="app上传">
-              <el-input size="small" v-model="params.key" disabled></el-input>
+              <el-input size="small" :value="params.key" disabled></el-input>
               <el-button type="text" @click="download">下载</el-button>
               <div class="upload">
                 <el-upload action="" :disabled="readonly"
-                :http-request="uploadUrls">
+                           :http-request="uploadUrls">
                   <el-button type="text" :disabled="readonly" class="uploadButton">上传</el-button>
                 </el-upload>
                 <!--<el-button type="text" :disabled="readonly" class="uploadButton">上传</el-button>-->
-                <!--<input type="file">-->
+                <!--<input type="file" @change="uploadUrls">-->
               </div>
             </el-form-item>
             <el-form-item label="版本说明">
@@ -49,10 +49,12 @@
           return {
             params: {},
             readonly: true,
-            file: ''
+            file: '',
+            loading: false
           }
       },
       mounted () {
+          console.log(111111);
         this.query();
       },
       methods: {
@@ -70,6 +72,7 @@
           this.file = file.file;
         },
         save () {
+            this.loading = true;
             let formData = new FormData();
             formData.append('file', this.file);
             formData.append('description', this.params.description);
@@ -87,7 +90,10 @@
                 }
                 this.readonly = true;
                 this.query();
-              })
+                this.loading = false;
+              }).catch(res => {
+              this.loading = false;
+            })
         }
       }
     }

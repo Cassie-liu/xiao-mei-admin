@@ -12,7 +12,7 @@
           <!--新增/编辑 弹框-->
           <el-dialog
             v-if="dialogFormVisible"
-            :title="title === 'add' ? '新增': '编辑'"
+            :title="title"
             :visible.sync="dialogFormVisible"
             class="add-dialog"
             width="40%">
@@ -38,7 +38,7 @@
               </el-form-item>
               <el-form-item label="关联角色" label-width="120px">
                 <el-checkbox-group v-model="form.roleIds">
-                  <el-checkbox v-for="(item, index) in checkBoxList" :label="item.id" :key="index" >{{ item.label }}</el-checkbox>
+                  <el-checkbox v-for="(item, index) in roleList" :label="item.id" :key="index" >{{ item.name }}</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </el-form>
@@ -137,11 +137,13 @@ export default {
           id: 'ROLE_CMN_ADMIN'
         }
       ],
+      roleList: [],
       validated: false
     }
   },
   created() {
     this.query()
+    this.queryAllRoles();
   },
   methods: {
     query() {
@@ -153,6 +155,13 @@ export default {
         }).catch(res => {
         this.loading = false;
       });
+    },
+    queryAllRoles () {
+      account.getRelateRoles()
+        .then(res => {
+          console.log(res.data);
+          this.roleList = res.data;
+        });
     },
     add() {
       this.dialogFormVisible = true

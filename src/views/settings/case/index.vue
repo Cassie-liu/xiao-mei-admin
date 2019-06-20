@@ -32,7 +32,7 @@
                  <el-option v-for="(item, index) in resultList" :value="item.key" :key="item.key + index" :label="item.value"></el-option>
                </el-select>
              </el-form-item>
-             <el-form-item>
+             <el-form-item v-if="form.disease.length > 1">
                <el-button size="small" type="text" @click="deleteRow(form.disease, index)">删除</el-button>
              </el-form-item>
            </el-form>
@@ -60,7 +60,7 @@
                  <el-input size="small" v-model="item.endValue2"></el-input>
                </el-col>
              </el-form-item>
-             <el-form-item>
+             <el-form-item v-if="form.norm.length > 1">
                <el-button type="text" size="small" @click="deleteRow(form.norm, index)">删除</el-button>
              </el-form-item>
            </el-form>

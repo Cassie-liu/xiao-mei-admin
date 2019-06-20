@@ -50,3 +50,10 @@ export function getAccountById(id) {
     method: 'GET'
   })
 }
+
+export function getRelateRoles() {
+  return request({
+    url: '/sysUser/getRoles',
+    method: 'GET'
+  })
+}
