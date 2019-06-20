@@ -246,12 +246,32 @@
             type: 'warning'
           }).then(() => {
             // todo need interface
+            solution.deleteSolutionById(row.id)
+              .then(res => {
+                this.resetParams(res);
+              })
           }).catch(() => {
             this.$message({
               type: 'info',
               message: '已取消删除'
             });
           });
+        },
+        resetParams (res) {
+          if (res && res.code === 200) {
+            this.$message({
+              message: res && res.message,
+              type: 'success'
+            });
+            this.loading = false;
+            this.params.pageNumber = 1;
+            this.totalCount =0;
+            this.query();
+          } else if (res.code === 500) {
+            this.$alert(res.data,'提示', {
+              confirmButtonText: '确定'
+            });
+          }
         },
         /*新增*/
         add () {

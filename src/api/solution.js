@@ -77,3 +77,12 @@ export function getCommodityOptions() {
     method: 'GET'
   })
 }
+/**
+ * 删除解决方案
+ * */
+export function deleteSolutionById(id) {
+  return request({
+    url: '/solution/' + id,
+    method: 'DELETE'
+  })
+}

@@ -44,7 +44,7 @@
 
 <script>
 import { constantRouterMap } from '@/router'
-import Pagination from '@/components/Pagination';
+import Pagination from '@/components/Pagination'
 import roleMap from './roleMap'
 import commonTable from '@/views/common/commonTable'
 export default {

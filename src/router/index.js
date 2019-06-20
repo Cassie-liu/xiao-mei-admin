@@ -189,6 +189,13 @@ export let constantRouterMap = [
         meta: { title: '版本更新', icon: 'version' }
       },
       {
+        path: 'case-entry',
+        name: 'CaseEntry',
+        requiredPermission: 'CASE_ENTRY',
+        component: () => import('@/views/settings/case/index'),
+        meta: { title: '案例录入', icon: 'version' }
+      },
+      {
         path: 'other',
         name: 'Other',
         requiredPermission: 'OTHER_CONFIGURATION',
