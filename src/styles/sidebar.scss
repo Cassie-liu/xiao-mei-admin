@@ -5,6 +5,15 @@
     transition: margin-left .28s;
     margin-left: 180px;
     position: relative;
+    margin-top: 60px;
+  }
+  // 头部
+  .header-container{
+    background:#233346;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    z-index: 1000;
   }
   // 侧边栏
   .sidebar-container {
@@ -13,11 +22,13 @@
     height: 100%;
     position: fixed;
     font-size: 0px;
-    top: 0;
+    //top: 0;
+    top: 60px;
     bottom: 0;
     left: 0;
     z-index: 1001;
     overflow: hidden;
+    padding-bottom: 90px;
     //reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
@@ -50,6 +61,16 @@
     .is-active > .el-submenu__title{
       color: #f4f4f5!important;
     }
+  }
+  // 底部
+  .footer-container{
+    height:30px !important;
+    line-height: 30px;
+    z-index: 1002;
+    position: fixed;
+    bottom: 0;
+    background: #fff;
+    width: 100%;
   }
   .hideSidebar {
     .sidebar-container {
@@ -99,7 +120,6 @@
   .el-menu--collapse .el-menu .el-submenu {
     min-width: 180px !important;
   }
-
   //适配移动端
   .mobile {
     .main-container {
@@ -129,5 +149,15 @@
     .svg-icon{
       margin-right: 16px;
     }
+  }
+}
+.el-popover__title{
+  font-weight: bold;
+}
+.intro-content{
+  line-height:26px;
+  font-family: FangSong;
+  p{
+    text-indent: 2em;
   }
 }

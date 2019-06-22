@@ -5,7 +5,7 @@
       <!--查看养生日记-->
       <el-dialog title="养生日记" v-if="dialogFormVisibles" :visible.sync="dialogFormVisibles" class="add-dialog" :loading="diaryLoading">
         <el-collapse v-model="activeNames" accordion >
-          <el-collapse-item v-for="(item, index) in diaryList" :title="item.noteDateStr" :name="index+1" :key="index">
+          <el-collapse-item v-for="(item, index) in diaryList" :title="item.noteDateStr" :name="index+1" :key="index"  v-if="diaryList.length>0">
             <el-row>
               <el-card class="box-card">
                 <div>{{item.content}}</div>
@@ -23,6 +23,7 @@
               </el-card>
             </el-row>
           </el-collapse-item>
+          <div v-if="diaryList.length ===0" class="no-result">暂无数据</div>
         </el-collapse>
         <pagination v-show="noteTotalCount>0" :total="noteTotalCount" :page.sync="noteParams.pageNumber" :limit.sync="noteParams.pageSize" @pagination="watchDiary" />
       </el-dialog>
@@ -270,6 +271,14 @@
 
 <style  rel="stylesheet/scss" lang="scss">
 .add-dialog{
+  .no-result{
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: #909399;
+  }
   .dialog-footer{
     text-align: center;
   }

@@ -8,12 +8,12 @@ module.exports = {
   dev: {
     // Paths
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/smile/',
-    // assetsPublicPath: '/',
+    // assetsPublicPath: '/smile/',
+    assetsPublicPath: '/',
     proxyTable: {},
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '192.168.0.105', // can be overwritten by process.env.HOST
     port: 9528, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,
@@ -58,8 +58,8 @@ module.exports = {
      * then assetsPublicPath should be set to "/bar/".
      * In most cases please use '/' !!!
      */
-    assetsPublicPath: '/smile/',
-    // assetsPublicPath: '/',
+    // assetsPublicPath: '/smile/',
+    assetsPublicPath: '/',
 
     /**
      * Source Maps

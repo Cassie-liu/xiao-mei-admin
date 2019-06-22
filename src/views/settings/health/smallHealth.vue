@@ -39,17 +39,15 @@
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="音乐链接" label-width="120px">
-          <el-input size="small" v-model="form.musicUrl"></el-input>
-        </el-form-item>
         <el-form-item label="养生方式类型" label-width="120px">
           <el-select v-model="form.type" size="small">
             <el-option label="类型一" value="1"></el-option>
             <el-option label="类型二" value="2"></el-option>
             <el-option label="类型三" value="3"></el-option>
-            <el-option label="类型四" value="4"></el-option>
-            <el-option label="类型五" value="5"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="音乐链接" label-width="120px">
+          <el-input size="small" v-model="form.musicUrl"></el-input>
         </el-form-item>
         <el-form-item label="介绍描述" label-width="120px">
           <div class="solution-ue">

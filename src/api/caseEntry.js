@@ -49,3 +49,13 @@ export function getSolution() {
     method: 'GET'
   })
 }
+/**
+ * 添加案例
+ * */
+export function addCaseEntry(data) {
+  return request({
+    url: '/case/caseEntry',
+    method: 'POST',
+    data
+  })
+}
