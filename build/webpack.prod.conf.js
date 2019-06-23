@@ -54,8 +54,8 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: config.build.index,
       template: 'index.html',
       inject: true,
-      // favicon: resolve('favicon.ico'),
-      title: 'xiao-mei-admin',
+      favicon: resolve('favicon.png'),
+      title: '笑美健康',
       templateParameters: {
         BASE_URL: config.build.assetsPublicPath + config.build.assetsSubDirectory,
       },
