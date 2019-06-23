@@ -154,7 +154,7 @@ $light_gray:#7BC5AC;;
   position: fixed;
   height: 100%;
   width: 100%;
-  background-image: url('/src/images/bg.png');
+  background-image: url('../../images/bg.png');
   background-size: 100% 100%;
   .login-form {
     position: absolute;

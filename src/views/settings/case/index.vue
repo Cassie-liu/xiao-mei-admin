@@ -90,7 +90,7 @@
            <el-form :label-position="'right'" label-width="120px" :model="form"  v-for="(item, index) in form.notes" :key="item.key">
              <el-form-item label="日记时间">
                <el-date-picker v-model="item.noteTime" size="small" type="datetime" placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-               <el-button size="small" type="text" @click="deleteRow(form.note, index)">删除</el-button>
+               <el-button size="small" type="text" @click="deleteRow(form.notes, index)">删除</el-button>
              </el-form-item>
              <el-form-item label="日记内容">
                <el-input type="textarea"  v-model="item.content" :autosize="{ minRows: 2}"></el-input>
@@ -287,16 +287,11 @@
           )
         },
         addNorm () {
-          // this.form.norm.push({
-          //   normTypeId: '',
-          //   startValue1: '',
-          //   endValue1: ''
-          // })
-          this.norm.push({
+          this.form.norm.push({
             normTypeId: '',
             startValue1: '',
             endValue1: ''
-          });
+          })
         },
         addNote () {
           this.form.notes.push({
@@ -365,15 +360,15 @@
          * */
         handleRemoveCoverImage (file, fileList) {
           // this.form.coverImage = fileList;
-          this.form.note[this.index].coverImages = fileList;
-          this.form.note[this.index].coverImageId = '';
+          this.form.notes[this.index].coverImages = fileList;
+          this.form.notes[this.index].coverImageId = '';
           common.deleteImage(file.id);
         },
         /**
          * 移除配图
          * */
         handleRemoveImages (file, fileList) {
-          this.form.note[this.index].images = fileList;
+          this.form.notes[this.index].images = fileList;
           common.deleteImage(file.id);
         },
         handlePictureCardPreview(file) {
