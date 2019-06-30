@@ -171,7 +171,7 @@
               this.resetParams(res);
             })
         } else {
-          heart.id = this.form.id;
+          params.id = this.form.id;
           heart.updateCharityFaultContent(params)
             .then(res => {
               this.resetParams(res);
