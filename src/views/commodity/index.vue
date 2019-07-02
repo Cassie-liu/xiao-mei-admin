@@ -43,9 +43,9 @@
         <el-table-column
           label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="sell(scope.row)">{{scope.row.status ? '上架' : '下架'}}</el-button>
-            <el-button type="text" @click="edit(scope.$index, scope.row)">编辑</el-button>
-            <el-button type="text" @click="deletRow(scope.$index, scope.row)">删除</el-button>
+            <el-button type="text" size="small" @click="sell(scope.row)">{{scope.row.status ? '上架' : '下架'}}</el-button>
+            <el-button type="text" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="text" size="small" @click="deletRow(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -214,7 +214,7 @@
           // this.form = Object.assign({}, row);
         },
         deletRow (index, row) {
-          this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
+          this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
