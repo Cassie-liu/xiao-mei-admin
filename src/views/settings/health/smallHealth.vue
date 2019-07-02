@@ -285,7 +285,7 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style rel="stylesheet/scss" lang="scss" scoped>
   .small-health{
     .add-dialog{
       .el-dialog__body{

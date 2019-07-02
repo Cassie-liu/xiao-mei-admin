@@ -85,3 +85,18 @@ export function checkImages(file,self) {
   }
   return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
 }
+export function checkMusics(file,self) {
+  const isJPG = file.type === 'image/jpeg';
+  const isGIF = file.type === 'image/gif';
+  const isPNG = file.type === 'image/png';
+  const isBMP = file.type === 'image/bmp';
+  const isLt2M = file.size / 1024 / 1024 < 2;
+
+  if (!isJPG && !isGIF && !isPNG && !isBMP) {
+    self.$message.error('上传图片必须是JPG/GIF/PNG/BMP 格式!');
+  }
+  if (!isLt2M) {
+    self.$message.error('上传图片大小不能超过 2MB!');
+  }
+  return (isJPG || isBMP || isGIF || isPNG) && isLt2M;
+}
