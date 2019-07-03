@@ -46,8 +46,35 @@
             <el-option label="类型三" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="音乐链接" label-width="120px">
-          <el-input size="small" v-model="form.musicUrl"></el-input>
+        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === '1'">
+          <el-select v-model="form.music" size="small">
+            <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === '2'" class="musics">
+          <div class="item-wrap">
+            <label>快:</label>
+            <el-select v-model="form.music1" size="small">
+              <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+            </el-select>
+          </div>
+          <div class="item-wrap">
+            <label>中:</label>
+            <el-select v-model="form.music2" size="small">
+              <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+            </el-select>
+          </div>
+          <div class="item-wrap">
+            <label>慢:</label>
+            <el-select v-model="form.music3" size="small">
+              <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === '3'">
+          <el-select v-model="form.musicList" multiple size="small" class="select" @change="changeSelect">
+            <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="介绍描述" label-width="120px">
           <div class="solution-ue">
@@ -129,9 +156,11 @@
           title: '',
           name: '',
           content: '',
-          relateSolveCase: []
+          relateSolveCase: [],
+          musicList: []
         },
-        healthList: []
+        healthList: [],
+        musicList: [],
       }
     },
     components: {
@@ -142,6 +171,7 @@
     created () {
       this.queryHealthList();
       this.query();
+      this.queryMusicList();
     },
     methods: {
       /**
@@ -167,6 +197,12 @@
           this.loading = false;
        })
       },
+      queryMusicList () {
+        health.getMusicList()
+          .then(res => {
+            this.musicList = res && res.data;
+          })
+      },
       add () {
         this.title ='新增';
         this.type = 'add';
@@ -180,20 +216,34 @@
         this.type = 'edit';
         this.dialogFormVisible = true;
         this.form = Object.assign({}, row);
+        this.form.musicList = [];
         this.form.bgImage = [];
         if (row.bgImage) {
           this.form.bgImage.push(row.bgImage)
         }
       },
+      changeSelect () {
+        this.$forceUpdate();
+      },
       save () {
         let params = {
           bgImageId: '',
           content: this.form.content,
-          musicUrl: this.form.musicUrl,
+          // musicUrl: this.form.musicUrl,
           number: this.form.number,
           type: this.form.type,
           wayName: this.form.wayName,
+          musicFileds: []
         };
+        if(this.form.type === '1') {
+          params.musicFileds.push(this.form.music);
+        } else if (this.form.type === '2') {
+          this.form.music1 && params.musicFileds.push(this.form.music1);
+          this.form.music2 && params.musicFileds.push(this.form.music2);
+          this.form.music3 && params.musicFileds.push(this.form.music3);
+        } else if (this.form.type === '3') {
+          params.musicFileds = this.form.musicList;
+        }
         params.bgImageId = this.form.bgImage  && this.form.bgImage[0] &&  this.form.bgImage[0].id;
         if (!this.form.healthWayId) {
           health.addHealthWay(params)
@@ -287,6 +337,16 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .small-health{
+    .musics{
+      .item-wrap{
+        label{
+          display: inline-block;
+          width:40px;
+        }
+        display: inline-block;
+        margin-right:10px;
+      }
+    }
     .add-dialog{
       .el-dialog__body{
         max-height: 500px !important;

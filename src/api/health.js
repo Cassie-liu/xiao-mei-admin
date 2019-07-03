@@ -149,3 +149,32 @@ export function deleteHealthResult(id) {
   })
 }
 
+/**
+ * 查询音乐列表
+ * */
+export function getMusicList(params) {
+  return request({
+    url: '/health/musicList',
+    method: 'GET',
+    params
+  })
+}
+/**
+ * 上传音乐文件
+ * */
+export function uploadMusic(data) {
+  return request({
+    url: '/health/uploadFile',
+    method: 'POST',
+    headers: {
+      'Content-type': 'multipart/form-data'
+    },
+    data
+  })
+}
+export function deleteMusicById(id) {
+  return request({
+    url: '/health/deleteFile/' + id,
+    method: 'DELETE'
+  })
+}
