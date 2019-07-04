@@ -41,17 +41,17 @@
         </el-form-item>
         <el-form-item label="养生方式类型" label-width="120px">
           <el-select v-model="form.type" size="small">
-            <el-option label="类型一" value="1"></el-option>
-            <el-option label="类型二" value="2"></el-option>
-            <el-option label="类型三" value="3"></el-option>
+            <el-option label="类型一" :value="1"></el-option>
+            <el-option label="类型二" :value="2"></el-option>
+            <el-option label="类型三" :value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === '1'">
+        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === 1">
           <el-select v-model="form.music" size="small">
             <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === '2'" class="musics">
+        <el-form-item label="选择音乐" label-width="120px" v-if="form.type ===2" class="musics">
           <div class="item-wrap">
             <label>快:</label>
             <el-select v-model="form.music1" size="small">
@@ -71,7 +71,7 @@
             </el-select>
           </div>
         </el-form-item>
-        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === '3'">
+        <el-form-item label="选择音乐" label-width="120px" v-if="form.type === 3">
           <el-select v-model="form.musicList" multiple size="small" class="select" @change="changeSelect">
             <el-option v-for="(item, index) in musicList" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
@@ -221,6 +221,17 @@
         if (row.bgImage) {
           this.form.bgImage.push(row.bgImage)
         }
+        if (this.form.type === 1) {
+          this.form.music = this.form.music[0] && this.form.music[0].id;
+        } else if (this.form.type === 2) {
+            this.form.music1 = this.form.music[0] && this.form.music[0].id;
+            this.form.music2 = this.form.music[1] && this.form.music[1].id;
+            this.form.music3 = this.form.music[2] && this.form.music[2].id;
+        } else if (this.form.type === 3) {
+          for (let i in this.form.music) {
+            this.form.musicList.push(this.form.music[i] && this.form.music[i].id);
+          }
+        }
       },
       changeSelect () {
         this.$forceUpdate();
@@ -233,16 +244,16 @@
           number: this.form.number,
           type: this.form.type,
           wayName: this.form.wayName,
-          musicFileds: []
+          musicFileIds: []
         };
-        if(this.form.type === '1') {
-          params.musicFileds.push(this.form.music);
-        } else if (this.form.type === '2') {
-          this.form.music1 && params.musicFileds.push(this.form.music1);
-          this.form.music2 && params.musicFileds.push(this.form.music2);
-          this.form.music3 && params.musicFileds.push(this.form.music3);
-        } else if (this.form.type === '3') {
-          params.musicFileds = this.form.musicList;
+        if(this.form.type === 1) {
+          params.musicFileIds.push(this.form.music);
+        } else if (this.form.type === 2) {
+          this.form.music1 && params.musicFileIds.push(this.form.music1);
+          this.form.music2 && params.musicFileIds.push(this.form.music2);
+          this.form.music3 && params.musicFileIds.push(this.form.music3);
+        } else if (this.form.type === 3) {
+          params.musicFileIds = this.form.musicList;
         }
         params.bgImageId = this.form.bgImage  && this.form.bgImage[0] &&  this.form.bgImage[0].id;
         if (!this.form.healthWayId) {
