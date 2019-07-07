@@ -133,6 +133,13 @@ export let constantRouterMap = [
         meta: { title: '轮播图设置', icon: 'banner' }
       },
       {
+        path: 'search',
+        name: 'Search',
+        // requiredPermission: 'SEARCH_SETTING',
+        component: () => import('@/views/settings/search/Index'),
+        meta: { title: '热门搜索配置', icon: 'banner' }
+      },
+      {
         path: 'lessons-type',
         name: 'LessonType',
         requiredPermission: 'COURSE_TYPE_CONFIGURATION',
