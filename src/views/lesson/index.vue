@@ -362,9 +362,10 @@
                   message: res && res.message,
                   duration: 6000
                 });
+                this.params.pageNumber = 1;
+                this.dialogFormVisible = false;
+                this.query();
               }
-              this.params.pageNumber = 1;
-              this.query();
             })
         } else {
           // 新增
@@ -376,12 +377,12 @@
                   message: res && res.message,
                   duration: 6000
                 });
+                this.params.pageNumber = 1;
+                this.dialogFormVisible = false;
+                this.query();
               }
-              this.params.pageNumber = 1;
-              this.query();
             })
         }
-        this.dialogFormVisible = false;
       }
     }
   }
