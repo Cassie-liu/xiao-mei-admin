@@ -29,7 +29,7 @@
             name="image"
             :file-list="form.bgImage">
             <i class="el-icon-plus"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片</span></div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片, 图片大小为375dp * 200dp</span></div>
           </el-upload>
         </el-form-item>
         <el-form-item label="内容介绍" label-width="120px">

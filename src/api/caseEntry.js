@@ -59,3 +59,13 @@ export function addCaseEntry(data) {
     data
   })
 }
+/**
+ * 修改案例
+ * */
+export function updateCaseEntry(data) {
+  return request({
+    url: '/audit/modifyCase',
+    method: 'POST',
+    data
+  })
+}

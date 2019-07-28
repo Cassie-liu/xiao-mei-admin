@@ -404,7 +404,6 @@
               }
             }
           }
-          console.log(params);
           caseEntry.addCaseEntry(params)
             .then(res => {
               if (res && res.code === 200) {
