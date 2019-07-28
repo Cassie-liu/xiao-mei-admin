@@ -37,3 +37,30 @@ export function getDiaryList(data) {
     data
   })
 }
+/**-
+ * 重新审核案例
+ * */
+export function reReviewCase(id) {
+  return request({
+    url: '/audit/reReviewCase/' + id,
+    method: 'post',
+  })
+}
+/**-
+ * 删除审核案例
+ * */
+export function deleteCaseInfo(id) {
+  return request({
+    url: '/audit/deleteCase/' + id,
+    method: 'delete'
+  })
+}
+/**
+ * 编辑案例
+ * */
+export function editCaseInfo(id) {
+  return request({
+    url: '/audit/caseInfo/' + id,
+    method: 'get'
+  })
+}

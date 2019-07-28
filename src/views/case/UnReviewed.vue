@@ -89,6 +89,9 @@
           <el-button type="primary" size="small" @click="dialogReportVisible = false">关闭</el-button>
         </div>
       </el-dialog>
+
+      <!--编辑-->
+      <case-entry v-if="showEditModal" ref="case" :show="showEditModal" :id="currentId" @close="closeEditModal"></case-entry>
     </div>
 </template>
 
@@ -96,6 +99,7 @@
   import commonTable from '@/views/common/commonTable';
   import Pagination from '@/components/Pagination';
   import * as caseService from '@/api/case';
+  import caseEntry from './caseEntry';
     export default {
         name: 'unReviewed',
       data () {
@@ -146,8 +150,18 @@
               functionOpt: [
                 {
                   type: 'text',
+                  label: '编辑',
+                  func: this.edit
+                },
+                {
+                  type: 'text',
                   label: '审核',
                   func: this.review
+                },
+                {
+                  type: 'text',
+                  label: '删除',
+                  func: this.deleteCase
                 }
               ]
             }
@@ -178,12 +192,15 @@
           diaryList: [],
           noteTotalCount: 0,
           diaryLoading: false,
-          reportData: []
+          reportData: [],
+          showEditModal: false,
+          currentId: ''
         };
       },
       components: {
         commonTable,
-        Pagination
+        Pagination,
+        caseEntry
       },
       mounted () {
         this.query();
@@ -195,10 +212,10 @@
               .then(res => {
                 this.tableData = res.data.content;
                 this.totalCount = res && res.data && res.data.totalElements;
-                this.loading = false;
                 for(let data of this.tableData) {
                   data.result = data.healthResult.join(',');
                 }
+                this.loading = false;
               }).catch(res => {
                 this.loading = false;
             });
@@ -264,6 +281,40 @@
               this.query();
             });
           this.dialogFormVisible = false;
+        },
+        /**
+         * 编辑
+         * */
+        edit (index, row) {
+          this.showEditModal = true;
+          if (this.$refs.case) {
+            this.$refs.case.dialogFormVisible = true;
+          }
+          this.currentId = row.journeyId;
+        },
+        closeEditModal () {
+          this.showEditModal = false;
+        },
+        deleteCase (index, row) {
+          this.$confirm('确认删除案例?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(()=>{
+            caseService.deleteCaseInfo(row.journeyId)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res && res.message,
+                    duration: 6000
+                  });
+                  this.params.pageNumber = 1;
+                  this.query();
+                }
+              });
+          }).catch(err => {
+          })
         }
       }
     }

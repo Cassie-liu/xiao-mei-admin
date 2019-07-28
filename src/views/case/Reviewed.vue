@@ -12,7 +12,7 @@
         </el-col>
       </el-row>
       <!--<common-table :columns="columns" :loading="loading" :table-data="tableData"></common-table>-->
-      <el-table :data="tableData" :v-loading="loading" style="width:100%" size="small">
+      <el-table :data="tableData"  v-loading="loading" style="width:100%" size="small">
         <el-table-column type="index" label="序号" width="120"></el-table-column>
         <el-table-column prop="nickName" label="用户名"></el-table-column>
         <el-table-column prop="journeyName" label="旅程名称"></el-table-column>
@@ -29,8 +29,10 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" v-if="scope.row.recoverCase" @click="cancel(scope.$index, scope.row)" class="text-primary">取消案例</el-button>
-            <el-button type="text" v-if="scope.row.recoverCase === false" @click="cancel(scope.$index, scope.row)" class="text-primary">确认为案例</el-button>
+            <!--<el-button type="text" v-if="scope.row.recoverCase" @click="cancel(scope.$index, scope.row)" class="text-primary">取消案例</el-button>-->
+            <!--<el-button type="text" v-if="scope.row.recoverCase === false" @click="cancel(scope.$index, scope.row)" class="text-primary">确认为案例</el-button>-->
+            <el-button type="text" size="small" @click="reReview(scope.$index, scope.row)">重新审核</el-button>
+            <el-button type="text" size="small" @click="deleteCase(scope.$index, scope.row)">删除案例</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,6 +87,7 @@
           <el-button type="primary" size="small" @click="dialogReportVisible = false">关闭</el-button>
         </div>
       </el-dialog>
+
     </div>
 </template>
 
@@ -96,7 +99,7 @@
         name: 'Reviewed',
       data () {
         return {
-          loading: false,
+          loading: true,
           columns: [
             {
               type: 'index',
@@ -185,10 +188,10 @@
               .then(res => {
                 this.tableData = res.data.content;
                 this.totalCount = res && res.data && res.data.totalElements;
-                this.loading = false;
                 for(let data of this.tableData) {
                   data.result = data.healthResult.join(',');
                 }
+                this.loading = false;
               }).catch(res => {
               this.loading = false;
             });
@@ -223,18 +226,47 @@
           window.open(row.url, '_blank');
         },
       /**
-       *  取消案例
+       *  重新审核
        * */
-        cancel (index, row) {
-          this.$confirm('确认取消案例?', '提示', {
+      reReview (index, row) {
+          this.$confirm('确认重新审核?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(()=>{
-            this.$message({
-              type: 'info',
-              message: '已取消案例'
-            });
+            caseService.reReviewCase(row.journeyId)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res && res.message,
+                    duration: 6000
+                  });
+                  this.params.pageNumber = 1;
+                  this.query();
+                }
+              });
+          }).catch(err => {
+          })
+        },
+        deleteCase (index, row) {
+          this.$confirm('确认删除案例?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(()=>{
+            caseService.deleteCaseInfo(row.journeyId)
+              .then(res => {
+                if (res && res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: res && res.message,
+                    duration: 6000
+                  });
+                  this.params.pageNumber = 1;
+                  this.query();
+                }
+              });
           }).catch(err => {
           })
         }

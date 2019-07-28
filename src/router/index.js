@@ -137,7 +137,7 @@ export let constantRouterMap = [
         name: 'Search',
         // requiredPermission: 'SEARCH_SETTING',
         component: () => import('@/views/settings/search/Index'),
-        meta: { title: '热门搜索配置', icon: 'banner' }
+        meta: { title: '热门搜索配置', icon: 'search' }
       },
       {
         path: 'lessons-type',
@@ -200,7 +200,13 @@ export let constantRouterMap = [
         name: 'CaseEntry',
         requiredPermission: 'CASE_ENTRY',
         component: () => import('@/views/settings/case/index'),
-        meta: { title: '案例录入', icon: 'version' }
+        meta: { title: '案例录入', icon: 'entry' }
+      },
+      {
+        path: 'about-xiaomei',
+        name: 'About',
+        component: () => import('@/views/settings/about/index'),
+        meta: { title: '关于笑美', icon: 'about' }
       },
       {
         path: 'other',
