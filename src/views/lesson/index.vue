@@ -57,7 +57,7 @@
             name="image"
             :file-list="form.coverImage">
             <i class="el-icon-plus"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片, 图片大小为155dp * 87dp</span></div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, 建议大小310*174px, <span style="color: red">只能上传1张图片</span></div>
           </el-upload>
         </el-form-item>
         <el-form-item label="展示图" label-width="120px">
@@ -74,7 +74,7 @@
             :before-remove="beforeRemoveCourseImages"
             :file-list="form.courseImages">
             <i class="el-icon-plus"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，<span style="color: red">最多上传5张图片</span></div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，建议大小750*440px, <span style="color: red">最多上传5张图片</span></div>
             <!--<div slot="tip" class="el-upload__tip">最多上传5张图片</div>-->
           </el-upload>
           <el-dialog :visible.sync="dialogVisible" :modal="false">

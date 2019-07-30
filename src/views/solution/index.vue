@@ -45,6 +45,7 @@
           :before-upload="beforeUpload"
           :file-list="form.images">
           <i class="el-icon-plus"></i>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb，建议大小750*440px, <span style="color: red">最多上传5张图片</span></div>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="dialogImageUrl" alt="">

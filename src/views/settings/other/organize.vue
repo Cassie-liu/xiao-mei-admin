@@ -35,7 +35,7 @@
               name="image"
               :file-list="form.officeImages">
               <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, 建议大小220*146px</div>
             </el-upload>
           </el-form-item>
         </el-form>

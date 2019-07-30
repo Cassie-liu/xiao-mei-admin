@@ -36,7 +36,7 @@
             name="image"
             :file-list="form.bgImage">
             <i class="el-icon-plus"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, <span style="color: red">只能上传1张图片, 图片大小为140dp * 170dp</span></div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, 建议大小280*340px, <span style="color: red">只能上传1张图片</span></div>
           </el-upload>
         </el-form-item>
         <el-form-item label="养生方式类型" label-width="120px">
