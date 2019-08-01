@@ -227,7 +227,14 @@
             }
         },
       mounted () {
-
+          console.info(this.id)
+          this.dialogFormVisible = this.show;
+          this.getDiseaseList();
+          this.getHealthList();
+          this.getNormTypeList();
+          this.getHealthResultList();
+          this.geSolutionList();
+          this.getCaseInfo();
       },
       methods: {
           handleBeforeClose (done) {
