@@ -91,7 +91,7 @@
       </el-dialog>
 
       <!--编辑-->
-      <case-entry v-if="showEditModal" ref="case" :show="showEditModal" :id="currentId" @close="closeEditModal"></case-entry>
+      <case-entry ref="case" :show="showEditModal" v-if="showEditModal" :id="currentId" @close="closeEditModal"></case-entry>
     </div>
 </template>
 
@@ -294,6 +294,7 @@
         },
         closeEditModal () {
           this.showEditModal = false;
+          this.currentId = null
         },
         deleteCase (index, row) {
           this.$confirm('确认删除案例?', '提示', {

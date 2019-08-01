@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-dialog v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="60%" class="case-entry">
+    <el-dialog v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="60%" @before-close="handleBeforeClose" class="case-entry">
       <div class="case">
         <el-form :label-position="'right'" :model="form" class="inline-form" :inline="true" label-width="120px">
           <el-form-item label="用户昵称" class="inline-form-item">
@@ -213,16 +213,27 @@
       components: {
         Tinymce
       },
+        watch: {
+            id (newVal, oldVal) {
+                if (newVal) {
+                    this.dialogFormVisible = this.show;
+                    this.getDiseaseList();
+                    this.getHealthList();
+                    this.getNormTypeList();
+                    this.getHealthResultList();
+                    this.geSolutionList();
+                    this.getCaseInfo();
+                }
+            }
+        },
       mounted () {
-        this.dialogFormVisible = this.show;
-        this.getDiseaseList();
-        this.getHealthList();
-        this.getNormTypeList();
-        this.getHealthResultList();
-        this.geSolutionList();
-        this.getCaseInfo();
+
       },
       methods: {
+          handleBeforeClose (done) {
+              done()
+              this.$emit('close');
+          },
         getCaseInfo () {
           caseService.editCaseInfo(this.id)
             .then(res => {
@@ -243,11 +254,19 @@
                   this.form.healthIds[i] = String(this.form.healthIds[i]);
                 }
               }
-              if (this.form.notes && this.form.notes.length === 0) {
-                if (this.form.notes[i].coverImages)  {
-                    this.form.notes[i].coverImageId = this.form.notes[i].coverImages && this.form.notes[i].coverImages.id;
+              // 原来代码，不清楚逻辑
+              // if (this.form.notes && this.form.notes.length === 0) {
+              //   if (this.form.notes[i].coverImages)  {
+              //       this.form.notes[i].coverImageId = this.form.notes[i].coverImages && this.form.notes[i].coverImages.id;
+              //   }
+              // }
+                if (this.form.notes && this.form.notes.length > 0) {
+                    for (let i in this.form.notes) {
+                        if (this.form.notes[i].coverImages)  {
+                            this.form.notes[i].coverImageId = this.form.notes[i].coverImages && this.form.notes[i].coverImages.id;
+                        }
+                    }
                 }
-              }
             })
         },
         getHealthList () {
