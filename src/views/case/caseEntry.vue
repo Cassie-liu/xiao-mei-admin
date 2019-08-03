@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-dialog v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="60%" @before-close="handleBeforeClose" class="case-entry">
+    <el-dialog v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="70%" @before-close="handleBeforeClose" class="case-entry">
       <div class="case">
         <el-form :label-position="'right'" :model="form" class="inline-form" :inline="true" label-width="120px">
           <el-form-item label="用户昵称" class="inline-form-item">
@@ -59,7 +59,7 @@
               <el-input size="small" v-model="item.endValue2"></el-input>
             </el-col>
           </el-form-item>
-          <el-form-item v-if="form.norm.length > 1">
+          <el-form-item v-if="form.norm.length > 1" label-width="0">
             <el-button type="text" size="small" @click="deleteRow(form.norm, index)">删除</el-button>
           </el-form-item>
         </el-form>
