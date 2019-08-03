@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-dialog v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="60%" class="case-entry">
+    <el-dialog v-if="dialogFormVisible" :visible.sync="dialogFormVisible" :loading="loading" top="5%" width="60%" class="case-entry">
       <div class="case">
         <el-form :label-position="'right'" :model="form" class="inline-form" :inline="true" label-width="120px">
           <el-form-item label="用户昵称" class="inline-form-item">
@@ -157,6 +157,7 @@
       data () {
         return {
           dialogFormVisible: false,
+          loading: true,
           form: {
             title: '',                           // 案例标题
             nickname: '',                        // 用户昵称
@@ -224,30 +225,32 @@
       },
       methods: {
         getCaseInfo () {
+          this.loading = true;
           caseService.editCaseInfo(this.id)
             .then(res => {
               this.form = Object.assign({}, res.data);
               if (this.form.disease && this.form.disease.length > 0) {
                 for (let i in this.form.disease) {
                   this.form.disease[i].diseaseDetailId = String(this.form.disease[i].diseaseDetailId);
-                  this.form.disease[i].healthResultId = String(this.form.disease[i].healthResultId);
+                  this.form.disease[i].healthResultId = this.form.disease[i].healthResultId && String(this.form.disease[i].healthResultId);
                 }
               }
               if (this.form.disease && this.form.norm.length > 0) {
                 for (let i in this.form.norm) {
-                  this.form.norm[i].normTypeId = String(this.form.norm[i].normTypeId);
+                  this.form.norm[i].normTypeId = this.form.norm[i].normTypeId && String(this.form.norm[i].normTypeId);
                 }
               }
               if (this.form.healthIds && this.form.healthIds.length > 0) {
                 for (let i in this.form.healthIds) {
-                  this.form.healthIds[i] = String(this.form.healthIds[i]);
+                  this.form.healthIds[i] =this.form.healthIds[i] && String(this.form.healthIds[i]);
                 }
               }
               if (this.form.notes && this.form.notes.length === 0) {
-                if (this.form.notes[i].coverImages)  {
-                    this.form.notes[i].coverImageId = this.form.notes[i].coverImages && this.form.notes[i].coverImages.id;
-                }
+                // if (this.form.notes[i].coverImages)  {
+                //     this.form.notes[i].coverImageId = this.form.notes[i].coverImages && this.form.notes[i].coverImages.id;
+                // }
               }
+              this.loading = false;
             })
         },
         getHealthList () {
@@ -485,6 +488,14 @@
           }
           this.$forceUpdate();
         }
+      },
+      watch: {
+          'id': {
+            handler (curVal, oldVal) {
+              this.id = curVal;
+              this.getCaseInfo();
+            }
+          }
       }
     }
 </script>

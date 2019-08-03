@@ -286,11 +286,11 @@
          * 编辑
          * */
         edit (index, row) {
-          this.showEditModal = true;
           if (this.$refs.case) {
             this.$refs.case.dialogFormVisible = true;
           }
           this.currentId = row.journeyId;
+          this.showEditModal = true;
         },
         closeEditModal () {
           this.showEditModal = false;

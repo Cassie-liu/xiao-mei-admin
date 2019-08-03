@@ -37,9 +37,16 @@
           </el-date-picker>
           <div class="error" v-if="validated && !form.startTime">请选择开始时间</div>
         </el-form-item>
+      </el-form>
+      <el-form :model="form" :label-position="'left'" :inline="true">
         <el-form-item label="报名人数" label-width="120px">
           <el-input v-model="form.members" size="small"></el-input>
         </el-form-item>
+        <el-form-item label="最低报名人数" label-width="120px">
+          <el-input size="small" v-model="form.minMember"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-form :model="form" :label-position="'left'" >
         <el-form-item label="活动地址" label-width="120px">
           <el-input v-model="form.address" size="small"></el-input>
         </el-form-item>
@@ -164,7 +171,8 @@
           courseImages: [],        // 展示图
           typeId: '',
           title: '',
-          number: ''
+          number: '',
+          minMember: ''
         },                    // 表单数据
         dialogVisible: false,           // 上传图片弹框显示
         dialogImageUrl: '',
