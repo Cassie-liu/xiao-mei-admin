@@ -23,14 +23,14 @@
         </el-table-column>
       </el-table>
       <pagination v-show="totalCount>0" :total="totalCount" :page.sync="params.pageNumber" :limit.sync="params.pageSize" @pagination="query" />
-      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" top="5%" width="40%">
+      <el-dialog :title="title" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" v-loading="loadingDialog" top="5%" width="40%">
         <el-form v-model="form" label-position="left" label-width="120px">
           <el-form-item label="标题">
             <el-input v-model="form.title" size="small"></el-input>
           </el-form-item>
           <el-form-item label="类型">
             <!--<el-input size="small" v-model="form.type"></el-input>-->
-            <el-select size="small" v-model="form.type">
+            <el-select size="small" v-model="form.type" @change="change()">
               <el-option value="commodity" label="商品"></el-option>
               <el-option value="case" label="案例"></el-option>
               <el-option value="course" label="课程"></el-option>
@@ -38,23 +38,10 @@
             </el-select>
             <div class="error" v-if="validated && !form.type">请选择类型</div>
           </el-form-item>
-          <el-form-item label="请选择商品" v-if="form.type === 'commodity'">
-            <el-select size="small" v-model="form.jumpId">
+          <el-form-item :label="handleTypeTitle()"  v-if="form.type && form.type !== 'link'">
+            <el-select size="small" v-model="form.jumpId" @change="changeSelect()">
               <el-option v-for="(item, index) in bannerTypes" :value="item.key" :key="index" :label="item.value"></el-option>
             </el-select>
-            <div class="error" v-if="validated && !form.type && !form.jumpId">请选择商品</div>
-          </el-form-item>
-          <el-form-item label="请选择案例" v-if="form.type === 'case'">
-            <el-select size="small">
-              <el-option v-for="(item, index) in bannerTypes" :value="item.key" :key="index" :label="item.value"></el-option>
-            </el-select>
-            <div class="error" v-if="validated && !form.type && !form.jumpId">请选择案例</div>
-          </el-form-item>
-          <el-form-item label="请选择课程" v-if="form.type === 'course'">
-            <el-select size="small">
-              <el-option v-for="(item, index) in bannerTypes" :value="item.key" :key="index" :label="item.value"></el-option>
-            </el-select>
-            <div class="error" v-if="validated && !form.type && !form.jumpId">请选择课程</div>
           </el-form-item>
           <el-form-item label="链接" v-if="form.type === 'link'">
             <el-input v-model="form.link" size="small"></el-input>
@@ -101,7 +88,8 @@
           return {
             loading: false,
             form: {
-              images: []
+              images: [],
+              jumpId: ''
             },
             tableData: [],
             params: {
@@ -114,7 +102,8 @@
             dialogImageUrl: '',
             dialogVisible: false,
             validated: false,
-            bannerTypes: []
+            bannerTypes: [],
+            loadingDialog: false
           };
       },
       components: {
@@ -142,15 +131,20 @@
           this.dialogFormVisible = true;
         },
         edit (index, row) {
+          this.loadingDialog = true;
+          this.dialogFormVisible = true;
           this.form = Object.assign({}, row);
           this.title = '编辑';
           this.form.images = [];
-          // this.form
-          let link = JSON.parse(row.link);
-          this.form.jumpId = link.jumpId;
-          this.form.type = link.type;
+          let link = row.link && JSON.parse(row.link) || {};
+          this.form.type = link.type || '';
+          if (this.form.type !== 'link') {
+            this.form.jumpId = String(link.jumpId);
+          } else {
+            this.form.link = link.link
+          }
           this.form.image && this.form.images.push(this.form.image);
-          this.dialogFormVisible = true;
+          this.loadingDialog = false;
         },
         /**
          * 删除
@@ -263,21 +257,52 @@
             }
         },
         getTypes () {
-          banner.getBannerTypes(this.form.type)
-            .then(res => {
-              console.log(res.data);
-              this.bannerTypes = res.data;
-            })
+          if (this.form.type) {
+            banner.getBannerTypes(this.form.type)
+              .then(res => {
+                this.bannerTypes = res.data;
+              })
+          }
+        },
+        change () {
+          this.form.jumpId = '';
+          if (this.form.type !== 'link') {
+            this.form.link = '';
+            this.getTypes();
+          } else {
+            this.form.link = '';
+            this.form.jumpId = '';
+          }
+          this.$forceUpdate();
+        },
+        changeSelect () {
+          this.$forceUpdate();
+        },
+        handleTypeTitle () {
+          if (this.form.type === 'commodity') {
+            return '请选择商品';
+          } else if (this.form.type === 'case') {
+            return '请选择案例';
+          } else if (this.form.type === 'course') {
+            return '请选择课程';
+          }
         }
       },
       watch: {
           'form.type': {
             handler (curVal, oldVal) {
-              if (curVal !== '') {
+              this.form.type === curVal;
+              if (curVal !== '' || curVal !== 'link') {
                 this.getTypes();
               }
+            },
+            deep: true
+          },
+        'form.jumpId': {
+            handler (curVal, oldVal) {
+              this.$forceUpdate();
             }
-          }
+        }
       }
     }
 </script>
