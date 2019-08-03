@@ -86,3 +86,12 @@ export  function deleteCourseBanner(data) {
     method: 'DELETE'
   })
 }
+/**
+ *获取轮播图跳转类型*
+ *  */
+export function getBannerTypes(types) {
+  return request({
+    url: '/banner/types/' + types,
+    method: 'GET'
+  })
+}

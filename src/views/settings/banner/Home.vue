@@ -28,7 +28,35 @@
           <el-form-item label="标题">
             <el-input v-model="form.title" size="small"></el-input>
           </el-form-item>
-          <el-form-item label="链接">
+          <el-form-item label="类型">
+            <!--<el-input size="small" v-model="form.type"></el-input>-->
+            <el-select size="small" v-model="form.type">
+              <el-option value="commodity" label="商品"></el-option>
+              <el-option value="case" label="案例"></el-option>
+              <el-option value="course" label="课程"></el-option>
+              <el-option value="link" label="链接"></el-option>
+            </el-select>
+            <div class="error" v-if="validated && !form.type">请选择类型</div>
+          </el-form-item>
+          <el-form-item label="请选择商品" v-if="form.type === 'commodity'">
+            <el-select size="small" v-model="form.jumpId">
+              <el-option v-for="(item, index) in bannerTypes" :value="item.key" :key="index" :label="item.value"></el-option>
+            </el-select>
+            <div class="error" v-if="validated && !form.type && !form.jumpId">请选择商品</div>
+          </el-form-item>
+          <el-form-item label="请选择案例" v-if="form.type === 'case'">
+            <el-select size="small">
+              <el-option v-for="(item, index) in bannerTypes" :value="item.key" :key="index" :label="item.value"></el-option>
+            </el-select>
+            <div class="error" v-if="validated && !form.type && !form.jumpId">请选择案例</div>
+          </el-form-item>
+          <el-form-item label="请选择课程" v-if="form.type === 'course'">
+            <el-select size="small">
+              <el-option v-for="(item, index) in bannerTypes" :value="item.key" :key="index" :label="item.value"></el-option>
+            </el-select>
+            <div class="error" v-if="validated && !form.type && !form.jumpId">请选择课程</div>
+          </el-form-item>
+          <el-form-item label="链接" v-if="form.type === 'link'">
             <el-input v-model="form.link" size="small"></el-input>
           </el-form-item>
           <el-form-item label="图片">
@@ -85,7 +113,8 @@
             dialogFormVisible: false,
             dialogImageUrl: '',
             dialogVisible: false,
-            validated: false
+            validated: false,
+            bannerTypes: []
           };
       },
       components: {
@@ -116,6 +145,10 @@
           this.form = Object.assign({}, row);
           this.title = '编辑';
           this.form.images = [];
+          // this.form
+          let link = JSON.parse(row.link);
+          this.form.jumpId = link.jumpId;
+          this.form.type = link.type;
           this.form.image && this.form.images.push(this.form.image);
           this.dialogFormVisible = true;
         },
@@ -195,12 +228,16 @@
             imageId: '',
             link: this.form.link,
             title: this.form.title,
-            sort: this.form.sort
+            sort: this.form.sort,
+            type: this.form.type
           };
+          if (this.form.type !== '' && this.form.type !== 'link') {
+            params.jumpId = this.form.jumpId;
+          }
           if (this.form.images && this.form.images.length>0) {
             params.imageId = this.form.images[0] && this.form.images[0].id;
           }
-          if (!params.imageId) {
+          if (!params.imageId || !this.form.type) {
            this.validated = true;
             return;
           } else {
@@ -224,7 +261,23 @@
                   this.query();
                 });
             }
+        },
+        getTypes () {
+          banner.getBannerTypes(this.form.type)
+            .then(res => {
+              console.log(res.data);
+              this.bannerTypes = res.data;
+            })
         }
+      },
+      watch: {
+          'form.type': {
+            handler (curVal, oldVal) {
+              if (curVal !== '') {
+                this.getTypes();
+              }
+            }
+          }
       }
     }
 </script>

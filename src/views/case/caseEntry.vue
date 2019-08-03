@@ -157,6 +157,7 @@
       data () {
         return {
           dialogFormVisible: false,
+          loading: true,
           form: {
             title: '',                           // 案例标题
             nickname: '',                        // 用户昵称
@@ -242,23 +243,24 @@
               this.$emit('close');
           },
         getCaseInfo () {
+          this.loading = true;
           caseService.editCaseInfo(this.id)
             .then(res => {
               this.form = Object.assign({}, res.data);
               if (this.form.disease && this.form.disease.length > 0) {
                 for (let i in this.form.disease) {
                   this.form.disease[i].diseaseDetailId = String(this.form.disease[i].diseaseDetailId);
-                  this.form.disease[i].healthResultId = String(this.form.disease[i].healthResultId);
+                  this.form.disease[i].healthResultId = this.form.disease[i].healthResultId && String(this.form.disease[i].healthResultId);
                 }
               }
               if (this.form.disease && this.form.norm.length > 0) {
                 for (let i in this.form.norm) {
-                  this.form.norm[i].normTypeId = String(this.form.norm[i].normTypeId);
+                  this.form.norm[i].normTypeId = this.form.norm[i].normTypeId && String(this.form.norm[i].normTypeId);
                 }
               }
               if (this.form.healthIds && this.form.healthIds.length > 0) {
                 for (let i in this.form.healthIds) {
-                  this.form.healthIds[i] = String(this.form.healthIds[i]);
+                  this.form.healthIds[i] =this.form.healthIds[i] && String(this.form.healthIds[i]);
                 }
               }
               // 原来代码，不清楚逻辑
@@ -511,6 +513,14 @@
           }
           this.$forceUpdate();
         }
+      },
+      watch: {
+          'id': {
+            handler (curVal, oldVal) {
+              this.id = curVal;
+              this.getCaseInfo();
+            }
+          }
       }
     }
 </script>
