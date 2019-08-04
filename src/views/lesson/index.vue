@@ -27,6 +27,8 @@
             <el-option v-for="(item, index) in courseType" :label="item.value" :value="item.key" :key="index"></el-option>
           </el-select>
         </el-form-item>
+      </el-form>
+      <el-form :model="form" :label-position="'left'" :inline="true">
         <el-form-item label="开始时间" label-width="120px">
           <el-date-picker
             v-model="form.startTime"
@@ -36,6 +38,15 @@
             placeholder="选择日期时间">
           </el-date-picker>
           <div class="error" v-if="validated && !form.startTime">请选择开始时间</div>
+        </el-form-item>
+        <el-form-item label="结束时间" label-width="120px">
+          <el-date-picker
+            v-model="form.endTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            type="datetime"
+            size="small"
+            placeholder="选择日期时间">
+          </el-date-picker>
         </el-form-item>
       </el-form>
       <el-form :model="form" :label-position="'left'" :inline="true">
@@ -347,7 +358,9 @@
           price: this.form.price,
           coverImage: {},
           courseImages: [],
-          typeId: this.form.typeId
+          typeId: this.form.typeId,
+          minMember: this.form.minMember,
+          endTime: this.form.endTime
         };
         if (this.form.coverImage && this.form.coverImage.length>0) {
           params.coverImage = {

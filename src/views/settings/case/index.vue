@@ -14,6 +14,7 @@
            <el-form :label-position="'right'" :model="form"  label-width="120px">
              <el-form-item label="案例标题">
                <el-input size="small" v-model="form.title"></el-input>
+               <div class="error" v-if="validated && !form.title">请填写案例标题</div>
              </el-form-item>
              <el-form-item label="案例介绍">
                <el-input type="textarea"  :autosize="{ minRows: 2}" v-model="form.content"></el-input>
@@ -74,6 +75,16 @@
              <el-form-item label="使用的解决方案">
                <el-select v-model="form.solutionIds" multiple size="small" class="select" @change="changeSelect">
                  <el-option v-for="(item, index) in solutionList" :value="Number(item.key)" :key="item.key + index" :label="item.value"></el-option>
+               </el-select>
+             </el-form-item>
+             <el-form-item label="使用的商品">
+               <el-select v-model="form.commodityIds" multiple size="small" class="select" @change="changeSelect">
+                 <el-option v-for="(item, index) in commodityList" :value="Number(item.key)" :key="item.key + index" :label="item.value"></el-option>
+               </el-select>
+             </el-form-item>
+             <el-form-item label="使用的课程">
+               <el-select v-model="form.courseIds" multiple size="small" class="select" @change="changeSelect">
+                 <el-option v-for="(item, index) in courseList" :value="Number(item.key)" :key="item.key + index" :label="item.value"></el-option>
                </el-select>
              </el-form-item>
            </el-form>
@@ -205,10 +216,13 @@
             normTypeList: [],   // 体检指标
             resultList: [],   // 治疗效果
             solutionList: [],  // 解决方案
+            commodityList: [],  // 商品
+            courseList: [],  // 课程
             index: 0,
             normType: {},
             dialogVisible: false,           // 上传图片弹框显示
-            dialogImageUrl: ''
+            dialogImageUrl: '',
+            validated: false
           }
       },
       components: {
@@ -220,6 +234,8 @@
           this.getNormTypeList();
           this.getHealthResultList();
           this.geSolutionList();
+          this.getCommodityList();
+          this.getCourseList();
       },
       methods: {
         getHealthList () {
@@ -272,6 +288,26 @@
                 this.solutionList = res.data;
               } else{
                 this.solutionList = [];
+              }
+            })
+        },
+        getCommodityList () {
+          caseEntry.getCommodity()
+            .then(res => {
+              if (res.code === 200) {
+                this.commodityList = res.data;
+              } else{
+                this.commodityList = [];
+              }
+            })
+        },
+        getCourseList () {
+          caseEntry.getCourse()
+            .then(res => {
+              if (res.code === 200) {
+                this.courseList = res.data;
+              } else{
+                this.courseList = [];
               }
             })
         },
@@ -404,6 +440,12 @@
               }
             }
           }
+          if (!params.title) {
+            this.validated = true;
+            return;
+          } else {
+            this.validated = false;
+          }
           caseEntry.addCaseEntry(params)
             .then(res => {
               if (res && res.code === 200) {
@@ -424,6 +466,8 @@
             content: '',                         // 案例介绍
             healthIds: [],                       // 养生ID
             solutionIds: [],                     // 解决方案ID
+            commodityIds: [],                   // 商品ID
+            courseIds: [],                      // 课程ID
             norm: [
               {
                 normTypeId: '',                  // 体检指标类型ID

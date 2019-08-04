@@ -69,3 +69,22 @@ export function updateCaseEntry(data) {
     data
   })
 }
+/**
+ * 获取商品
+ * */
+export function getCommodity() {
+  return request({
+    url: '/case/commodity',
+    method: 'GET'
+  })
+}
+
+/**
+ * 获取课程
+ * */
+export function getCourse() {
+  return request({
+    url: '/case/course',
+    method: 'GET'
+  })
+}
