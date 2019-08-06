@@ -42,7 +42,13 @@
             <div class="error" v-if="validated && !form.diseaseDetailName">请输入疾病名称</div>
           </el-form-item>
           <el-form-item label="描述" label-width="120px">
-            <tinymce :height="300" ref="editor" v-model="form.content" :show-modal="false" />
+            <!--<tinymce :height="300" ref="editor" v-model="form.content" :show-modal="false" />-->
+            <el-input
+              type="textarea"
+              autosize
+              placeholder="请输入内容"
+              v-model="form.content">
+            </el-input>
           </el-form-item>
           <el-form-item label="背景图" label-width="120px">
             <el-upload
