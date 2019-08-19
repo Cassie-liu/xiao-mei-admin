@@ -80,7 +80,7 @@
               :before-upload="beforeUpload"
               :file-list="form.icon">
               <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, 建议大小220*140px, <span style="color: red">只能上传1张图片</span></div>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb, 建议大小220*220px, <span style="color: red">只能上传1张图片</span></div>
             </el-upload>
             <div class="error" v-if="validated && form.icon.length === 0">请选择图标进行上传</div>
           </el-form-item>
