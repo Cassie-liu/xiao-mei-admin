@@ -110,6 +110,17 @@
         <el-button type="primary" @click="save" size="small">确 定</el-button>
       </div>
     </el-dialog>
+    <!--未开课通知弹框-->
+    <el-dialog :title="'确认未开课通知？'" v-if="dialogFormVisible1" :visible.sync="dialogFormVisible1" class="add-dialog1" top="5%" bottom="5%" width="30%">
+      <el-form :model="notice" :label-position="'left'">
+        <el-checkbox label="系统通知" v-model="notice.push"></el-checkbox>
+        <!--<el-checkbox label="短信通知"v-model="notice.message"></el-checkbox>-->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible1 = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="confirm" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -117,7 +128,7 @@
   import commonTable from '../common/commonTable';
   import Tinymce from '@/components/Tinymce';
   import Pagination from '@/components/Pagination';
-  import {getCourseInfo,uploadSingleImage,addCourse, updateCourse,deleteCourse,getCourseType} from '@/api/lesson';
+  import {getCourseInfo,uploadSingleImage,addCourse, updateCourse,deleteCourse,getCourseType, pushCourseMessage} from '@/api/lesson';
   import * as common from  '@/api/uploadImage';
   import {checkImages} from "../../utils";
 
@@ -158,6 +169,11 @@
             functionOpt: [
               {
                 type: 'text',
+                label: '未开课通知',
+                func: this.notNotice
+              },
+              {
+                type: 'text',
                 label: '编辑',
                 func: this.edit
               },
@@ -177,6 +193,7 @@
         },
         totalCount: 0,
         dialogFormVisible: false,      // 是否显示弹框
+        dialogFormVisible1: false,    // 是否显示未开课通知弹框
         form: {
           coverImage: [],   // 封面图
           courseImages: [],        // 展示图
@@ -185,6 +202,10 @@
           number: '',
           minMember: ''
         },                    // 表单数据
+        notice:{
+          message: false,
+          push: false
+        },
         dialogVisible: false,           // 上传图片弹框显示
         dialogImageUrl: '',
         fileList: [],
@@ -216,6 +237,33 @@
         getCourseType()
           .then(res => {
             this.courseType = res.data;
+          });
+      },
+      /**
+       *
+       * */
+      notNotice (index, row) {
+        this.notice = {
+          push: false,
+          message: false,
+          courseId: row.courseId
+        };
+        this.dialogFormVisible1 = true;
+      },
+      confirm () {
+        let params = Object.assign({}, this.notice);
+        pushCourseMessage(params)
+          .then(res => {
+            this.$message({
+              type: 'success',
+              message: res && res.message
+            });
+            this.dialogFormVisible1 = false;
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: res && res.message
+            })
           });
       },
       /**

@@ -130,4 +130,14 @@ export function exportList(params){
     params
   })
 }
+/**
+ * 未开课通知推送
+ * */
+export function pushCourseMessage(data) {
+  return request({
+    url: '/course/coursePushMessage',
+    method: 'post',
+    data
+  })
+}
 
