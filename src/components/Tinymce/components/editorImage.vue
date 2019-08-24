@@ -2,7 +2,7 @@
   <div class="upload-container">
     <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click=" dialogVisible=true">上传图片
     </el-button>
-    <el-dialog :visible.sync="dialogVisible" :modal="showModal">
+    <el-dialog :visible.sync="dialogVisible" :modal="showModal" :v-loading="true" :modal-append-to-body="false">
       <el-upload
         :multiple="true"
         :file-list="fileList"
@@ -55,7 +55,7 @@ export default {
     },
     handleSuccess(response, file) {
       const uid = file.uid
-      const objKeyArr = Object.keys(this.listObj)
+      const objKeyArr = Object.keys(this.listObj) || [];
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
         if (this.listObj[objKeyArr[i]].uid === uid) {
           // this.listObj[objKeyArr[i]].url = response.files.file
@@ -89,6 +89,10 @@ export default {
       formData.append('model', '1');
       uploadSingleImage(formData)
         .then(res => {
+          if (this.listObj && this.listObj.length>0) {
+          } else {
+            this.listObj = [];
+          }
           this.listObj.push({uid: file.uid, url: res.data.url});
         });
     },
