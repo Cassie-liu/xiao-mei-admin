@@ -118,6 +118,19 @@ export let constantRouterMap = [
     ]
   },
   {
+    path: '/report',
+    component: Layout,
+    requiredPermission: 'COMMODITY_MANAGEMENT',
+    children: [
+      {
+        path: 'index',
+        name: 'Report',
+        component: () => import('@/views/report/index'),
+        meta: { title: '举报管理', icon: 'commodity' }
+      }
+    ]
+  },
+  {
     path: '/settings',
     component: Layout,
     redirect: '/settings/disease',
